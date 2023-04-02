@@ -1,0 +1,73 @@
+<div class="background *ngIf="cardParamsBestRestaurant.length > 0">
+    <div class="searchBar">
+        <form class="search">
+            <mat-form-field>
+                <mat-label style="color: white;">Rechercher un lieu</mat-label>
+                <input class="bar" matInput [(ngModel)]="searchTerm" type="text" autocomplete="off"/>
+                <mat-icon matSuffix style="color: white;" (click)="filter(searchTerm)">restaurant_menu</mat-icon>
+            </mat-form-field>
+        </form>
+    </div>
+    
+    <div [@openCloseDiv]="animationFilterDiv" class="resultDiv">
+        <div class="scrollButton" *ngIf="filteredData.length >= 2">
+            <button (click)="scrollLeft('results')" mat-button style="color: white; cursor: pointer; height: 50%; width: 100%;">
+                <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+        </div>
+    
+        <div class="results" id="results" [ngStyle]="{'justify-content' : filteredData.length < 3 ? 'center' : 'flex-start'}" [@openCloseResult]="animationFilterResult" >
+            <app-card *ngFor="let params of cardParamsResearch; index as i;" [params]="params"></app-card>
+        </div>
+    
+        <div *ngIf="filteredData.length >= 2" class="scrollButton">
+            <button (click)="scrollRight('results')" mat-button style="color: white; cursor: pointer; height: 50%; width: 100%;">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+        </div>
+    </div>
+</div>
+
+<h1 id="title1" #title [@showTitle]="titlesAnimation[0]" class="title" *ngIf="cardParamsBestRestaurant.length > 0">Meilleures notes</h1>
+
+<div id="bestContainer" *ngIf="cardParamsBestRestaurant.length > 0">
+    <div id="best">
+        <div class="results">
+            <app-card class="card" id="bestCard" *ngFor="let params of cardParamsBestRestaurant; index as i;" [params]="params"></app-card>
+        </div>
+    </div>
+</div>
+
+
+<h1 id="title2" #title [@showTitle]="titlesAnimation[1]" class="title" *ngIf="cardParamsPriorityRestaurant.length > 0">Priorité absolue</h1>
+
+<div *ngIf="cardParamsPriorityRestaurant.length > 0" id="priorityContainer">
+    <div id="priority">
+        <div class="results">
+            <app-card class="card" id="priorityCard" *ngFor="let params of cardParamsPriorityRestaurant; index as i;" [params]="params"></app-card>
+        </div>
+    </div>
+</div>
+
+
+<div class="barsDiv" *ngIf="cardParamsBestBar.length > 0 || cardParamsPriorityBar.length > 0">
+    <h1 *ngIf="cardParamsBestBar.length > 0" id="title3" #title [@showTitle]="titlesAnimation[2]" class="title">Bars branchew</h1>
+    <div id="bestContainer" *ngIf="cardParamsBestBar.length > 0">
+        <div id="best">
+            <div class="results">
+                <app-card class="card"  id="bestCard" *ngFor="let params of cardParamsBestBar; index as i;" [params]="params"></app-card>
+            </div>
+        </div>
+    </div>
+    
+
+    <h1 *ngIf="cardParamsPriorityBar.length > 0" id="title4" #title [@showTitle]="titlesAnimation[3]" class="title">Bars à voir</h1>
+    <div id="priorityContainer" *ngIf="cardParamsPriorityBar.length > 0">
+        <div id="priority">
+            <div class="results">
+                <app-card class="card"  id="priorityCard" *ngFor="let params of cardParamsPriorityBar; index as i;" [params]="params"></app-card>
+            </div>
+        </div>
+    </div>
+    
+</div>

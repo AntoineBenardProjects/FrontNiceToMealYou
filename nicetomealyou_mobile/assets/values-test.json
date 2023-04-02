@@ -1,0 +1,22 @@
+{
+    "1":{
+        "name" : "Goku Asian Canteen",
+        "price" : 2,
+        "comment" : "Restaurant Asiatique spécialisé dans les burgers ! Coup de coeur en plat : O.G Burger, burger champion de France en 2017 (18€ avec frites de patates douces), Big Chicken (18€). En entrée : le poulet Kaarage (9€), le poulet crosutillant épicé coréen (9€) et les brochettes satai (7€).",
+        "type" : "Burger",
+        "adresse" : "27 Boulevard du Temple, 75003",
+        "ligne" : 5,
+        "station" : "République",
+        "note" : "9/10"
+    },
+    "2":{
+        "name" : "Navigli",
+        "price" : 2,
+        "comment" : "Restaurant de pâtes italiennes avec la carte qui change selon les saisons. Toutes les pâtes testées sont EXCELLENTES et le tiramisu est un délice",
+        "type" : "Pâtes",
+        "adresse" : "52 rue Enghien, 75010",
+        "ligne" : 7,
+        "station" : "Poissonière",
+        "note" : "8/10"
+    }
+}

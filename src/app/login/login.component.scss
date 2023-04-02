@@ -1,0 +1,109 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 35vh;
+    width: 25vw;
+    color: black;
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 20px;
+}
+
+::ng-deep .form{
+    .mat-focused .mat-form-field-label {
+        color: black !important;
+    }
+
+    .mat-input-element {
+        caret-color: black !important;
+    }
+
+    .mat-input-element::selection {
+        background-color: grey !important;
+    }
+    
+    .mat-form-field-underline {
+        /*change color of underline*/
+        background-color: black;
+    } 
+    
+    .mat-form-field-ripple{
+        /*change color of underline when focused*/
+        background-color: black !important;
+    }
+
+    .mat-form-field.mat-focused {
+        .mat-form-field-infix {
+            background: rgba(0,0,0, 0.4);
+        }
+        .mat-input-element::selection{
+            background-color: var(--background-color-2) !important;
+        }
+    }
+}
+
+.login{
+    display: flex; 
+    justify-content:center; 
+    align-items: center; 
+    flex-direction: column; 
+    height: 100%; 
+    width: 100%;
+    color: white;
+}
+
+.background{
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url("../../assets/login.jpg");
+    background-size: cover;
+}
+
+.title{
+    font-size: 75px;
+    font-weight: bold;
+}
+
+.connect{
+    height: 50%;
+    background-color: black;
+    color: white;
+    transition: all 200ms;
+    transform: scale(1);
+    &:hover{
+        transform: scale(1.15);
+    }
+}
+
+.create{
+    height: 50%;
+    background-color: white;
+    color: black;
+    transition: all 200ms;
+    transform: scale(1);
+    &:hover{
+        transform: scale(1.15);
+        background-color: rgba(0,0,0,0.3);
+    }
+}
+
+#logoIcon{
+    display: flex; width: 25%; height: 12vh; justify-content: flex-end; align-items: center;
+    mat-icon{
+        font-size: 7vh; margin-right: 10%;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .form{
+        width: 70vw;
+    }
+    .background{
+        background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url("../../assets/login_mobile.jpg");
+    }
+    #logoIcon{
+        width: 75%;
+    }
+}

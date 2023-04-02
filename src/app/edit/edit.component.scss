@@ -1,0 +1,363 @@
+.title{
+    display: flex; font-size: 7vh; align-items: center; height: 11vh; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    padding: 2% 0;
+    margin-left: 3%;
+    color: black;
+}
+.uploadWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: 5vh;
+    background: var(--text-color-2);
+    color: var(--light-yellow);
+    border-radius: 2px;
+    width: 15vw;margin-bottom: 1.34375em;
+    cursor: pointer;
+    font-weight: bold;
+}
+.uploadWrapper input {
+    cursor: pointer !important;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+    width: 15vw;
+    height: 5vh;
+}
+.uploadWrapper:hover{
+    background-color: var(--light-yellow);
+    color: var(--text-color-2) !important;
+    box-shadow: var(--darken-yellow) -1px 1px, var(--darken-yellow) -2px 2px, var(--darken-yellow) -3px 3px;
+    transform: translate3d(3px, -3px, 0);
+         
+         transition-delay: 0s;
+           transition-duration: 0.4s;
+           transition-property: all;
+         transition-timing-function: line;
+}
+
+//////////////////////////////  Mat Stepper / Mat Checkbox //////////////////////////////
+::ng-deep .mat-step-header .mat-step-icon-selected {
+    background-color: black; 
+}
+::ng-deep .mat-step-header .mat-step-icon-state-edit {
+    background-color: black; 
+}
+::ng-deep.mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: black !important;
+}
+
+//////////////////////////////  Form //////////////////////////////
+form{
+    width: 100%;
+    height: 100%;
+}
+::ng-deep form{
+    .mat-form-field-infix{
+        display: flex;
+    }
+    .mat-icon-button{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 1em;
+        height: 1em;
+        color: black;
+    }
+
+    .mat-focused .mat-form-field-label {
+        color: black !important;
+    }
+    
+    .mat-form-field-underline {
+        /*change color of underline*/
+        background-color: black;
+    } 
+    
+    .mat-form-field-ripple{
+        /*change color of underline when focused*/
+        background-color: #7ddc1f !important;
+    }
+
+    .mat-form-field.mat-focused {
+        mat-placeholder{
+            color: #7ddc1f !important;
+        }
+        .mat-form-field-underline {
+            /*change color of underline*/
+            background-color: transparent;
+        } 
+        .mat-input-element{
+            color: #7ddc1f !important;
+            caret-color: #7ddc1f !important;
+        }
+        .mat-select-arrow{
+            color: #7ddc1f !important;
+        }
+        .mat-icon-button{
+            color: #7ddc1f !important;
+        }
+    }
+}
+mat-form-field{
+    width: 80% !important;
+}
+
+
+//////////////////////////////  Horaires //////////////////////////////
+.space{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.horairesFormField{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    width: 90%;
+}
+.formHoraires{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-columns: auto;
+    width: 100%;
+    margin-bottom: 10vh;
+}
+.allHoraires::-webkit-scrollbar{
+    display: none;
+}
+.allHoraires{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 85%;
+    height: 85%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    align-items: center;
+    .horairesDay{
+        min-height: 25%;
+        margin: 10% 0;
+    }
+    .top{
+        display: flex;
+        justify-content: space-between;
+    }
+}
+.addHoraires{
+    border: 0;
+}
+
+//////////////////////////////  Stations //////////////////////////////
+.selectStation{
+    display: flex;
+    height: 80%;
+    width: 80%;
+    justify-content: space-between;
+    overflow-x: hidden;
+    .select{
+        width: 45%;
+        overflow: auto;
+        max-height: 50vh;
+        min-height: 10vh;
+        position: relative;
+    }
+
+    .searchBar{
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        height: fit-content;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        border-bottom: 1px solid #bcbcbc;
+        background: white;
+        input{
+            height: 5vh;
+            background-color: white;
+        }
+        button{
+            height: 5vh;
+            border: 0;
+            background: transparent;
+            transform: scale(1);
+            transition: 200ms;
+            &:hover{
+                transform: scale(1.15);
+            }
+        }
+    }
+    .stations{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 45%;
+        position: relative;
+        overflow: auto;
+        max-height: 50vh;
+        min-height: 10vh;
+        .selectedStation{
+            display: flex;
+            position: sticky;
+            background-color: white;
+            top: 0;
+            align-items: center;
+            text-align: center;
+            height: 5vh;
+        }
+    }
+    .content{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid;
+        height: 10vh;
+        margin-top: 5vh;
+        max-height: 30vmin;
+        width: 80%;
+        cursor: pointer;
+        transition: all 200ms;
+        background: transparent;
+        transform: scale(1);
+        &:hover{
+            transform: scale(1.15);
+            background: black;
+            color: white;
+        }
+    }
+    .select::-webkit-scrollbar{
+        display: none;
+    }
+}
+
+
+//////////////////////////////  Comments/Address //////////////////////////////
+.comments::-webkit-scrollbar,.addressesContainer{
+    display: none;
+}
+.addressesContainer{
+    display: flex;
+    flex-direction: column;
+    max-height: 80%;
+    height: 80%;
+    overflow: auto;
+    margin-bottom: 10%;
+}
+.comments{
+    display: flex;
+    flex-direction: column;
+    max-height: 35%;
+    height: 35%;
+    overflow: auto;
+    margin-bottom: 10%;
+}
+.commentsButton{
+    display: flex;
+    justify-content: space-between;
+}
+.addresses{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    .code{
+        width: 30% !important;
+    }
+    .address{
+        width: 60% !important;
+    }
+    
+}
+
+
+//////////////////////////////  Mat grid list //////////////////////////////
+mat-grid-list{
+    display: flex;
+    justify-content: center;
+    margin: 2vh 5vw;
+    padding-bottom: 2vh;
+}
+.shadow{
+    box-shadow: -5px -5px 5px #666,5px -5px 5px #666,-5px 5px 5px #666, 5px 5px 5px #666;
+}
+::ng-deep .mat-grid-tile-content{
+    flex-direction: column;
+}
+mat-grid-tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    .formContainer{
+        width: 90%;
+        height: 90%;
+    }
+    .hideScroll{
+        overflow-y: auto;
+    }
+    .hideScroll::-webkit-scrollbar{
+        display: none;
+    }
+    .halfFormContainer{
+        width: 90%;
+        height: 45%;  
+    }
+    .gridCell{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    .double{
+        display: grid;
+        display: inline-grid;
+        grid-template-rows: 50% 50%;
+        grid-template-columns: 50% 50%;
+        grid-gap: 3px;
+        width: 100%;
+        height: 100%;
+    }
+    .two{
+        grid-template-rows: 50% 50%;
+    }
+    .single{
+        display: inline-grid;
+        grid-template-columns: 100%;
+        grid-gap: 3px;
+        width: 100%;
+        height: 100%;
+    }
+    .quatuor{
+        display: grid;
+        display: inline-grid;
+        grid-template-columns: 25% 25% 25% 25%;
+        grid-gap: 3px;
+        width: 100%;
+        height: 100%;
+    }
+    .quinte{
+        display: grid;
+        display: inline-grid;
+        grid-template-columns: 20% 20% 20% 20% 20%;
+        grid-gap: 3px;
+        width: 100%;
+        height: 100%;
+    }
+    .four{
+        grid-template-rows: 25% 25% 25% 25%;
+    }
+    .five{
+        grid-template-rows: 20% 20% 20% 20% 20%;
+    }
+    .one{
+        grid-template-rows: 100%;
+    }
+    
+}

@@ -1,0 +1,77 @@
+<div class="ads">
+    <h2 class="title">Bars sur Paris</h2>
+    <p>A la recherche d'un endroit où sortir ?</p>
+</div>
+
+<div class="sort">
+    <div id="sorter">
+        <mat-select [(ngModel)]="typesSelect" (openedChange)="setupClose($event)" placeholder="Type" #allType multiple class="select" required>
+            <mat-select-trigger>
+                Type
+            </mat-select-trigger>
+            <mat-option *ngFor="let option of types" [value]="option">
+                {{option}}
+            </mat-option>
+            <mat-option (click)="toggleAllType()" [value]="0">All</mat-option>
+        </mat-select>
+    </div>
+
+    <div id="sorter">
+        <mat-select (openedChange)="setupClose($event)" placeholder="Ligne" #allLigne multiple class="select" required>
+            <mat-select-trigger>
+                Ligne
+            </mat-select-trigger>
+            <mat-option (click)="toggleAllLigne()" [value]="0">All</mat-option>
+            <mat-option *ngFor="let option of lignes" [value]="option">
+                {{option.name}}
+            </mat-option>
+        </mat-select>
+    </div>
+
+    <div id="sorter">
+        <mat-select (openedChange)="setupClose($event)" placeholder="Arrondissement" #allArrondissement multiple class="select" required>
+            <mat-select-trigger>
+                Arrondissement
+            </mat-select-trigger>
+            <mat-option *ngFor="let option of arrondissements" [value]="option">
+                {{option}}
+            </mat-option>
+            <mat-option (click)="toggleAllArrondissement()" [value]="0">All</mat-option>
+        </mat-select>
+    </div>
+
+    <div id="sorter">
+        <mat-select (openedChange)="setupClose($event)" #opened placeholder="Ouvert" multiple class="select" required>
+            <mat-option *ngFor="let option of openedOptions" [value]="option">
+                {{option}}
+            </mat-option>
+        </mat-select>
+    </div>
+
+    <div id="filter">
+        <button mat-button (click)="sortByNote()">
+            <mat-icon>sort</mat-icon>
+        </button>
+        <button mat-button (click)="sortByOrder()">
+            <mat-icon>sort_by_alpha</mat-icon>
+        </button>
+    </div>
+</div>
+
+<div class="bars" *ngIf="cardParams.length > 0">
+    <div class="snowAnimation">
+        <div class="posDepart">
+            <img [ngStyle]="{'animation-delay' : i + 's', 'top' : randomPosition[i] + '%'}" mat-card-avatar *ngFor="let plat of allPictures;index as i;" [src]="plat.src">
+        </div>
+    </div>
+    <div class="line" *ngFor="let params of cardParams">
+
+        <app-card class="carte" id="bestCard" [params]="params"></app-card>
+
+        <div class="details">
+            <p id="title">{{params.data.type}}</p>
+            <show-horaires [color]="'white'" [horaires]="params.horaires"></show-horaires>
+            <p id="title" *ngFor="let address of params.addresses">{{address.address}}, {{address.code_postal}}</p>
+        </div>
+    </div>
+</div>

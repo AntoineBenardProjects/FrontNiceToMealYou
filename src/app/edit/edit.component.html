@@ -1,0 +1,306 @@
+<h1 class="title">Ajouter un lieu !</h1>
+<mat-horizontal-stepper [linear]="isLinear" #stepper="matHorizontalStepper">
+    <mat-step>
+      <mat-grid-list cols="5" rowHeight="1vh" gutterSize="10vh">
+        <!--  Infos générales -->
+          <mat-grid-tile class="shadow" colspan="3" rowspan="6">
+            <div class="formContainer">
+              <form [formGroup]="firstFormGroup" class="double two">
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="name" required autocomplete="off">
+                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('name')?.errors !== null  || firstFormGroup.value.name === '') ? 'red' : 'black'}">Nom *</mat-placeholder>
+                  </mat-form-field>
+                </div>
+
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('place')?.errors !== null  || firstFormGroup.value.place === '') ? 'red' : 'black'}">Type de lieu *</mat-placeholder>
+                    <mat-select (valueChange)="setType()" formControlName="place">
+                      <mat-option *ngFor="let option of options" [value]="option">
+                        {{option}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="arrondissement" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('arrondissement')?.errors !== null  || firstFormGroup.value.arrondissement === '') ? 'red' : 'black'}">Arrondissement *</mat-placeholder>
+                  </mat-form-field>
+                </div>
+
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="price" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('price')?.errors !== null  || firstFormGroup.value.price === '') ? 'red' : 'black'}">Prix *</mat-placeholder>
+                  </mat-form-field>
+                </div>
+              </form>
+            </div>
+            
+            <div class="halfFormContainer">
+              <form [formGroup]="firstFormGroup" class="double one">
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input (input)="filterType($event)" class="auto" formControlName="type" matInput [matAutocomplete]="auto">
+                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('type')?.errors !== null  || firstFormGroup.value.type === '') ? 'red' : 'black'}">Type *</mat-placeholder>
+                    <mat-autocomplete #auto="matAutocomplete">
+                        <mat-option *ngFor="let option of typesFiltered" [value]="option.type">
+                        {{option.type}}
+                        </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div class="gridCell">
+                  <p>Testé   <mat-checkbox formControlName="tested"></mat-checkbox></p>
+                </div>
+              </form>
+            </div>
+          
+          </mat-grid-tile>
+        <!--  Sélections des stations -->
+          <mat-grid-tile class="shadow" colspan="2" rowspan="6">
+            <div class="selectStation">
+              <div class="select">
+                <div class="searchBar">
+                  <input matInput class="bar" [(ngModel)]="searchTerm" type="text" placeholder="Rechercher une station" [ngModelOptions]="{standalone: true}" autocomplete="off" />
+                  <button (click)="filter(searchTerm)">
+                    <mat-icon>search</mat-icon>
+                  </button>
+                </div>
+    
+                <div style="display: flex; flex-direction: column; height: 100%; align-items: center; width: 100%;">
+                  <div class="content" (click)="select(element.name)" *ngFor="let element of filteredData">
+                    <p>{{element.name}}</p>
+                  </div>
+                </div>
+                
+              </div>
+              
+    
+              <div class="stations">
+                <p class="selectedStation">Stations sélectionnées</p>
+                <div style="display: flex; flex-direction: column; height: 100%; align-items: center; width: 100%;">
+                  <div class="content" (click)="select(element)" *ngFor="let element of selected">
+                    <p>{{element}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-grid-tile>
+        <!--  Photos  -->        
+          <mat-grid-tile class="shadow" colspan="2" rowspan="2">
+            <div class="formContainer">
+              <form [formGroup]="firstFormGroup" class="quatuor one">
+                <div class="gridCell">
+                  <p>Like   <mat-checkbox formControlName="liked"></mat-checkbox></p>
+                </div>
+
+                <div class="gridCell">
+                  <div class="uploadWrapper">
+                    <p>{{platName}}</p>
+                    <input type="file" autocomplete="off" formControlName="img" (change)="setPictures($event)" multiple>
+                  </div>
+                </div>
+
+                <div class="gridCell">
+                  <div class="uploadWrapper">
+                    <p>{{facadeName}}</p>
+                    <input type="file" autocomplete="off" formControlName="img" (change)="facadeImage($event)">
+                  </div>
+                </div>
+        
+                <div class="gridCell">
+                  <mat-form-field *ngIf="firstFormGroup.value.place === 'Restaurant'" hideRequiredMarker="true">
+                    <input matInput formControlName="theFork" autocomplete="off">
+                    <mat-placeholder style="color: black;">Lien The Fork</mat-placeholder>
+                  </mat-form-field>
+                </div>
+              </form>
+            </div>
+            
+          </mat-grid-tile>
+        <!--  Notes -->
+          <mat-grid-tile class="shadow" *ngIf="!firstFormGroup.value.tested" colspan="1" rowspan="2">
+            <div class="formContainer">
+              <form [formGroup]="secondFormGroup" class="single one">
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="note" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note')?.errors !== null  || secondFormGroup.value.note === '') ? 'red' : 'black'}">Priorité*</mat-placeholder>
+                  </mat-form-field>
+                </div>
+              </form>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile class="shadow" *ngIf="firstFormGroup.value.tested" colspan="3" rowspan="2">
+            <div class="formContainer">
+              <form [formGroup]="secondFormGroup" [ngClass]="firstFormGroup.value.place == 'Restaurant' ? 'quinte one' : 'quatuor one'">
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="note" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note')?.errors !== null  || secondFormGroup.value.note === '') ? 'red' : 'black'}">Note globale*</mat-placeholder>
+                  </mat-form-field>
+                </div>
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="note_deco" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note_deco')?.errors !== null  || secondFormGroup.value.note_deco === '') ? 'red' : 'black'}">Note déco *</mat-placeholder>
+                  </mat-form-field>
+                </div>
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="note_quality" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note_quality')?.errors !== null  || secondFormGroup.value.note_quality === '') ? 'red' : 'black'}">Note qualité *</mat-placeholder>
+                  </mat-form-field>
+                </div>
+                <div class="gridCell">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="quality_price" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('quality_price')?.errors !== null  || secondFormGroup.value.quality_price === '') ? 'red' : 'black'}">Rapport qualité prix *</mat-placeholder>
+                  </mat-form-field>
+                </div>
+                <div class="gridCell" *ngIf="firstFormGroup.value.place === 'Restaurant'">
+                  <mat-form-field hideRequiredMarker="true">
+                    <input matInput formControlName="note_quantity" autocomplete="off" type="number">
+                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note_quantity')?.errors !== null  || secondFormGroup.value.note_quantity === '') ? 'red' : 'black'}">Note quantité *</mat-placeholder>
+                  </mat-form-field>
+                </div>
+              </form>
+            </div>
+          </mat-grid-tile>
+
+        <!--  Commentaire -->
+          <mat-grid-tile class="shadow" colspan="3" rowspan="4">
+            <div class="formContainer">
+              <form [formGroup]="firstFormGroup" class="single one">
+                <div class="gridCell">
+                  <mat-form-field style="width: 60% !important;" hideRequiredMarker="true">
+                    <textarea matInput placeholder="Commentaire" formControlName="comment"></textarea>
+                  </mat-form-field>
+                </div>
+              </form>
+            </div>
+          </mat-grid-tile>
+        
+        <!--  Adresses -->
+          <mat-grid-tile class="shadow" colspan="2" rowspan="4">
+            <div class="formContainer">
+              <form>
+                <div class="commentsButton">
+                  <button mat-button (click)="setAddressLine(true)"><mat-icon>add</mat-icon></button>
+                  <button *ngIf="addresses.length > 1" mat-button (click)="setAddressLine(false)"><mat-icon>minimize</mat-icon></button>
+                </div>
+                
+                <div class="addressesContainer hideScroll">
+                  <div class="addresses" *ngFor="let address of addresses; index as i;">
+                    <mat-form-field class="address">
+                      <input matInput placeholder="Adresse" (input)="setAddress($event,i,'address')" autocomplete="off">
+                    </mat-form-field>
+                    <mat-form-field class="code">
+                      <input matInput placeholder="Code Postal" (input)="setAddress($event,i,'code')" autocomplete="off" type="number">
+                    </mat-form-field>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </mat-grid-tile>
+      </mat-grid-list>
+      <div style="display: flex; justify-content: flex-end;">
+        <button mat-button matStepperNext>Horaires et points positifs/négatifs <mat-icon>navigate_next</mat-icon></button>
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <mat-grid-list cols="2" rowHeight="1vh" gutterSize="10vh">
+      <!--  Horaires -->
+        <mat-grid-tile class="shadow" colspan="1" rowspan="8">
+          <div class="formContainer">
+            <form class="space">     
+              <p><mat-checkbox style="display: flex !important; align-items: center;" (change)="fillHoraires($event)"> Remplir tous les champs avec les horaires du Lundi</mat-checkbox></p>
+              <div class="allHoraires">
+                <div class="horairesDay" *ngFor="let horaires of allHoraires;">
+                  <div class="top">
+                    <mat-label>{{horaires.day}}</mat-label>
+                    <button (click)="changeDisplay(horaires.day)" class="addHoraires" *ngIf="!displayHoraire[horaires.day]">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                    <button (click)="changeDisplay(horaires.day)" class="addHoraires" *ngIf="displayHoraire[horaires.day]">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                  </div>
+                  <div class="horairesFormField">
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Ouverture</mat-label>
+                        <input type="time" matInput autocomplete="off" [(ngModel)]="horaires.ouverture">
+                      </mat-form-field>
+                    </div>
+                    
+                    <div *ngIf="displayHoraire[horaires.day]" style="display: flex; justify-content: center; align-items: center;">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Fermeture midi</mat-label>
+                        <input type="time" matInput autocomplete="off" [(ngModel)]="horaires.fermeture_midi">
+                      </mat-form-field>
+                    </div>
+
+                    <div *ngIf="displayHoraire[horaires.day]" style="display: flex; justify-content: center; align-items: center;">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Ouverture soir</mat-label>
+                        <input type="time" matInput autocomplete="off" [(ngModel)]="horaires.ouverture_soir">
+                      </mat-form-field>
+                    </div>
+
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                      <mat-form-field appearance="outline">
+                        <mat-label>Fermeture</mat-label>
+                        <input type="time" matInput autocomplete="off" [(ngModel)]="horaires.fermeture">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </mat-grid-tile>
+      <!--  Commentaires -->
+        <mat-grid-tile class="shadow" colspan="1" rowspan="8">
+          <div class="formContainer">
+            <form>
+              <mat-label>Points positifs</mat-label>
+              <div class="commentsButton">
+                <button mat-button (click)="setCommentLine(true,true)"><mat-icon>add</mat-icon></button>
+                <button mat-button (click)="setCommentLine(true,false)"><mat-icon>minimize</mat-icon></button>
+              </div>
+              <div class="comments">
+                <mat-form-field *ngFor="let positif of positifs; index as i;">
+                  <input matInput placeholder="Positif" (input)="setComment($event,i,true)" autocomplete="off">
+                </mat-form-field>
+              </div>
+      
+              <mat-label>Points négatifs</mat-label>
+              <div class="commentsButton">
+                <button mat-button (click)="setCommentLine(false,true)"><mat-icon>add</mat-icon></button>
+                <button mat-button (click)="setCommentLine(false,false)"><mat-icon>minimize</mat-icon></button>
+              </div>
+              <div class="comments">
+                <mat-form-field *ngFor="let negatif of negatifs; index as i;">
+                  <input matInput placeholder="Négatif" (input)="setComment($event,i,false)" autocomplete="off">
+                </mat-form-field>
+              </div>
+        
+              <button type="submit" mat-button>Terminer</button>
+            </form>
+          </div>
+        </mat-grid-tile>
+      </mat-grid-list>
+      <div style="display: flex; justify-content: space-between;">
+        <button mat-button matStepperPrevious><mat-icon>navigate_before</mat-icon> Informations générales</button>
+        <button mat-button (click)="add()">Ajouter ce lieu</button>  
+      </div>
+    </mat-step>
+
+  </mat-horizontal-stepper>
+  

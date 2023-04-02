@@ -1,0 +1,31 @@
+<div class="logoComp">
+    <div id="typeOfPlacesComp">
+        <button class="biggerComp" (click)="navigate('restaurants')">
+            <mat-icon class="icon">restaurant_menu</mat-icon>
+        </button>
+        <button class="biggerComp" (click)="navigate('bars')">
+            <mat-icon class="icon">local_bar</mat-icon>
+        </button>
+        <button class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('loisirs')">
+            <mat-icon class="icon">hot_tub</mat-icon>
+        </button>
+    </div>
+    <div id="logoComp">
+        <!-- <div id="line"></div> -->
+            <h1 class="logo">NICE TO MEAL YOU</h1>
+        <!-- <div id="line"></div> -->
+    </div>
+    <div id="iconesComp">
+        <button class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('add')">
+            <mat-icon class="icon">add</mat-icon>
+        </button>
+        <button class="biggerComp" routerLink="/home">
+            <mat-icon class="icon">home</mat-icon>
+        </button>
+        <img class="user" [src]="user.img" routerLink="/user">
+        <!-- <button class="biggerComp" (click)="deconnect()">
+            <mat-icon class="icon">power_settings_new</mat-icon>
+        </button> -->
+    </div>
+</div>
+

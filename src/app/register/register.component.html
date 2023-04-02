@@ -1,0 +1,23 @@
+<div class="background">
+    <div class="login">
+        <div id="logoIcon">
+            <mat-icon>assignment_ind</mat-icon>
+        </div>
+        
+        <form [formGroup]="formGroup" class="form" (ngSubmit)="create()">
+            <div style="display:flex; flex-direction: column; justify-content: center; height: 70%;">
+                <mat-form-field style="padding-top: 15%">
+                    <input matInput placeholder="Adresse mail" formControlName="login" required autocomplete="off">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput placeholder="Mot de passe" formControlName="password" type="password" required>
+                </mat-form-field>
+            </div>
+    
+            <div style="display: flex; height: 30%; width: 100%; align-items: center; justify-content: space-around;">
+                <button mat-button class="create" routerLink="/login">Connexion</button>
+                <button mat-button class="connect" type="submit">Créer son compte</button>  
+            </div>
+        </form>    
+    </div>
+</div>

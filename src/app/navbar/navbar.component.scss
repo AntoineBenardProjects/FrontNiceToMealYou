@@ -1,0 +1,172 @@
+a{
+    color: black;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: .8125rem;
+    font-family: Century Gothic Std,arial,sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: font-size 100ms;
+    &:hover{
+        font-size: 1em;
+    }
+}
+
+button{
+    border: 0;
+    height: 100%;
+    padding: 0;
+    margin-right: 2%;
+}
+
+#arrowIcons{
+    display: flex;
+    align-items: center;
+    font-size: 0.8125rem;
+}
+
+
+
+
+
+
+
+/////////////////////////////////////// Vue Ordinateur ///////////////////////////////////////
+
+.logoComp{
+    display: flex;
+    justify-content: space-between;
+    height: 10vh;
+    width: 100%;
+    border-bottom: 1px solid #dddddd;
+}
+
+.navbarComp{
+    display: flex;
+    align-items: center;
+    height: 10vh;
+    width: 100%;
+    border-bottom: 1px solid #dddddd;
+}
+
+.biggerComp{
+    background-color: white;
+    .mat-icon{
+        transform: scale(1);
+        transition: transform 100ms;  
+    }
+    &:hover{
+        .mat-icon{
+            transform: scale(1.30);
+        }
+    }
+}
+
+.iconComp{
+    font-size: 35px;
+    width: 35px;
+    height: 35px;
+}
+
+.itemComp{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    cursor: pointer;
+}
+
+
+.linkComp{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+.linkComp:hover{
+    font-weight:bold
+}
+
+#typeOfPlacesComp{
+    display: flex;
+    align-items: center;
+    width: 30vw;
+    padding-left: 2%;
+}
+
+#logoComp{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 30vw;
+}
+
+.logo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0%;
+    height: 60%;
+    font-family: 'Sofia Sans Extra Condensed', sans-serif;
+    padding-top: 4px;
+    font-size: 40px;
+}
+
+#iconesComp{
+    display: flex;
+    justify-content: flex-end;
+    width: 30vw;
+    padding-right: 2%;
+}
+
+#line{
+    height: 1.5px; width: 13%; opacity: 0.8; background-color: black;
+}
+
+.user{
+    cursor: pointer;
+    border-radius: 50%;
+    height: 100%;
+    transform: scale(1);
+    transition: all 200ms;
+    
+    &:hover{
+        transform: scale(1.15);
+    }
+}
+
+@media screen and (max-width:600px){
+    .logo{
+        height: 20%;
+        font-size: 20px;
+    }
+    #line{
+        height: 1px;
+    }
+}
+
+// .haut{
+//     position: relative;
+//     height: 2px;
+//     width: 100px;
+//     background-color: white;
+//     animation: clipMe $time linear infinite;
+// }
+
+// .anim{
+//     position: absolute;
+//     height: 100%;
+//     width: 40%;
+//     right: 0;
+//     background-color: black;
+//     animation: clipMe $time linear infinite;
+// }
+
+// @keyframes clipMe {
+//     0%, 100% {right: 0; }
+//     50% {right: 100px; }
+// }
