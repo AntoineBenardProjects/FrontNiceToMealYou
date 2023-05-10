@@ -1,0 +1,26 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 35vh;
+    width: 50vw;
+}
+
+.bar{
+    height: 5vh;
+    border-radius: 5px 0 0 5px;
+    transition: all 200ms;
+    opacity: 0.7;
+    &:hover{
+        filter: brightness(50%);
+    }
+}
+
+::ng-deep .mat-tooltip {
+    font-size: 15px;
+    white-space: pre-wrap;
+    color: #FCFFFC !important;
+    background-color: rgba(1,17,14,0.4);
+    max-width: unset !important;
+   }

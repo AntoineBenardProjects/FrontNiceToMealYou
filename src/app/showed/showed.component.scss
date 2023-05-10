@@ -46,24 +46,19 @@ body{
     display: flex; flex-direction: column; align-items: center;
     height: 100vh;
     justify-content: space-evenly;
-    background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url("../../assets/info_details.jpg");
+    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/info_details.jpg");
     background-size: cover;
     position: relative;
 
-    #station{
+    #notes{
         display: flex;
         align-items: center;
         position: absolute;
         top: 10vh;
-        animation: bigMoveReverse 10s linear infinite;
-        animation-delay: 1.8s;
-        p{
-            color: white;
-            font-size: 3vh;
-        }
+        right: 0;
     }
 
-    circle-note{
+    .note_globale{
         margin-right: 50%;
         animation: bigMoveReverse 10s linear infinite;
         animation-delay: 3.5s;
@@ -71,12 +66,12 @@ body{
     }
 
     show-horaires{
-        margin-left: 40%;
+        margin-right: 40%;
         font-size: 3vh;
         height: 35%;
         width: 30%;
         padding: 5vh;
-        border: 2px solid white;
+        border: 2px solid #FCFFFC;
         animation: bigMove 10s linear infinite;
         animation-delay: 2.5s;
     }
@@ -110,26 +105,37 @@ body{
         width: 45%;
     }
     .mat-list-item{
-        color: black !important;
+        color: #01110A !important;
         font-size: 22px !important;
     }
 }
 
+.addressesContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    right: 5vw;
+    height: 40vh;
+    bottom: 0;
+    max-width: 50vw;
+    position: absolute;
+}
+
 .lineShowed{
     animation: bigMove 10s linear infinite;
-    display: flex; width: 100vw; justify-content: center; align-items: center;
+    display: flex; justify-content: center; align-items: center;
     cursor: pointer;
     transform: scale(1);
     transition: all 200ms;
-    color: white;
-    padding-right: 50vw;
+    color: #FCFFFC;
     &:hover{
         transform: scale(1.05);
     }
     p{
         font-size: 4vh;
         width: fit-content;
-        color: white;
+        color: #FCFFFC;
     }
     mat-icon{
         font-size: 4vh;
@@ -141,7 +147,7 @@ body{
     display: flex; font-size: 7vh; justify-content: center; align-items: center; height: 11vh; cursor: pointer;
     font-family: 'Nunito', sans-serif;
     padding-bottom: 10%;
-    color: black;
+    color: #01110A;
 }
 
 p{
@@ -160,21 +166,25 @@ button{
     display: flex; align-items:center; justify-content:center; width: 40%;
 }
 
-.similar{
-    display: flex; width: 100%; align-items: center; justify-content: center; height: 75%; background-size: cover;
-    .subtitle{
-        display: flex; height: 100%; justify-content: center; align-items: center; font-size: 4vh; width: 50vw; color: white;
-    }
+.subtitle{
+    color: #FCFFFC;
+    position: absolute;
+    top: 5vw;
+    left: 5vw;
+    font-size: 5vh;
 }
-
 .placesRoll{
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 110%;
+    position: relative;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    padding: 20vh 0;
     .results{
         height: 90vh;
+        width: 61vw;
     }
     circle-note{
         height: 60px;
@@ -182,36 +192,29 @@ button{
     }
 }
 
-.split{
-    display: flex;
-    justify-content: space-evenly;
-    height: 100%;
-    width: 100%;
-    align-items: center;
-
-    .similar{
-        width: 33%;
-    }
-    .placesRoll{
-        width: 57%;
-    }
-}
-
 #metro{
-    .similar{
-        animation: bigMoveReverse 10s linear infinite;
-        animation-delay: 1.33s;    
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../assets/subway.jpg');
+    flex-direction: column;
+    .half{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 50%;
+        padding: 20vh 0;
     }
 }
 
 #similar{
-    .similar{
-        animation: bigMove 10s linear infinite;
-    }
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../assets/restaurant.jpg');
 }
 
+app-card{
+    margin: 0 5vw;
+}
 .scrollButton{
-    display: flex; align-items: center; width: 10vw; height: 100%; color: black;
+    display: flex; align-items: center; width: 10vw; height: 100%; color: #FCFFFC;
     button{
         cursor: pointer; height: 50%; width: 100%;
     }
@@ -223,26 +226,64 @@ button{
     align-items: center;
     height: 110vh;
 }
+fa-icon{
+    cursor: pointer;
+    position: fixed;
+    top: 15vh;
+    left: 2vw;
+    z-index: 3;
+    font-size: 4vh;
+    color: #01110A;
+    transition: all 400ms;
+    padding: 2vh;
+    text-transform: uppercase;
+    transform: scale(1);
+    &:hover{
+        transform: scale(1.15);
+    }
+}
 
 .edit{
+    cursor: pointer;
     position: fixed;
     top: 20vh;
     right: 2vw;
     z-index: 3;
     font-size: 4vh;
-    background-color: black;
-    color: white;
+    background-color: #01110A;
+    color: #FCFFFC;
     transition: all 400ms;
     padding: 2vh;
     text-transform: uppercase;
     &:hover{
-        color: black;
-        background-color: white;
+        color: #01110A;
+        background-color: #FCFFFC;
     }
 }
 @media screen and (max-width: 600px){
+    app-card{
+        margin: 0 15vw;
+    }
     .top{
-        height: 80vh;
+        min-height: 80vh;
+    }
+    
+    .inf{
+        height: 150vh;
+        .note_globale{
+            position: absolute;
+            top: 15vh;
+            left: 10vw;
+        }
+        show-horaires{
+            position: absolute;
+            top: 50vh;
+            margin: 0;
+        }
+        .addressesContainer{
+            width: 100%;
+            max-width: 100%;
+        }
     }
     .img{
         flex-direction: column;
@@ -362,7 +403,6 @@ button{
     .subtitle{
         width: 60vw;
         font-size: 3vh;
-        text-align: center;
     }
     .card{
         height: 70%;
@@ -389,10 +429,6 @@ button{
         justify-content: center;
     }
     
-    .comparePhone{
-        display: flex; width: 100%; height: 50vh; align-items: center; background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../assets/comparison.jpg');
-        color: white;
-    }
     .scrollButton{
         display: none;
     }

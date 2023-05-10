@@ -1,0 +1,13 @@
+<div class="upload" *ngIf="type === 'picture'">
+    <div class="round">
+      <input type="file" (change)="setPicture($event)">
+      <i class = "fa fa-camera" style = "color: #fff;"></i>
+    </div>
+</div>
+
+<div class="uploadButton" *ngIf="type === 'button'">
+    <button type = "button" class = "btn-warning">
+      <i class = "fa fa-upload"></i> Upload File
+      <input type="file">
+    </button>
+  </div>

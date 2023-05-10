@@ -12,8 +12,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ShowLignesComponent } from '../show-lignes/show-lignes.component';
 import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
-import { CircleNoteModule } from '../circle-note/circle-note.module';
 import { CardModule } from '../card/card.module';
+import { NavbarModule } from '../navbar/navbar.module';
+import { GraphBarModule } from '../graph-bar/graph-bar.module';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { CardModule } from '../card/card.module';
     MatListModule,
     MatTooltipModule,
     ShowHorairesModule,
-    CircleNoteModule,
+    NavbarModule,
+    GraphBarModule,
     CardModule
   ]
 })

@@ -1,6 +1,6 @@
 export interface Comment{
     id: string,
     detail: string,
-    positif: boolean,
+    positif: string,
     id_place: string
 }

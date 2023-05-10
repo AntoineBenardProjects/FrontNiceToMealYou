@@ -1,0 +1,22 @@
+div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30vh;
+    width: 100vw;
+}
+h1{
+    animation: flash 1.2s linear infinite;
+}
+
+@keyframes flash {
+    0% {
+        color: rgba(1,17,10,0.2);
+    }
+    90%{
+        color: #01110A;
+    }
+    100%{
+        color: rgba(1,17,10,0.7);
+    }
+}

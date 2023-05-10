@@ -7,7 +7,7 @@
         <form [formGroup]="formGroup" class="form" (ngSubmit)="create()">
             <div style="display:flex; flex-direction: column; justify-content: center; height: 70%;">
                 <mat-form-field style="padding-top: 15%">
-                    <input matInput placeholder="Adresse mail" formControlName="login" required autocomplete="off">
+                    <input matInput placeholder="Login" formControlName="login" required autocomplete="disabled">
                 </mat-form-field>
                 <mat-form-field>
                     <input matInput placeholder="Mot de passe" formControlName="password" type="password" required>

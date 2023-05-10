@@ -1,4 +1,9 @@
+app-navbar{
+    position: absolute;
+    width: 100%;
+}
 .background{
+    padding-top: 15vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -14,24 +19,13 @@
         justify-content: center;
         align-items: flex-end;
         transition: align-items 400ms;
-        &:hover{
-            .bar{
-                border-color: black;
-            }
-            .icon{
-                border-color: black;
-            }
-        }
+        font-size: 2vh;
     }
     
     .bar{
-        color: white;
-        transition: border-color 500ms;
-        border-left: 0px solid #bcbcbc;
-        border-top: 0px solid #bcbcbc;
-        border-bottom: 0px solid #bcbcbc;
-        border-right: 0;
-        font-size: 24px;
+        color: #FCFFFC;
+        border: 0;
+        font-size: 3vh;
         padding: 0;
     }
     
@@ -42,15 +36,15 @@
     
 }
 
-.round{
-    width: 30vh;
-    height: 30vh;
-    background-size: cover;
-    overflow: hidden;
-    img{
-        height: 120%;
-    }
-}
+// .round{
+//     width: 30vh;
+//     height: 30vh;
+//     background-size: cover;
+//     overflow: hidden;
+//     img{
+//         height: 120%;
+//     }
+// }
 
 .title{
     display: flex; font-size: 60px; line-height: 60px;
@@ -62,44 +56,37 @@
     padding-right: 10vh;
 }
 
-.icon{
-    transition: border-color 500ms;
-    height: 35%;
-    border-right: 0px solid #bcbcbc;
-    border-top: 0px solid #bcbcbc;
-    border-bottom: 0px solid #bcbcbc;
-    border-left: 0;
-    cursor: pointer;
-    background-color: white;
-}
+// .icon{
+//     transition: border-color 500ms;
+//     height: 35%;
+//     border-right: 0px solid #bcbcbc;
+//     border-top: 0px solid #bcbcbc;
+//     border-bottom: 0px solid #bcbcbc;
+//     border-left: 0;
+//     cursor: pointer;
+//     background-color: white;
+// }
 
-.resultDiv{
-    display: flex; 
-    width: 100%; 
-    height: 90vh; 
-    margin-bottom: 20vh;
-}
-
-mat-card{
-    box-shadow: 10px 5px 5px #666666 !important;
-}
-
-mat-card-content{
-    width: 50%;
-}
-
-mat-card-actions{
+.placesRoll{
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    position: relative;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    height: 90vh;
+    .results{
+        height: 100%;
+        width: 61vw;
+    }
+    app-card{
+        opacity: 0;
+    }
 }
 
-#scroll{
-    height: 60vh;
-    background: none;
-    font-size: 30px;
-    color: #bcbcbc;
-    border: 0;
+app-card{
+    margin: 0 5vw;
 }
 
 p{
@@ -110,10 +97,6 @@ h1{
     font-family: Century Gothic Std,arial,sans-serif;
 }
 
-circle-progress{
-    display: flex;
-}
-
 mat-form-field{
     width: 100%;
 }
@@ -121,11 +104,11 @@ mat-form-field{
 ::ng-deep .search {
     width: 50%;
     .mat-focused .mat-form-field-label {
-        color: white !important;
+        color: #FCFFFC !important;
     }
 
     .mat-input-element {
-        caret-color: white !important;
+        caret-color: #FCFFFC !important;
     }
     
     .mat-form-field-underline {
@@ -135,7 +118,7 @@ mat-form-field{
     
     .mat-form-field-ripple{
         /*change color of underline when focused*/
-        background-color: white !important;
+        background-color: #FCFFFC !important;
     }
 }
 
@@ -152,11 +135,11 @@ mat-form-field{
 }
 
 #bestCard{
-    animation: slide 30s linear infinite;
+    animation: slide 20s linear infinite;
 }
 
 #priorityCard{
-    animation: slideReverse 30s linear infinite;
+    animation: slideReverse 20s linear infinite;
 }
 
 @keyframes slide {
@@ -164,13 +147,13 @@ mat-form-field{
       transform: translatex(0);
     }
     100% {
-      transform: translatex(-250vw);
+      transform: translatex(-150vw);
     }
 }
 
 @keyframes slideReverse {
     0% {
-      transform: translatex(-250vw);
+      transform: translatex(-150vw);
     }
     100% {
       transform: translatex(0);
@@ -179,15 +162,16 @@ mat-form-field{
 
 .scrollButton{
     display: flex; align-items: center; width: 10%; height: 100%;
+    opacity: 0;
 }
 
 .barsDiv{
-    background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url("../../assets/bar.jpg");
+    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/bar.jpg");
     background-attachment: fixed;
     background-size: cover;
     padding-top: 30vh;
     .title{
-        color: white;
+        color: #FCFFFC;
     }
 }
 
@@ -229,6 +213,9 @@ mat-form-field{
 }
 
 @media screen and (max-width: 600px){
+    app-card{
+        margin: 0 15vw;
+    }
     .background{
         height: 60vh;
         margin-bottom: 10vh;
@@ -238,19 +225,11 @@ mat-form-field{
         font-size: 4vh; 
     }
     #best,#priority{
-        height: 45vh;
+        height: 60vh;
         padding-bottom: 20vh;
     }
     .scrollButton{
         display: none;
-    }
-    .results{
-        overflow: auto;
-    }
-    .resultDiv{
-        justify-content: center;
-        height: 60%;
-        margin-bottom: 0;
     }
     mat-card-header{
         .mat-card-avatar{
@@ -294,13 +273,13 @@ mat-form-field{
           transform: translatex(0);
         }
         100% {
-          transform: translatex(-325vw);
+          transform: translatex(-450vw);
         }
     }
     
     @keyframes slideReverse {
         0% {
-          transform: translatex(-325vw);
+          transform: translatex(-450vw);
         }
         100% {
           transform: translatex(0);

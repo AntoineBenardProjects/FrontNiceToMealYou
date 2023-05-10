@@ -9,10 +9,13 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
-import { CircleNoteModule } from '../circle-note/circle-note.module';
 import { CardModule } from '../card/card.module';
 import { UserPageComponent } from './user-page.component';
 import { UserPageRoutingModule } from './user-page-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { NavbarModule } from '../navbar/navbar.module';
+import { UploadButtonModule } from '../upload-button/upload-button.module';
 
 
 @NgModule({
@@ -26,12 +29,18 @@ import { UserPageRoutingModule } from './user-page-routing.module';
     MatIconModule,
     MatButtonModule,
     FontAwesomeModule,
+    MatInputModule,
+    MatButtonModule,
     NgCircleProgressModule.forRoot({}),
     MatListModule,
     MatTooltipModule,
     ShowHorairesModule,
-    CircleNoteModule,
-    CardModule
+    FormsModule,
+    ReactiveFormsModule,
+    NavbarModule,
+    FormsModule,
+    CardModule,
+    UploadButtonModule
   ]
 })
 export class UserPageModule {

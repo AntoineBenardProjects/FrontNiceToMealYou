@@ -1,5 +1,5 @@
 a{
-    color: black;
+    color: #01110A;
     text-decoration: none;
     display: flex;
     justify-content: center;
@@ -18,7 +18,7 @@ button{
     border: 0;
     height: 100%;
     padding: 0;
-    margin-right: 2%;
+    margin: 0 15%;
 }
 
 #arrowIcons{
@@ -40,7 +40,8 @@ button{
     justify-content: space-between;
     height: 10vh;
     width: 100%;
-    border-bottom: 1px solid #dddddd;
+    background: transparent;
+    position: relative;    
 }
 
 .navbarComp{
@@ -52,14 +53,14 @@ button{
 }
 
 .biggerComp{
-    background-color: white;
+    background-color: transparent;
     .mat-icon{
         transform: scale(1);
-        transition: transform 100ms;  
+        transition: transform 200ms ease-out;  
     }
     &:hover{
         .mat-icon{
-            transform: scale(1.30);
+            transform: scale(1.15);
         }
     }
 }
@@ -93,8 +94,10 @@ button{
 #typeOfPlacesComp{
     display: flex;
     align-items: center;
-    width: 30vw;
-    padding-left: 2%;
+    position: absolute;
+    left: 1vw;
+    top: 3vh;
+    justify-content: space-between;
 }
 
 #logoComp{
@@ -102,10 +105,10 @@ button{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 30vw;
+    width: 100%;
 }
 
-.logo{
+#logo{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -118,13 +121,14 @@ button{
 
 #iconesComp{
     display: flex;
-    justify-content: flex-end;
-    width: 30vw;
-    padding-right: 2%;
-}
-
-#line{
-    height: 1.5px; width: 13%; opacity: 0.8; background-color: black;
+    align-items: center;
+    position: absolute;
+    right: 1vw;
+    top: 3vh;
+    img{
+        height: 36px;
+        width: 36px;
+    }
 }
 
 .user{
@@ -132,41 +136,26 @@ button{
     border-radius: 50%;
     height: 100%;
     transform: scale(1);
-    transition: all 200ms;
+    transition: all 200ms ease-out;
     
     &:hover{
         transform: scale(1.15);
     }
 }
 
+::ng-deep .mat-tooltip {
+    font-size: 16px;
+    white-space: pre-wrap;
+    color: #FCFFFC !important;
+    background-color: rgba(1,17,14,0.4);
+    max-width: unset !important;
+   }
+
 @media screen and (max-width:600px){
-    .logo{
-        height: 20%;
-        font-size: 20px;
+    #logo{
+        font-size: 25px;
     }
-    #line{
-        height: 1px;
+    #iconesComp,#typeOfPlacesComp{
+        top: 3.8vh;
     }
 }
-
-// .haut{
-//     position: relative;
-//     height: 2px;
-//     width: 100px;
-//     background-color: white;
-//     animation: clipMe $time linear infinite;
-// }
-
-// .anim{
-//     position: absolute;
-//     height: 100%;
-//     width: 40%;
-//     right: 0;
-//     background-color: black;
-//     animation: clipMe $time linear infinite;
-// }
-
-// @keyframes clipMe {
-//     0%, 100% {right: 0; }
-//     50% {right: 100px; }
-// }

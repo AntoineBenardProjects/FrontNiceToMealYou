@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { User } from '../model/users';
 import { AuthService } from '../services/auth.service';
 import { DatabaseService } from '../services/database.service';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MessageComponent } from '../message/message.component';
+import { Message } from '../model/message';
 
 @Component({
   selector: 'app-login',
@@ -14,10 +17,16 @@ export class LoginComponent implements OnInit {
 
   formGroup: UntypedFormGroup = new UntypedFormGroup({});
 
-  constructor(private _formBuilder: UntypedFormBuilder, private dataService: DatabaseService, private router: Router) { }
+  constructor(private _formBuilder: UntypedFormBuilder, 
+    private dataService: DatabaseService, 
+    private router: Router,
+    private bottomSheet: MatBottomSheet,
+    private auth: AuthService) { }
 
   ngOnInit(): void {
-    localStorage.removeItem("token");
+    setTimeout(() => {
+      this.auth.isAuthenticated();
+    },1)
     this.formGroup = this._formBuilder.group({
       login : ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -32,8 +41,16 @@ export class LoginComponent implements OnInit {
       role:"",
       img: ""
     }
-    this.dataService.login(userInfo).subscribe((navigate: boolean) => {
-      if(navigate)  this.router.navigate(['/home']);
+    this.dataService.login(userInfo).subscribe((navigate: Message) => {
+      if(!navigate.error){
+        this.router.navigate(['/home']);
+      }
+      else{
+        this.bottomSheet.open(MessageComponent, {data: navigate.message});
+        setTimeout(() => {
+          this.bottomSheet.dismiss();
+        }, 1500);
+      }
     })
   }
 

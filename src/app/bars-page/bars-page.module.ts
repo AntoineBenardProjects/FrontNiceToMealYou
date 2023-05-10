@@ -12,6 +12,8 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
 import { MatListModule } from '@angular/material/list';
 import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
 import { CardModule } from '../card/card.module';
+import { NavbarModule } from '../navbar/navbar.module';
+import { LoadingModule } from '../loading/loading.module';
 
 
 @NgModule({
@@ -30,7 +32,9 @@ import { CardModule } from '../card/card.module';
     MatListModule,
     FormsModule,
     ShowHorairesModule,
-    CardModule
+    CardModule,
+    LoadingModule,
+    NavbarModule
   ]
 })
 export class BarsPageModule { }

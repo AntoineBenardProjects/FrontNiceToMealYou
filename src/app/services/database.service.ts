@@ -7,7 +7,6 @@ import { Bar } from '../model/bar';
 import { Restaurant } from '../model/restaurant';
 import { Address } from '../model/address';
 import { Comment } from '../model/comment';
-import { FavoriteType } from '../model/favoriteType';
 import { Horaires } from '../model/horaires';
 import { Pictures } from '../model/pictures';
 import { Liked } from '../model/liked';
@@ -16,9 +15,9 @@ import { StationInPlace } from '../model/stationInPlace';
 import { User } from '../model/users';
 import { Ligne } from '../model/ligne';
 import { LigneInStation } from '../model/ligneInStation';
-import { TypePicture } from '../model/typePicture';
 import { PlacesService } from './places.service';
 import { StationOfUser } from '../model/stationOfUser';
+import { CardParams } from '../model/cardParams';
 
 @Injectable({
   providedIn: 'root'
@@ -48,10 +47,17 @@ export class DatabaseService {
     return id;
   }
 
+  setAuthorizationHeader(){
+    this.header.Authorization = localStorage.getItem("token");
+    this.httpOptions  = {
+      headers: new HttpHeaders(this.header)
+    };
+  }
+
   private placesUrl: string = "/places";
   getAllPlaces(){
     let promise: Subject<any> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.placesUrl,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
@@ -70,10 +76,10 @@ export class DatabaseService {
   }
   getPlaceById(id: string){
     let promise: Subject<any> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.placesUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
-        res.forEach((place: Bar) => {
+        res.forEach((place: any) => {
           if(place.facade == null || place.facade.length === 0){
             place.facade = this.placesService.getTypeFacade(place.type);
           }
@@ -89,8 +95,8 @@ export class DatabaseService {
   }
   getPlacesByStation(station: string,id: string){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.get(this.serverUrl + this.placesUrl + "/station/" + encodeURIComponent(station) +"?idPlace=" +id,this.httpOptions).subscribe((res:any) => {
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.placesUrl + "/station/" + encodeURIComponent(station),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
           if(place.facade == null || place.facade.length === 0){
@@ -107,7 +113,7 @@ export class DatabaseService {
   }
   getPlacesByLigne(ligne: string,id: string){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.placesUrl + "/ligne/" + encodeURIComponent(ligne) +"?idPlace=" +id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
@@ -123,12 +129,48 @@ export class DatabaseService {
     });
     return promise;
   }
+  getAllInfosOfPlace(id: string){
+    let toReturn: Subject<any> = new Subject();
+    let statInPlace: Station[] = [];
+      let lignesInStat: Ligne[] = [];
+      let params: any = {
+        pictures: [],
+        stationsInPlace: [],
+        lignesInStation: [],
+        addresses: [],
+        horaires: [],
+      }
+    this.getStationsOfPlace(id).subscribe(res => {
+      statInPlace.push(...res);
+      params.stationsInPlace = statInPlace;
+      this.getPicturesOfPlace(id).subscribe((pic:Pictures[]) => {
+        params.pictures = pic;
+        this.getAddressOfPlace(id).subscribe((addresses: Address[]) =>{
+          params.addresses = addresses;
+          this.getHorairesOfPlace(id).subscribe((horaires: Horaires[]) => {
+            params.horaires = horaires;
+            res.forEach((station: Station,index: number) => {
+              this.getLignesOfStation(station.name).subscribe((ligne: Ligne[]) => {
+                lignesInStat.push(...ligne);
+                params.lignesInStation = lignesInStat;
+                if(index === res.length -1){
+                  toReturn.next(params);
+                } 
+              });
+            });
+          });
+        });
+      });
+    });
+
+    return toReturn;
+  }
   ////////////////////////////////////////  Bars ////////////////////////////////////////
   private barUrl = "/bar";
 
   getBarById(id: string){
     let promise: Subject<Message | Bar> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.barUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -148,7 +190,7 @@ export class DatabaseService {
   }
   getAllBars(){
     let promise: Subject<any> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.barUrl,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
@@ -167,7 +209,7 @@ export class DatabaseService {
   }
   getBestNotesBar(tested: boolean,type_note: string){
     let promise: Subject<Bar[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
 
     const requestParam: any = {
       tested: tested,
@@ -192,7 +234,7 @@ export class DatabaseService {
   }
   getBarByType(type: string){
     let promise: Subject<Bar[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.barUrl + "/type/" + type,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -211,7 +253,7 @@ export class DatabaseService {
   }
   getBarByArrondissement(arrondissement: number){
     let promise: Subject<Bar[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.barUrl + "/arrondissement/" + arrondissement.toString(),this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -230,7 +272,7 @@ export class DatabaseService {
   }
   getBarsByStation(station: string,id: string){
     let promise: Subject<Bar[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.barUrl + "/station/" + encodeURIComponent(station) +"?idPlace=" +id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
@@ -248,7 +290,7 @@ export class DatabaseService {
   }
   getBarsByLigne(ligne: string,id: string){
     let promise: Subject<Bar[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.barUrl + "/ligne/" + encodeURIComponent(ligne) +"?idPlace=" +id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
@@ -295,10 +337,35 @@ export class DatabaseService {
     return toReturn;
   }
 
-  updateBar(bar: Bar){
+  updateBar(bar: Bar, allHoraires: Horaires[], allPictures: Pictures[], allComments: Comment[], allAddress: Address[], stationsInPlace: StationInPlace[]){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.patch<Bar>(this.serverUrl + "/" + bar.id,bar,this.httpOptions).subscribe((res:any) => {
+    this.deletePicture(bar.id).subscribe(res => {
+      allPictures.forEach((element: Pictures) => {
+        this.addPicture(element);
+      });
+    })
+    
+    this.deleteComment(bar.id).subscribe(res => {
+      allComments.forEach((element: Comment) => {
+        this.addComment(element);
+      });
+    })
+    
+    this.deleteStationInPlace(bar.id).subscribe(res => {
+      stationsInPlace.forEach((element: StationInPlace) => {
+        this.addStationinPlace(element);
+      });
+    })
+    
+    allHoraires.forEach((element: Horaires) => {
+      this.updateHoraires(element);
+    });
+    allAddress.forEach((element: Address) => {
+      this.updateAddress(element);
+    });
+
+    this.setAuthorizationHeader();
+    this.httpClient.patch<Bar>(this.serverUrl + this.barUrl,bar,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
         toReturn.next({error: true, message: res.message});
@@ -310,7 +377,7 @@ export class DatabaseService {
 
   deleteBar(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<Bar>(this.serverUrl + this.barUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -326,7 +393,7 @@ export class DatabaseService {
   private restaurantUrl = "/restaurants";
   getRestaurantById(id: string){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.restaurantUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -345,7 +412,7 @@ export class DatabaseService {
   }
   getAllRestaurants(){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.restaurantUrl,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Restaurant) => {
@@ -363,7 +430,7 @@ export class DatabaseService {
   }
   getBestNotesRestaurant(tested: boolean,type_note: string){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
 
     const requestParam: any = {
       tested: tested,
@@ -387,7 +454,7 @@ export class DatabaseService {
   }
   getRestaurantsByType(type: string){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.restaurantUrl + "/type/" + type,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -406,7 +473,7 @@ export class DatabaseService {
   }
   getRestaurantsByArrondissement(arrondissement: number){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.restaurantUrl + "/arrondissement/" + arrondissement.toString(),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Restaurant) => {
@@ -424,7 +491,7 @@ export class DatabaseService {
   }
   getRestaurantsByStation(station: string,id: string){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.restaurantUrl + "/station/" + encodeURIComponent(station) +"?idPlace=" +id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
@@ -442,7 +509,7 @@ export class DatabaseService {
   }
   getRestaurantsByLigne(ligne: string,id: string){
     let promise: Subject<Restaurant[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.restaurantUrl + "/ligne/" + encodeURIComponent(ligne) +"?idPlace=" +id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res.forEach((place: Bar) => {
@@ -487,10 +554,35 @@ export class DatabaseService {
     return toReturn;
   }
 
-  updateRestaurant(restaurant: Restaurant){
+  updateRestaurant(restaurant: Restaurant, allHoraires: Horaires[], allPictures: Pictures[], allComments: Comment[], allAddress: Address[], stationsInPlace: StationInPlace[]){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.patch<Restaurant>(this.serverUrl + this.restaurantUrl + "/" + restaurant.id,restaurant,this.httpOptions).subscribe((res:any) => {
+
+    this.deletePicture(restaurant.id).subscribe(res => {
+      allPictures.forEach((element: Pictures) => {
+        this.addPicture(element);
+      });
+    });
+    
+    this.deleteComment(restaurant.id).subscribe(res => {
+      allComments.forEach((element: Comment) => {
+        this.addComment(element);
+      });
+    });
+    
+    this.deleteStationInPlace(restaurant.id).subscribe(res => {
+      stationsInPlace.forEach((element: StationInPlace) => {
+        this.addStationinPlace(element);
+      });
+    });
+    
+    allHoraires.forEach((element: Horaires) => {
+      this.updateHoraires(element);
+    });
+    allAddress.forEach((element: Address) => {
+      this.updateAddress(element);
+    });
+    this.setAuthorizationHeader();
+    this.httpClient.patch<Restaurant>(this.serverUrl + this.restaurantUrl,restaurant,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
         toReturn.next({error: true, message: res.message});
@@ -502,7 +594,7 @@ export class DatabaseService {
 
   deleteRestaurant(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<Restaurant>(this.serverUrl + this.restaurantUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -516,26 +608,13 @@ export class DatabaseService {
   private addressUrl = "/address";
   getAddressOfPlace(id: string){
     let promise: Subject<Address[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.addressUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
         promise.next(res);
       }
       else{
-        console.log(res.error);
-      }
-    });
-    return promise;
-  }
-  getAllAddress(){
-    let promise: Subject<any> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.get(this.serverUrl + this.addressUrl,this.httpOptions).subscribe((res:any) => {
-      console.log(res);
-      if(res.error == null) promise.next(res);
-      else{
-        promise.next({error: true, message: res.message});
         console.log(res.error);
       }
     });
@@ -554,8 +633,8 @@ export class DatabaseService {
   }
   updateAddress(address: Address){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.patch<Address>(this.serverUrl + this.addressUrl + "/" + address.id,address,this.httpOptions).subscribe((res:any) => {
+    this.setAuthorizationHeader();
+    this.httpClient.patch<Address>(this.serverUrl + this.addressUrl,address,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
         toReturn.next({error: true, message: res.message});
@@ -566,7 +645,7 @@ export class DatabaseService {
   }
   deleteAddress(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<Address>(this.serverUrl + this.addressUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -580,7 +659,7 @@ export class DatabaseService {
   private commentUrl = "/comment";
   getCommentOfPlace(id: string){
     let promise: Subject<Message | Comment[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.commentUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -604,75 +683,10 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  updateComment(comment: Comment){
-    let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.patch<Comment>(this.serverUrl + this.commentUrl + "/" + comment.id,comment,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
-  }
   deleteComment(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<Comment>(this.serverUrl + this.commentUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }    });
-    return toReturn;
-  }
-
-
-  ////////////////////////////////////////  Favorites Type ////////////////////////////////////////
-  private favTypeUrl = "/favorite";
-  getFavoritesOfUser(id: string){
-    let promise: Subject<Message | FavoriteType> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.get(this.serverUrl + this.favTypeUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      // console.log(res);
-      if(res.error == null){
-        promise.next(res);
-      }
-      else{
-        promise.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return promise;
-  }
-  addFavorite(favorite: FavoriteType){
-    let toReturn: Subject<Message> = new Subject();
-    favorite.id = this.setId();
-    this.httpClient.post<FavoriteType>(this.serverUrl + this.favTypeUrl,favorite,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "L'adresse à été ajouté."});
-      }
-      else  toReturn.next({error: true, message: "L'adresse n'a pas pu être ajouté."});
-    });
-    return toReturn;
-  }
-  updateFavorite(favorite: FavoriteType){
-    let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.patch<FavoriteType>(this.serverUrl + this.favTypeUrl + "/" + favorite.id,favorite,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
-  }
-  deleteFavorite(id: string){
-    let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.delete<FavoriteType>(this.serverUrl + this.favTypeUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
         toReturn.next({error: true, message: res.message});
@@ -685,25 +699,12 @@ export class DatabaseService {
   private horairesUrl = "/horaires";
   getHorairesOfPlace(id: string){
     let promise: Subject<Message | Horaires[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.horairesUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
         promise.next(res);
       }
-      else{
-        promise.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return promise;
-  }
-  getAllHoraires(){
-    let promise: Subject<any> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.get(this.serverUrl + this.horairesUrl,this.httpOptions).subscribe((res:any) => {
-      console.log(res);
-      if(res.error == null) promise.next(res);
       else{
         promise.next({error: true, message: res.message});
         console.log(res.error);
@@ -724,8 +725,8 @@ export class DatabaseService {
   }
   updateHoraires(horaires: Horaires){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.patch<Horaires>(this.serverUrl + this.horairesUrl + "/" + horaires.id,horaires,this.httpOptions).subscribe((res:any) => {
+    this.setAuthorizationHeader();
+    this.httpClient.patch<Horaires>(this.serverUrl + this.horairesUrl,horaires,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
         toReturn.next({error: true, message: res.message});
@@ -736,7 +737,7 @@ export class DatabaseService {
   }
   deleteHoraires(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<Horaires>(this.serverUrl + this.horairesUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -750,7 +751,7 @@ export class DatabaseService {
   private lignesUrl = "/ligne";
   getAllLignes(){
     let promise: Subject<Ligne[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.lignesUrl,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -762,23 +763,12 @@ export class DatabaseService {
     });
     return promise;
   }
-  addLigne(ligne: Ligne){
-    let toReturn: Subject<Message> = new Subject();
-    console.log(ligne);
-    this.httpClient.post<Ligne>(this.serverUrl + this.lignesUrl,ligne,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Les horaires ont été ajoutés."});
-      }
-      else  toReturn.next({error: true, message: "Les horaires n'ont pas pu être ajoutés."});
-    });
-    return toReturn;
-  }
 
   ////////////////////////////////////////  Pictures ////////////////////////////////////////
   private picUrl = "/pictures";
   getPicturesOfPlace(id: string){
     let promise: Subject<Pictures[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.picUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -792,7 +782,7 @@ export class DatabaseService {
   }
   getAllPictures(){
     let promise: Subject<Pictures[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.picUrl,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) promise.next(res);
       else{
@@ -814,7 +804,7 @@ export class DatabaseService {
   }
   deletePicture(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<Pictures>(this.serverUrl + this.picUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -825,10 +815,10 @@ export class DatabaseService {
   }
 
   ////////////////////////////////////////  Place liked ////////////////////////////////////////
-  private likeUrl = "/like";
+  private likeUrl = "/place_like";
   getLikesOfUser(id: string){
     let promise: Subject<Liked[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.likeUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       // console.log(res);
       if(res.error == null){
@@ -851,10 +841,11 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  deleteLike(id: string){
+  deleteLike(like: Liked){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
-    this.httpClient.delete<Liked>(this.serverUrl + this.likeUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
+    const params: string = JSON.stringify(like);
+    this.setAuthorizationHeader();
+    this.httpClient.delete<Liked>(this.serverUrl + this.likeUrl+'?infos='+encodeURIComponent(params),this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
         toReturn.next({error: true, message: res.message});
@@ -867,9 +858,8 @@ export class DatabaseService {
   private stationUrl = "/station";
   getAllStations(){
     let promise: Subject<any> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationUrl,this.httpOptions).subscribe((res:any) => {
-      console.log(res)
       if(res.error == null){
         // let allStations: Station[] = [];
         // res.forEach((station: string) => {
@@ -884,25 +874,21 @@ export class DatabaseService {
     });
     return promise;
   }
-  addStation(station: Station){
-    let toReturn: Subject<Message> = new Subject();
-    this.httpClient.post<Station>(this.serverUrl + this.stationUrl,station,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "La station a été ajoutée."});
-      }
-      else  toReturn.next({error: true, message: "La station n'a pas pu être ajoutée."});
-    });
-    return toReturn;
-  }
 
   ////////////////////////////////////////  Stations in place ////////////////////////////////////////
   private stationInPlaceUrl = "/station_in_place";
   getStationsOfPlace(id: string){
-    let promise: Subject<StationInPlace[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    let promise: Subject<Station[]> = new Subject();
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationInPlaceUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
-        promise.next(res);
+        let stations: Station[] = [];
+        res.forEach((element:any) => {
+          stations.push({
+            name: element.name_station
+          })
+        });
+        promise.next(stations);
       }
       else{
         console.log(res.error);
@@ -923,7 +909,7 @@ export class DatabaseService {
   }
   deleteStationInPlace(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<StationInPlace>(this.serverUrl + this.stationInPlaceUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -937,7 +923,7 @@ export class DatabaseService {
   private ligneInStationUrl = "/ligne_in_station";
   getStationsOfLigne(nameLigne: string){
     let promise: Subject<Message | LigneInStation> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationInPlaceUrl + "/" + nameLigne,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         promise.next(res);
@@ -950,11 +936,17 @@ export class DatabaseService {
     return promise;
   }
   getLignesOfStation(nameStation: string){
-    let promise: Subject<LigneInStation[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    let promise: Subject<Ligne[]> = new Subject();
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.ligneInStationUrl + "/station/"+encodeURIComponent(nameStation),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
-        promise.next(res);
+        let lignes: Ligne[] = [];
+        res.forEach((element:any) => {
+          lignes.push({
+            name: element.name_ligne
+          });
+        });
+        promise.next(lignes);
       }
       else{
         console.log(res.error);
@@ -962,22 +954,12 @@ export class DatabaseService {
     });
     return promise;
   }
-  addLigneInStation(stationInfos: LigneInStation){
-    let toReturn: Subject<Message> = new Subject();
-    this.httpClient.post<LigneInStation>(this.serverUrl + this.ligneInStationUrl,stationInfos,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Les horaires ont été ajoutés."});
-      }
-      else  toReturn.next({error: true, message: "Les horaires n'ont pas pu être ajoutés."});
-    });
-    return toReturn;
-  }
 
   ////////////////////////////////////////  Ligne in station ////////////////////////////////////////
   private stationOfUserUrl = "/station_of_user";
   getStationsOfUser(idUser: string){
     let promise: Subject<StationOfUser[]> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationOfUserUrl + "/" + idUser,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         promise.next(res);
@@ -988,8 +970,9 @@ export class DatabaseService {
     });
     return promise;
   }
-  addStationOfUser(stationInfos: LigneInStation){
+  addStationOfUser(stationInfos: StationOfUser){
     let toReturn: Subject<Message> = new Subject();
+    stationInfos.id = this.setId();
     this.httpClient.post<StationOfUser>(this.serverUrl + this.stationOfUserUrl,stationInfos,this.httpOptions).subscribe(res => {
       if(res != null){
         toReturn.next({error: false, message: "Les horaires ont été ajoutés."});
@@ -1000,7 +983,7 @@ export class DatabaseService {
   }
   deleteStationOfUser(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<StationOfUser>(this.serverUrl + this.stationOfUserUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -1009,41 +992,238 @@ export class DatabaseService {
     return toReturn;
   }
 
+  ////////////////////////////////////////  Custom ////////////////////////////////////////
+  private customUrl = "/custom";
+  getPlacesOfFavoriteStations(idUser: string){
+    let promise: Subject<any[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.customUrl + "/placeInStation/" + idUser,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getRestaurantsOfStation(id: string){
+    let promise: Subject<Restaurant[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.customUrl + "/restaurantOfStation/" + id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getBarsOfStation(id: string){
+    let promise: Subject<Bar[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.customUrl + "/barOfStation/" + id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getRestaurantsOfLigne(id: string){
+    let promise: Subject<Restaurant[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.customUrl + "/restaurantOfLigne/" + id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getBarsOfLigne(id: string){
+    let promise: Subject<Bar[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.customUrl + "/barOfLigne/" + id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getLignesOfPlace(id: string){
+    let promise: Subject<Ligne[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.customUrl + "/ligneOfPlace/" + id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getRestaurantsOfMultipleStations(stations: Station[]){
+    let promise: Subject<any[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post(this.serverUrl + this.customUrl + "/restaurantsOfMultipleStations",stations,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getBarsOfMultipleStations(stations: Station[]){
+    let promise: Subject<any[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post(this.serverUrl + this.customUrl + "/barsOfMultipleStations",stations,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getRestaurantsOfMultipleLignes(lignes: Ligne[]){
+    let promise: Subject<Ligne[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post(this.serverUrl + this.customUrl + "/restaurantsOfMultipleLignes",lignes,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
+  getBarsOfMultipleLignes(lignes: Ligne[]){
+    let promise: Subject<Ligne[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post(this.serverUrl + this.customUrl + "/barsOfMultipleLignes",lignes,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res.forEach((element: any) => {
+          element.facade = this.placesService.getTypeFacade(element.type);
+        });
+        promise.next(res);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
+
   ////////////////////////////////////////  Connexion/User ////////////////////////////////////////
   private connectionUrl = "/auth"
-  login(userInfo: User){
-    const navigate: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    // const salt: string = bcrypt.genSaltSync(10);
-    // const pass: string = bcrypt.hashSync(userInfo.password, salt);
 
-    // userInfo.password = pass;
-    // //Retourne true si c'est le bon mot de passe
-    // bcrypt.compareSync("antoine",pass);
-
+  checkPassword(userInfo: User){
+    let toReturn: Subject<Message> = new Subject();
     let params: string = JSON.stringify(userInfo);
 
-    this.httpClient.get(this.serverUrl + this.connectionUrl +"/login"+'?user='+encodeURIComponent(params)).subscribe((res: any) => {
-      if(res != null){
-        localStorage.setItem("token", res.token);
-        navigate.next(true);
+    this.httpClient.get(this.serverUrl + this.connectionUrl +"/login"+'?user='+encodeURIComponent(params),this.httpOptions).subscribe((res: any) => {
+      if(res.error !== true){
+        toReturn.next({
+          error: false,
+          message: ""
+        });
+      } else{
+        toReturn.next({
+          error: true,
+          message: res.message
+        });
       }
     });
 
-    return navigate.asObservable();
+    return toReturn.asObservable();
+  }
+  login(userInfo: User){
+    let toReturn: Subject<Message> = new Subject();
+
+    let params: string = JSON.stringify(userInfo);
+
+    this.httpClient.get(this.serverUrl + this.connectionUrl +"/login"+'?user='+encodeURIComponent(params),this.httpOptions).subscribe((res: any) => {
+      if(res.error !== true){
+        localStorage.setItem("token", res.token);
+        toReturn.next({
+          error: false,
+          message: ""
+        });
+      } else{
+        toReturn.next({
+          error: true,
+          message: res.message
+        });
+      }
+    });
+
+    return toReturn.asObservable();
   }
   loginByToken(token: string){
     let log: Subject<User> = new Subject();
-    this.httpClient.get(this.serverUrl + this.connectionUrl + "/token" +'?token='+encodeURIComponent(token)).subscribe((res: any) => {
+    const objectToken = {
+      token: token
+    }
+    this.httpClient.post(this.serverUrl + this.connectionUrl + "/token", objectToken,this.httpOptions).subscribe((res: any) => {
       log.next(res);
     });
 
     return log;
   }
+
   signup(user: User){
     let toReturn: Subject<Message> = new Subject();
+    this.setAuthorizationHeader();
     user.id = this.setId();
-    this.httpClient.post<User>(this.serverUrl + this.connectionUrl,user,this.httpOptions).subscribe(res => {
-      if(res != null){
+    this.httpClient.post(this.serverUrl + this.connectionUrl,user,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
         toReturn.next({error: false, message: "L'utilisateur à été ajouté."});
       }
       else  toReturn.next({error: true, message: "L'utilisateur n'a pas pu être ajouté."});
@@ -1051,9 +1231,58 @@ export class DatabaseService {
 
     return toReturn;
   }
+  setPassword(user: User){
+    let toReturn: Subject<Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/password",user,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null) toReturn.next({error: false, message: res.message});
+      else {
+        toReturn.next({error: true, message: res.message});
+        console.log(res.error);
+      }
+    });
+    return toReturn;
+  }
+  setLogin(user: User){
+    let toReturn: Subject<Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/login",user,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null) toReturn.next({error: false, message: res.message});
+      else {
+        toReturn.next({error: true, message: res.message});
+        console.log(res.error);
+      }
+    });
+    return toReturn;
+  }
+  getImage(id: string){
+    let toReturn: Subject<string> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.connectionUrl + "/image/"+id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res.img);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
+  setImage(user: User){
+    let toReturn: Subject<Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/image",user,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null) toReturn.next({error: false, message: res.message});
+      else {
+        toReturn.next({error: true, message: res.message});
+        console.log(res.error);
+      }
+    });
+    return toReturn;
+  }
   updateUser(user: User){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.patch<User>(this.serverUrl + this.connectionUrl + "/" + user.id,user,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {
@@ -1065,7 +1294,7 @@ export class DatabaseService {
   }
   deleteUser(id: string){
     let toReturn: Subject<Message> = new Subject();
-    if(localStorage.getItem("token") != null)  this.header.Authorization = localStorage.getItem("token");
+    this.setAuthorizationHeader();
     this.httpClient.delete<User>(this.serverUrl + this.connectionUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null) toReturn.next({error: false, message: res.message});
       else {

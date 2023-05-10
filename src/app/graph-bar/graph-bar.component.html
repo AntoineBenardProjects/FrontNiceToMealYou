@@ -1,0 +1,7 @@
+<div class="container">
+    <div [matTooltip]="'Quantité: '+ quantity+'/10'" matTooltipPosition="left" class="bar" #tooltip="matTooltip" (click)="tooltip.show()" [ngStyle]="{'width': quantity * 10 + '%', 'background-color': colorQuantity}"></div>
+    <div [matTooltip]="'Qualité: '+ quality+'/10'" matTooltipPosition="left" class="bar" #tooltip="matTooltip" (click)="tooltip.show()" [ngStyle]="{'width': quality * 10 + '%', 'background-color': colorQuality}"></div>
+    <div [matTooltip]="'Déco: '+ note_deco+'/10'" matTooltipPosition="left" class="bar" #tooltip="matTooltip" (click)="tooltip.show()" [ngStyle]="{'width': note_deco * 10 + '%', 'background-color': colorDeco}"></div>
+    <div [matTooltip]="'Rapport qualité/prix: '+ quality_price+'/10'" matTooltipPosition="left" class="bar" #tooltip="matTooltip" (click)="tooltip.show()" [ngStyle]="{'width': quality_price * 10 + '%', 'background-color': colorQualityPrice}"></div>
+
+</div>

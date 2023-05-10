@@ -18,6 +18,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { NavbarModule } from '../navbar/navbar.module';
 
 
 
@@ -47,7 +48,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatAutocompleteModule,
     MatCheckboxModule,
     MatGridListModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NavbarModule
   ],
   exports: [
     AddComponent

@@ -1,31 +1,29 @@
-<div class="logoComp">
+<div class="logoComp" *ngIf="user != null">
     <div id="typeOfPlacesComp">
-        <button class="biggerComp" (click)="navigate('restaurants')">
+        <button matTooltip="On mange où ?" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('restaurants')">
             <mat-icon class="icon">restaurant_menu</mat-icon>
         </button>
-        <button class="biggerComp" (click)="navigate('bars')">
+        <button matTooltip="Où boire un verre" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('bars')">
             <mat-icon class="icon">local_bar</mat-icon>
         </button>
-        <button class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('loisirs')">
+        <button matTooltip="Trouver votre loisir" [ngStyle]="{'color' : color}" class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('loisirs')">
             <mat-icon class="icon">hot_tub</mat-icon>
         </button>
     </div>
     <div id="logoComp">
-        <!-- <div id="line"></div> -->
-            <h1 class="logo">NICE TO MEAL YOU</h1>
-        <!-- <div id="line"></div> -->
+        <h1 [ngStyle]="{'color' : color}" id="logo">NICE TO MEAL YOU</h1>
     </div>
-    <div id="iconesComp">
-        <button class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('add')">
-            <mat-icon class="icon">add</mat-icon>
+    <div id="iconesComp" style="flex-direction: row-reverse;">
+        <img matTooltip="Page utilisateur" *ngIf="user.img != null && user.img !== ''" class="user" [src]="user.img" (click)="navigate('user')">
+        <button matTooltip="Page utilisateur" *ngIf="!verifyPortfolio && (user.img == null || user.img === '')" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('user')">
+            <mat-icon class="icon">account_circle</mat-icon>
         </button>
-        <button class="biggerComp" routerLink="/home">
+        <button matTooltip="Accueil" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('home')">
             <mat-icon class="icon">home</mat-icon>
         </button>
-        <img class="user" [src]="user.img" routerLink="/user">
-        <!-- <button class="biggerComp" (click)="deconnect()">
-            <mat-icon class="icon">power_settings_new</mat-icon>
-        </button> -->
+        <button matTooltip="Ajouter un lieu" [ngStyle]="{'color' : color}" class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('add')">
+            <mat-icon class="icon">add</mat-icon>
+        </button>
     </div>
 </div>
 

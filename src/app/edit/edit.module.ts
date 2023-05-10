@@ -17,6 +17,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { EditRoutingModule } from './edit-routing.module';
+import { NavbarComponent } from '../navbar/navbar.component';
+import { NavbarModule } from '../navbar/navbar.module';
 
 
 
@@ -28,6 +31,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
   imports: [
     BrowserModule,
     HttpClientModule,
+    EditRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
     MatTableModule,
@@ -45,6 +49,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatAutocompleteModule,
     MatGridListModule,
     MatCheckboxModule,
+    NavbarModule,
   ],
   exports: [
     EditComponent

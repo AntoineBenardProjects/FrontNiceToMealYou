@@ -5,19 +5,19 @@
     align-items: center;
     height: 35vh;
     width: 25vw;
-    color: black;
-    background-color: white;
-    border: 1px solid white;
+    color: #01110A;
+    background-color: #FCFFFC;
+    border: 1px solid #FCFFFC;
     border-radius: 20px;
 }
 
 ::ng-deep .form{
     .mat-focused .mat-form-field-label {
-        color: black !important;
+        color: #01110A !important;
     }
 
     .mat-input-element {
-        caret-color: black !important;
+        caret-color: #01110A !important;
     }
 
     .mat-input-element::selection {
@@ -26,17 +26,17 @@
     
     .mat-form-field-underline {
         /*change color of underline*/
-        background-color: black;
+        background-color: #01110A;
     } 
     
     .mat-form-field-ripple{
         /*change color of underline when focused*/
-        background-color: black !important;
+        background-color: #01110A !important;
     }
 
     .mat-form-field.mat-focused {
         .mat-form-field-infix {
-            background: rgba(0,0,0, 0.4);
+            background: rgba(1,17,10, 0.4);
         }
         .mat-input-element::selection{
             background-color: var(--background-color-2) !important;
@@ -51,13 +51,13 @@
     flex-direction: column; 
     height: 100%; 
     width: 100%;
-    color: white;
+    color: #FCFFFC;
 }
 
 .background{
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url("../../assets/login.jpg");
+    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/login.jpg");
     background-size: cover;
 }
 
@@ -68,8 +68,8 @@
 
 .connect{
     height: 50%;
-    background-color: black;
-    color: white;
+    background-color: #01110A;
+    color: #FCFFFC;
     transition: all 200ms;
     transform: scale(1);
     &:hover{
@@ -79,13 +79,13 @@
 
 .create{
     height: 50%;
-    background-color: white;
-    color: black;
+    background-color: #FCFFFC;
+    color: #01110A;
     transition: all 200ms;
     transform: scale(1);
     &:hover{
         transform: scale(1.15);
-        background-color: rgba(0,0,0,0.3);
+        background-color: rgba(1,17,10,0.3);
     }
 }
 
@@ -101,7 +101,7 @@
         width: 70vw;
     }
     .background{
-        background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url("../../assets/login_mobile.jpg");
+        background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/login_mobile.jpg");
     }
     #logoIcon{
         width: 75%;

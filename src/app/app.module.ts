@@ -6,7 +6,6 @@ import { AppComponent } from './app.component';
 import { HomeModule } from './home/home.module';
 import { ShowedModule } from './showed/showed.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NavbarComponent } from './navbar/navbar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AddModule } from './add/add.module';
@@ -22,13 +21,11 @@ import { LoginModule } from './login/login.module';
 import { RegisterModule } from './register/register.module';
 import { LogoutModule } from './logout/logout.module';
 import { FooterComponent } from './footer/footer.component';
-import { UserPageComponent } from './user-page/user-page.component';
 import { UserPageModule } from './user-page/user-page.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
     FooterComponent,
   ],
   imports: [

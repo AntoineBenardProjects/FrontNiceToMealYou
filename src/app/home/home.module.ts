@@ -13,11 +13,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { AddModule } from '../add/add.module';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AnimationScrollDirective } from '../directives/animation-scroll.directive';
 import { CardModule } from '../card/card.module';
+import { NavbarModule } from '../navbar/navbar.module';
 
 
 
@@ -25,17 +24,14 @@ import { CardModule } from '../card/card.module';
 
 @NgModule({
   declarations: [
-    HomeComponent,
-    AnimationScrollDirective,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
-    AddModule,
     HomeRoutingModule,
     HttpClientModule,
     FormsModule,
     BrowserAnimationsModule,
-    MatTableModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -45,6 +41,7 @@ import { CardModule } from '../card/card.module';
     MatButtonModule,
     NgCircleProgressModule.forRoot({}),
     MatTooltipModule,
+    NavbarModule,
     CardModule
   ]
 })

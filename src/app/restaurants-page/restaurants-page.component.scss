@@ -1,3 +1,6 @@
+app-navbar .biggerComp{
+    color: #01110A !important;
+}
 .ads{
     display: flex;
     flex-direction: column;
@@ -23,11 +26,14 @@
 .restaurants{
     display: flex;
     flex-direction: column;
-    background: black;
+    background: #01110A;
     position: relative;
 }
 
 .carte {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 81vh;
     font-size: 30px;
     text-align: center;
@@ -42,7 +48,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    color: white;
+    color: #FCFFFC;
     height: 81vh;
     width: 45%;
     #title{
@@ -85,6 +91,16 @@ h3{
 }
 
 h2{
+    text-transform: uppercase;
+    font-family: Century Gothic Std,arial,sans-serif;
+    font-weight: bold;
+    font-stretch: condensed;
+}
+
+.nothing{
+    display: flex;
+    justify-content: center;
+    margin: 15vh;
     text-transform: uppercase;
     font-family: Century Gothic Std,arial,sans-serif;
     font-weight: bold;
@@ -155,6 +171,10 @@ h2{
     .title{
         font-size: 1.5rem;
     }
+    .sort{
+        max-width: 100%;
+        overflow: auto;
+    }
     #filter{
         width: fit-content;
     }
@@ -180,7 +200,7 @@ h2{
         span.mat-line{
             font-size: 16px !important;
             background: linear-gradient(rgba(255,255,255,0.7),rgba(255,255,255,0.7)) !important;
-            color: black;
+            color: #01110A;
             width: fit-content;
             padding: 4px !important;
             white-space: break-spaces !important;

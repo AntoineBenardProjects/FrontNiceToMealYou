@@ -3,7 +3,7 @@
     font-family: 'Nunito', sans-serif;
     padding: 2% 0;
     margin-left: 3%;
-    color: black;
+    color: #01110A;
 }
 .uploadWrapper {
     display: flex;
@@ -42,13 +42,13 @@
 
 //////////////////////////////  Mat Stepper / Mat Checkbox //////////////////////////////
 ::ng-deep .mat-step-header .mat-step-icon-selected {
-    background-color: black; 
+    background-color: #01110A; 
 }
 ::ng-deep .mat-step-header .mat-step-icon-state-edit {
-    background-color: black; 
+    background-color: #01110A; 
 }
 ::ng-deep.mat-checkbox-checked.mat-accent .mat-checkbox-background {
-    background-color: black !important;
+    background-color: #01110A !important;
 }
 
 //////////////////////////////  Form //////////////////////////////
@@ -66,16 +66,16 @@ form{
         align-items: center;
         width: 1em;
         height: 1em;
-        color: black;
+        color: #01110A;
     }
 
     .mat-focused .mat-form-field-label {
-        color: black !important;
+        color: #01110A !important;
     }
     
     .mat-form-field-underline {
         /*change color of underline*/
-        background-color: black;
+        background-color: #01110A;
     } 
     
     .mat-form-field-ripple{
@@ -150,6 +150,7 @@ mat-form-field{
 }
 .addHoraires{
     border: 0;
+    background: transparent;
 }
 
 //////////////////////////////  Stations //////////////////////////////
@@ -177,10 +178,10 @@ mat-form-field{
         justify-content: center;
         align-items: flex-end;
         border-bottom: 1px solid #bcbcbc;
-        background: white;
+        background: #FCFFFC;
         input{
             height: 5vh;
-            background-color: white;
+            background-color: #FCFFFC;
         }
         button{
             height: 5vh;
@@ -205,12 +206,15 @@ mat-form-field{
         .selectedStation{
             display: flex;
             position: sticky;
-            background-color: white;
+            background-color: #FCFFFC;
             top: 0;
             align-items: center;
             text-align: center;
             height: 5vh;
         }
+    }
+    .stations::-webkit-scrollbar{
+        display: none;
     }
     .content{
         display: flex;
@@ -219,7 +223,7 @@ mat-form-field{
         border: 2px solid;
         height: 10vh;
         margin-top: 5vh;
-        max-height: 30vmin;
+        min-height: 10vh;
         width: 80%;
         cursor: pointer;
         transition: all 200ms;
@@ -227,8 +231,8 @@ mat-form-field{
         transform: scale(1);
         &:hover{
             transform: scale(1.15);
-            background: black;
-            color: white;
+            background: #01110A;
+            color: #FCFFFC;
         }
     }
     .select::-webkit-scrollbar{

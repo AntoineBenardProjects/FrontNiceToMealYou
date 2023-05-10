@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, Validators, UntypedFormGroup } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { elementAt, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Data } from 'src/data';
 import { Address } from '../model/address';
 import { Bar } from '../model/bar';
@@ -12,6 +12,7 @@ import { Restaurant } from '../model/restaurant';
 import { Station } from '../model/station';
 import { TypePicture } from '../model/typePicture';
 import { DatabaseService } from '../services/database.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add',
@@ -23,9 +24,6 @@ export class AddComponent implements OnInit {
   isLinear = false;
   firstFormGroup: UntypedFormGroup = new UntypedFormGroup({});
   secondFormGroup: UntypedFormGroup = new UntypedFormGroup({});
-  thirdFormGroup: UntypedFormGroup = new UntypedFormGroup({});
-  fourthFormGroup: UntypedFormGroup = new UntypedFormGroup({});
-
 
   options: string[] = ['Restaurant', 'Bar', 'Sortie'];
 
@@ -124,7 +122,7 @@ export class AddComponent implements OnInit {
   allStations: Station[] = [];
 
 
-  constructor(private _formBuilder: UntypedFormBuilder,private data: DatabaseService) { }
+  constructor(private _formBuilder: UntypedFormBuilder,private data: DatabaseService, private router: Router) { }
 
   ngOnInit() {
     this.data.getAllStations().subscribe(res => {
@@ -138,6 +136,7 @@ export class AddComponent implements OnInit {
       tested: [false],
       type: ['', Validators.required],
       price: ['', Validators.required],
+      comment: [''],
     });
     this.secondFormGroup = this._formBuilder.group({
       img: [''],
@@ -148,7 +147,6 @@ export class AddComponent implements OnInit {
       note_quality: [0],
       quality_price: [0],
       note_deco: [0],
-      comment: [''],
     });
 
     this.allTypes = Data.sort();
@@ -204,6 +202,18 @@ export class AddComponent implements OnInit {
     else if(day === "Vendredi") this.displayHoraire.Vendredi = !this.displayHoraire.Vendredi;
     else if(day === "Samedi") this.displayHoraire.Samedi = !this.displayHoraire.Samedi;
     else if(day === "Dimanche") this.displayHoraire.Dimanche = !this.displayHoraire.Dimanche;
+
+    this.allHoraires = this.allHoraires.slice();
+  }
+
+  setHoraires(event: any, day: string, moment: string){
+    const value = event.target.value;
+
+    this.allHoraires.forEach((element: Horaires) => {
+      if(element.day === day) {
+        element[moment] = value;
+      }
+    });
   }
 
   fillHoraires(event:any){
@@ -223,16 +233,18 @@ export class AddComponent implements OnInit {
         this.displayHoraire.Samedi = false;
         this.displayHoraire.Dimanche = false;
       }
+
+      const horairesLundi: Horaires = this.allHoraires.find((horaires: Horaires) => horaires.day === "Lundi");
+
+      this.allHoraires.forEach((horaires:Horaires) => {
+        horaires.ouverture = horairesLundi.ouverture;
+        horaires.fermeture_midi = horairesLundi.fermeture_midi;
+        horaires.ouverture_soir = horairesLundi.ouverture_soir;
+        horaires.fermeture = horairesLundi.fermeture;
+      });
+
+      this.allHoraires = this.allHoraires.slice();
     }
-
-    const horairesLundi: Horaires = this.allHoraires.find((horaires: Horaires) => horaires.day === "Lundi");
-
-    this.allHoraires.forEach((horaires:Horaires) => {
-      horaires.ouverture = horairesLundi.ouverture;
-      horaires.fermeture_midi = horairesLundi.fermeture_midi;
-      horaires.ouverture_soir = horairesLundi.ouverture_soir;
-      horaires.fermeture = horairesLundi.fermeture;
-    });
   }
   
   setCommentLine(positif: boolean, increase: boolean){
@@ -240,14 +252,14 @@ export class AddComponent implements OnInit {
       this.positifs.push({
         id: "",
         id_place: "",
-        positif: positif,
+        positif: "true",
         detail: ""
       });
     } else if(!positif && increase){
       this.negatifs.push({
         id: "",
         id_place: "",
-        positif: positif,
+        positif: "false",
         detail: ""
       });
     } else if(positif && !increase) this.positifs.pop();
@@ -290,7 +302,7 @@ export class AddComponent implements OnInit {
         facade: this.facadeFile,
         the_fork: this.firstFormGroup.value.theFork,
         tested: this.firstFormGroup.value.tested,
-        comment: this.secondFormGroup.value.comment,
+        comment: this.firstFormGroup.value.comment,
         note_deco: this.secondFormGroup.value.note_deco,
         liked: false,
         note_quantity: this.secondFormGroup.value.note_quantity,
@@ -308,8 +320,8 @@ export class AddComponent implements OnInit {
         price: this.firstFormGroup.value.price,
         facade: this.facadeFile,
         tested: this.firstFormGroup.value.tested,
-        comment: this.thirdFormGroup.value.comment,
-        type: this.thirdFormGroup.value.type,
+        comment: this.firstFormGroup.value.comment,
+        type: this.firstFormGroup.value.type,
         note_deco: this.secondFormGroup.value.note_deco,
         liked: false,
         quality: this.secondFormGroup.value.note_quality,
@@ -317,6 +329,8 @@ export class AddComponent implements OnInit {
       };
       this.data.addBar(bar,this.allHoraires,this.allPictures,allComments,this.addresses);
     }
+
+    this.router.navigate(['/home']);
   }
 
   filterType(event: any) {

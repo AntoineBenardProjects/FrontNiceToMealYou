@@ -2,9 +2,15 @@ import { TypePicture } from "./app/model/typePicture";
 
 export const Data: TypePicture[] = [
     {
+        type: "Brasserie",
+        url : "../../assets/brasserie_facade.jpg",
+        urlIcon : "../../assets/brasserie.jfif",
+        place: "Bar"
+    },
+    {
         type: "Café",
         url : "../../assets/cafe_facade.jpg",
-        urlIcon : "../../assets/cafe_facade.jpg",
+        urlIcon : "../../assets/cafe.jpg",
         place: "Bar"
     },
     {

@@ -1,12 +1,9 @@
-import { Time } from '@angular/common';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { elementAt, Observable } from 'rxjs';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Data } from 'src/data';
-import { AddComponent } from '../add/add.component';
 import { Address } from '../model/address';
 import { Bar } from '../model/bar';
 import { Comment } from '../model/comment';
@@ -14,9 +11,9 @@ import { Horaires } from '../model/horaires';
 import { Pictures } from '../model/pictures';
 import { Restaurant } from '../model/restaurant';
 import { Station } from '../model/station';
-import { StationInPlace } from '../model/stationInPlace';
 import { TypePicture } from '../model/typePicture';
 import { DatabaseService } from '../services/database.service';
+import { StationInPlace } from '../model/stationInPlace';
 
 @Component({
   selector: 'app-edit',
@@ -28,9 +25,6 @@ export class EditComponent {
   isLinear = false;
   firstFormGroup: UntypedFormGroup = new UntypedFormGroup({});
   secondFormGroup: UntypedFormGroup = new UntypedFormGroup({});
-  thirdFormGroup: UntypedFormGroup = new UntypedFormGroup({});
-  fourthFormGroup: UntypedFormGroup = new UntypedFormGroup({});
-
 
   options: string[] = ['Restaurant', 'Bar', 'Sortie'];
 
@@ -123,13 +117,15 @@ export class EditComponent {
   typesAvailable: TypePicture[] = [];
   typesFiltered: TypePicture[] = [];
   selected: string[] = [];
+  stationsInPlace: StationInPlace[] = [];
   positifs: Comment[] = [];
   negatifs: Comment[] = [];
   addresses: Address[] = [{id:"",address: "",code_postal: "",id_place:""}];
   allStations: Station[] = [];
+  idPlace: string = "";
 
 
-  constructor(private _formBuilder: UntypedFormBuilder,private data: DatabaseService,private route: ActivatedRoute) { }
+  constructor(private _formBuilder: UntypedFormBuilder,private data: DatabaseService,private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     this.data.getAllStations().subscribe(res => {
@@ -137,12 +133,13 @@ export class EditComponent {
     });
     this.route.paramMap.subscribe((params: ParamMap) => {
       const id = params.get('id');
+      this.idPlace = id;
       this.data.getPlaceById(id).subscribe((res : any) => {
         this.fillForm(res);
       });
       this.data.getCommentOfPlace(id).subscribe((res: Comment[]) => {
-        this.positifs = res.filter((element: Comment) =>  element.positif === true);
-        this.negatifs = res.filter((element: Comment) =>  element.positif === false);
+        this.positifs = res.filter((element: Comment) =>  element.positif === 'true');
+        this.negatifs = res.filter((element: Comment) =>  element.positif === 'false');
       });
       this.data.getPicturesOfPlace(id).subscribe((res: Pictures[]) => {
         this.allPictures = res;
@@ -150,9 +147,20 @@ export class EditComponent {
       this.data.getAddressOfPlace(id).subscribe((res: Address[]) => {
         this.addresses = res;
       });
-      this.data.getStationsOfPlace(id).subscribe((res: StationInPlace[]) => {
-        res.forEach((element: StationInPlace) => {
-          this.stations.push(element.name_station);
+      this.data.getStationsOfPlace(id).subscribe((res: Station[]) => {
+        res.forEach((element: Station) => {
+          this.selected.push(element.name);
+          this.stationsInPlace.push({
+            id: "",
+            id_place: id,
+            name_station: element.name
+          })
+        });
+      });
+      this.data.getHorairesOfPlace(id).subscribe((res: Horaires[]) => {
+        this.allHoraires = res;
+        this.allHoraires.forEach((element: Horaires) => {
+          if(element.ouverture_soir != '')  this.changeDisplay(element.day);
         });
       });
     })
@@ -162,8 +170,12 @@ export class EditComponent {
   }
 
   fillForm(place: any){
-    let typeOfPlace = "Restaurant";
+    let typeOfPlace: string = "";
+    if(place.the_fork != null)  typeOfPlace = "Restaurant";
+    else typeOfPlace = "Bar";
     if(place.note_quantity == null) place === "Bar";
+    let comment: string = "";
+    if(place.comment != undefined)  comment = place.comment;
     this.firstFormGroup = this._formBuilder.group({
       name: [place.name, Validators.required],
       place: [typeOfPlace, Validators.required],
@@ -172,26 +184,24 @@ export class EditComponent {
       tested: [place.tested],
       type: [place.type, Validators.required],
       price: [place.price, Validators.required],
+      comment: [comment]
     });
     this.secondFormGroup = this._formBuilder.group({
       img: [''],
       plat: [''],
       liked: [place.liked],
-      note: [place.note],
+      note: [place.note_globale],
       note_quantity: [place.note_quantity],
       note_quality: [place.note_quality],
       quality_price: [place.quality_price],
       note_deco: [place.note_deco],
-      comment: [place.comment],
     });
+
+    this.setType();
   }
 
   setType(){
     this.typesAvailable = this.allTypes.filter((element: TypePicture) => element.place === this.firstFormGroup.value.place);
-    this.allTypes.forEach((e: TypePicture) => {
-      console.log(e.place, this.firstFormGroup.value.place)
-    })
-    console.log(this.typesAvailable)
   }
 
   facadeImage(event: any) {
@@ -237,6 +247,16 @@ export class EditComponent {
     else if(day === "Dimanche") this.displayHoraire.Dimanche = !this.displayHoraire.Dimanche;
   }
 
+  setHoraires(event: any, day: string, moment: string){
+    const value = event.target.value;
+
+    this.allHoraires.forEach((element: Horaires) => {
+      if(element.day === day) {
+        element[moment] = value;
+      }
+    });
+  }
+
   fillHoraires(event:any){
     if(event.checked){
       if(this.displayHoraire.Lundi){
@@ -270,15 +290,15 @@ export class EditComponent {
     if(positif && increase){
       this.positifs.push({
         id: "",
-        id_place: "",
-        positif: positif,
+        id_place: this.idPlace,
+        positif: "true",
         detail: ""
       });
     } else if(!positif && increase){
       this.negatifs.push({
         id: "",
-        id_place: "",
-        positif: positif,
+        id_place: this.idPlace,
+        positif: "false",
         detail: ""
       });
     } else if(positif && !increase) this.positifs.pop();
@@ -310,9 +330,19 @@ export class EditComponent {
     let allComments: Comment[] = [];
     allComments = [...this.positifs, ...this.negatifs];
 
+    this.stationsInPlace = [];
+    this.selected.forEach((station: string) => {
+      const infos: StationInPlace = {
+        id: "",
+        name_station: station,
+        id_place: this.idPlace
+      }
+      this.stationsInPlace.push(infos);
+    });
+
     if(this.firstFormGroup.value.place === "Restaurant"){
       let restaurant: Restaurant = {
-        id: "",
+        id: this.idPlace,
         name: this.firstFormGroup.value.name,
         arrondissement: this.firstFormGroup.value.arrondissement,
         note_globale: this.secondFormGroup.value.note,
@@ -321,33 +351,38 @@ export class EditComponent {
         facade: this.facadeFile,
         the_fork: this.firstFormGroup.value.theFork,
         tested: this.firstFormGroup.value.tested,
-        comment: this.secondFormGroup.value.comment,
+        comment: this.firstFormGroup.value.comment,
         note_deco: this.secondFormGroup.value.note_deco,
         liked: false,
         note_quantity: this.secondFormGroup.value.note_quantity,
         quality: this.secondFormGroup.value.note_quality,
         quality_price: this.secondFormGroup.value.quality_price
       };
-      this.data.addRestaurant(restaurant,this.allHoraires,this.allPictures,allComments,this.addresses);
+      this.data.updateRestaurant(restaurant,this.allHoraires,this.allPictures,allComments,this.addresses,this.stationsInPlace);
     }
     else if(this.firstFormGroup.value.place === "Bar"){
       let bar: Bar = {
-        id: "",
+        id: this.idPlace,
         name: this.firstFormGroup.value.name,
         arrondissement: this.firstFormGroup.value.arrondissement,
         note_globale: this.secondFormGroup.value.note,
         price: this.firstFormGroup.value.price,
         facade: this.facadeFile,
         tested: this.firstFormGroup.value.tested,
-        comment: this.thirdFormGroup.value.comment,
-        type: this.thirdFormGroup.value.type,
+        comment: this.firstFormGroup.value.comment,
+        type: this.firstFormGroup.value.type,
         note_deco: this.secondFormGroup.value.note_deco,
         liked: false,
         quality: this.secondFormGroup.value.note_quality,
         quality_price: this.secondFormGroup.value.quality_price
       };
-      this.data.addBar(bar,this.allHoraires,this.allPictures,allComments,this.addresses);
+      console.log(bar)
+      this.data.updateBar(bar,this.allHoraires,this.allPictures,allComments,this.addresses,this.stationsInPlace);
     }
+
+    setTimeout(() => {
+      this.router.navigate(['/home']);
+    }, 1000);
   }
 
   filterType(event: any) {

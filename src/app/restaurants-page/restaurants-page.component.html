@@ -1,3 +1,5 @@
+<app-navbar [color]="'#01110A'"></app-navbar>
+
 <div class="ads">
     <h2 class="title">Restaurants sur Paris</h2>
     <p>Trouvez votre prochain restaurant parisien.</p>
@@ -5,7 +7,7 @@
 
 <div class="sort">
     <div id="sorter">
-        <mat-select [(ngModel)]="typesSelect" (openedChange)="setupClose($event)" placeholder="Type" #allType multiple class="select" required>
+        <mat-select [(ngModel)]="typesSelect" (openedChange)="sort($event)" placeholder="Type" #allType multiple class="select" required>
             <mat-select-trigger>
                 Type
             </mat-select-trigger>
@@ -17,7 +19,7 @@
     </div>
 
     <div id="sorter">
-        <mat-select (openedChange)="setupClose($event)" placeholder="Ligne" #allLigne multiple class="select" required>
+        <mat-select (openedChange)="sort($event)" placeholder="Ligne" #allLigne multiple class="select" required>
             <mat-select-trigger>
                 Ligne
             </mat-select-trigger>
@@ -29,7 +31,7 @@
     </div>
 
     <div id="sorter">
-        <mat-select (openedChange)="setupClose($event)" placeholder="Arrondissement" #allArrondissement multiple class="select" required>
+        <mat-select (openedChange)="sort($event)" placeholder="Arrondissement" #allArrondissement multiple class="select" required>
             <mat-select-trigger>
                 Arrondissement
             </mat-select-trigger>
@@ -41,7 +43,15 @@
     </div>
 
     <div id="sorter">
-        <mat-select (openedChange)="setupClose($event)" #opened placeholder="Ouvert" multiple class="select" required>
+        <mat-select (openedChange)="sort($event)" #tested placeholder="Testé" multiple class="select" required>
+            <mat-option *ngFor="let option of testedOptions" [value]="option">
+                {{option}}
+            </mat-option>
+        </mat-select>
+    </div>
+
+    <div id="sorter">
+        <mat-select (openedChange)="sort($event)" #opened placeholder="Ouvert" multiple class="select" required>
             <mat-option *ngFor="let option of openedOptions" [value]="option">
                 {{option}}
             </mat-option>
@@ -58,7 +68,8 @@
     </div>
 </div>
 
-<div class="restaurants" *ngIf="cardParams.length > 0">
+<div class="restaurants" *ngIf="getData">
+    {{scroll()}}
     <div class="snowAnimation">
         <div class="posDepart">
             <img [ngStyle]="{'animation-delay' : i + 's', 'top' : randomPosition[i] + '%'}" mat-card-avatar *ngFor="let plat of allPictures;index as i;" [src]="plat.src">
@@ -70,7 +81,7 @@
 
         <div class="details">
             <p id="title">{{params.data.type}}</p>
-            <show-horaires [color]="'white'" [horaires]="params.horaires"></show-horaires>
+            <show-horaires [color]="'#FCFFFC'" [horaires]="params.horaires"></show-horaires>
             <p id="title" *ngFor="let address of params.addresses">{{address.address}}, {{address.code_postal}}</p>
         </div>
     </div>
@@ -78,3 +89,7 @@
 
 
 </div>
+
+<loading *ngIf="!getData && !nothing"></loading>
+
+<h1 class="nothing" *ngIf="nothing"> Aucun restaurant ne correspond</h1>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -9,17 +9,16 @@ import { AuthService } from '../services/auth.service';
 export class AuthGuard implements CanActivate {
 
   constructor(private authService: AuthService, private router: Router){}
-  
   canActivate(next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> {
-      let response: Subject<boolean> = new Subject();
-      const sub = this.authService.isAuthenticated();
-      sub.subscribe((isLoggedIn: boolean) => {
-        if (isLoggedIn){
+      let response: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
+      this.authService.isAuthenticated().subscribe((isLoggedIn: string) => {
+        if(isLoggedIn !== "cancel"){
           response.next(true);
-        } else {
+        }
+        else{
+          this.router.navigate(['/login']);
           response.next(false);
-          //this.router.navigate(['/login']);
         }
       });
     return response;

@@ -11,6 +11,8 @@ import { MatListModule } from '@angular/material/list';
 import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
 import { CardComponent } from './card.component';
 import { CardRoutingModule } from './card-routing.module';
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+
 
 
 @NgModule({
@@ -20,6 +22,7 @@ import { CardRoutingModule } from './card-routing.module';
   imports: [
     BrowserModule,
     MatSelectModule,
+    FontAwesomeModule,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
