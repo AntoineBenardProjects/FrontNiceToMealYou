@@ -1,0 +1,38 @@
+div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    width: 32px;
+    position: relative;
+    cursor: pointer;
+    &:hover{
+        p{color: var(--hoverColor)};
+        opacity: 1 !important;
+        &::before{
+            width: 100%;
+        }
+        border-color: var(--hoverBorderColor);
+    }
+    &::before{
+        background: var(--hoverBackgroundColor);
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        border-radius: 5px;
+        transition: 0.2s;
+    }
+    border-radius: 5px;
+    border: 2px solid var(--borderColor);
+    cursor: pointer;
+    background-color: var(--backgroundColor);
+}
+p{
+    pointer-events: none;
+    z-index: 1;
+    color: var(--color);
+    transition: 0.2s;
+}

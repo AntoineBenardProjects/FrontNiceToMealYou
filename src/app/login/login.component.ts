@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../model/users';
+import { User } from '../model/user';
 import { AuthService } from '../services/auth.service';
 import { DatabaseService } from '../services/database.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MessageComponent } from '../message/message.component';
 import { Message } from '../model/message';
+import { ButtonInfos } from '../shared/model/designs';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,12 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private bottomSheet: MatBottomSheet,
     private auth: AuthService) { }
+
+  protected buttonColor: ButtonInfos = {
+    color: 'var(--black)',
+    colorActive: 'var(--white)',
+    backgroundColorActive: 'var(--black)'
+  }
 
   ngOnInit(): void {
     setTimeout(() => {

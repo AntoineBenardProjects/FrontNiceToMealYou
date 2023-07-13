@@ -10,17 +10,17 @@ import { faSquare, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ShowLignesComponent } from '../show-lignes/show-lignes.component';
 import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
 import { CardModule } from '../card/card.module';
 import { NavbarModule } from '../navbar/navbar.module';
 import { GraphBarModule } from '../graph-bar/graph-bar.module';
+import { ProgressBarModule } from '../shared/design/progress-bar/progress-bar.module';
+import { SelectsModule } from '../shared/design/selects/selects.module';
 
 
 @NgModule({
   declarations: [
-    ShowedComponent,
-    ShowLignesComponent
+    ShowedComponent
   ],
   imports: [
     BrowserModule,
@@ -35,6 +35,8 @@ import { GraphBarModule } from '../graph-bar/graph-bar.module';
     ShowHorairesModule,
     NavbarModule,
     GraphBarModule,
+    ProgressBarModule,
+    SelectsModule,
     CardModule
   ]
 })

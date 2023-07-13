@@ -1,32 +1,20 @@
-<mat-card class="carte" *ngIf="params != null"  (click)="navigate()">
-    <mat-card-header style="height: 15%; width: 100%;">
-        <img mat-card-avatar *ngIf="params.pictures.length > 0" [src]="params.pictures[0].src"/>
-        <mat-card-title>{{params.data.name}}</mat-card-title>
-        <circle-progress *ngIf="params.data.tested" class="note" [percent]="params.data.note_globale * 10" [radius]="params.circleNoteParams.radius" [outerStrokeWidth]="params.circleNoteParams.strokeWidth" [innerStrokeWidth]="0"
-            [outerStrokeColor]="'#FCFFFC'" [animation]="true" [animationDuration]="300" [titleFontSize]="params.circleNoteParams.titleFontSize" 
-            [subtitleFontSize]="params.circleNoteParams.subtitleFontSize" [title]="params.data.note_globale.toString()" [units]="''" [subtitle]="'/10'" [titleColor]="'#FCFFFC'"
-            [subtitleColor]="'#FCFFFC'"></circle-progress>
-        <circle-progress *ngIf="!params.data.tested" class="note" [percent]="params.data.note_globale * 20" [radius]="params.circleNoteParams.radius" [outerStrokeWidth]="params.circleNoteParams.strokeWidth" [innerStrokeWidth]="0"
-            [outerStrokeColor]="'#FCFFFC'" [animation]="true" [animationDuration]="300" [titleFontSize]="params.circleNoteParams.titleFontSize" 
-            [subtitleFontSize]="params.circleNoteParams.subtitleFontSize" [title]="params.data.note_globale.toString()" [units]="''" [subtitle]="'/5'" [titleColor]="'#FCFFFC'"
-            [subtitleColor]="'#FCFFFC'"></circle-progress>
-
-    </mat-card-header>
-    <div class="info" [ngStyle]="{'background' : 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('+ params.data.facade +')'}">
-        <fa-icon *ngIf="like" [icon]="heartIcon"></fa-icon>
-        <div style="display: flex; justify-content: space-around; align-items: center; width: 100%; height: 100%;">
-            <div class="lignes">
-                <mat-nav-list>
-                    <mat-list-item *ngFor="let station of params.stationsInPlace">
-                        <span matLine>{{ station.name }}</span>
-                        <div style="display: grid; grid-template-columns: auto auto auto;">
-                            <ng-container *ngFor="let ligne of ligneStations">
-                                <img mat-card-avatar *ngIf="ligne.name_station === station.name" style="margin: 1vh;" [src]="'../../assets/' + ligne.name_ligne + '.png'">
-                            </ng-container>
-                        </div>
-                    </mat-list-item>
-                </mat-nav-list>   
+<mat-card style="display: none;"></mat-card>
+<div class="card">
+    <div class="card__content center">
+        <div class="card__front" (click)="navigate()">
+            <img>
+            <div class="body">
+                <progress-bar [tested]="params.data.tested"></progress-bar>
+                <!-- <p *ngIf="isOpened">Ouvert</p>
+                <p *ngIf="!isOpened">Fermé</p> -->
+            </div>
+            <p class="footer center">{{params.data.name}}</p>
+        </div>
+        <div class="card__back center" (click)="navigate()">
+            <div class="lignesList">
+            </div>
+            <div class="stationsList center">
             </div>
         </div>
     </div>
-</mat-card>
+</div>

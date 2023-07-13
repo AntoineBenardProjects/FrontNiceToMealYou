@@ -1,308 +1,112 @@
-<app-navbar [color]="'#01110A'"></app-navbar>
-
-<h1 class="title">Ajouter un lieu !</h1>
-<mat-horizontal-stepper [linear]="isLinear" #stepper="matHorizontalStepper">
-    <mat-step>
-      <mat-grid-list cols="5" rowHeight="1vh" gutterSize="10vh">
-        <!--  Infos générales -->
-          <mat-grid-tile class="shadow" colspan="3" rowspan="6">
-            <div class="formContainer">
-              <form [formGroup]="firstFormGroup" class="double two">
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="name" required autocomplete="disabled">
-                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('name')?.errors !== null  || firstFormGroup.value.name === '') ? 'red' : '#01110A'}">Nom *</mat-placeholder>
-                  </mat-form-field>
-                </div>
-
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('place')?.errors !== null  || firstFormGroup.value.place === '') ? 'red' : '#01110A'}">Type de lieu *</mat-placeholder>
-                    <mat-select (valueChange)="setType()" formControlName="place">
-                      <mat-option *ngFor="let option of options" [value]="option">
-                        {{option}}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="arrondissement" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('arrondissement')?.errors !== null  || firstFormGroup.value.arrondissement === '') ? 'red' : '#01110A'}">Arrondissement *</mat-placeholder>
-                  </mat-form-field>
-                </div>
-
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="price" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('price')?.errors !== null  || firstFormGroup.value.price === '') ? 'red' : '#01110A'}">Prix *</mat-placeholder>
-                  </mat-form-field>
-                </div>
-              </form>
-            </div>
-            
-            <div class="halfFormContainer">
-              <form [formGroup]="firstFormGroup" class="double one">
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input (input)="filterType($event)" class="auto" formControlName="type" matInput [matAutocomplete]="auto">
-                    <mat-placeholder [ngStyle]="{'color': (firstFormGroup.get('type')?.errors !== null  || firstFormGroup.value.type === '') ? 'red' : '#01110A'}">Type *</mat-placeholder>
-                    <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of typesFiltered" [value]="option.type">
-                        {{option.type}}
-                        </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
-                </div>
-                <div class="gridCell">
-                  <p>Testé   <mat-checkbox formControlName="tested"></mat-checkbox></p>
-                </div>
-              </form>
-            </div>
-          
-          </mat-grid-tile>
-        <!--  Sélections des stations -->
-          <mat-grid-tile class="shadow" colspan="2" rowspan="6">
-            <div class="selectStation">
-              <div class="select">
-                <div class="searchBar">
-                  <input matInput class="bar" [(ngModel)]="searchTerm" type="text" placeholder="Rechercher une station" [ngModelOptions]="{standalone: true}" autocomplete="disabled" />
-                  <button (click)="filter(searchTerm)">
-                    <mat-icon>search</mat-icon>
-                  </button>
-                </div>
-    
-                <div style="display: flex; flex-direction: column; height: 100%; align-items: center; width: 100%;">
-                  <div class="content" (click)="select(element.name)" *ngFor="let element of filteredData">
-                    <p>{{element.name}}</p>
-                  </div>
-                </div>
-                
-              </div>
-              
-    
-              <div class="stations">
-                <p class="selectedStation">Stations sélectionnées</p>
-                <div style="display: flex; flex-direction: column; height: 100%; align-items: center; width: 100%;">
-                  <div class="content" (click)="select(element)" *ngFor="let element of selected">
-                    <p>{{element}}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </mat-grid-tile>
-        <!--  Photos  -->        
-          <mat-grid-tile class="shadow" colspan="2" rowspan="2">
-            <div class="formContainer">
-              <form [formGroup]="firstFormGroup" class="quatuor one">
-                <div class="gridCell">
-                  <p>Like   <mat-checkbox formControlName="liked"></mat-checkbox></p>
-                </div>
-
-                <div class="gridCell">
-                  <div class="uploadWrapper">
-                    <p>{{platName}}</p>
-                    <input type="file" autocomplete="disabled" formControlName="img" (change)="setPictures($event)" multiple>
-                  </div>
-                </div>
-
-                <div class="gridCell">
-                  <div class="uploadWrapper">
-                    <p>{{facadeName}}</p>
-                    <input type="file" autocomplete="disabled" formControlName="img" (change)="facadeImage($event)">
-                  </div>
-                </div>
-        
-                <div class="gridCell">
-                  <mat-form-field *ngIf="firstFormGroup.value.place === 'Restaurant'" hideRequiredMarker="true">
-                    <input matInput formControlName="theFork" autocomplete="disabled">
-                    <mat-placeholder style="color: #01110A;">Lien The Fork</mat-placeholder>
-                  </mat-form-field>
-                </div>
-              </form>
-            </div>
-            
-          </mat-grid-tile>
-        <!--  Notes -->
-          <mat-grid-tile class="shadow" *ngIf="!firstFormGroup.value.tested" colspan="1" rowspan="2">
-            <div class="formContainer">
-              <form [formGroup]="secondFormGroup" class="single one">
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="note" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note')?.errors !== null  || secondFormGroup.value.note === '') ? 'red' : '#01110A'}">Priorité*</mat-placeholder>
-                  </mat-form-field>
-                </div>
-              </form>
-            </div>
-          </mat-grid-tile>
-          <mat-grid-tile class="shadow" *ngIf="firstFormGroup.value.tested" colspan="3" rowspan="2">
-            <div class="formContainer">
-              <form [formGroup]="secondFormGroup" [ngClass]="firstFormGroup.value.place == 'Restaurant' ? 'quinte one' : 'quatuor one'">
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="note" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note')?.errors !== null  || secondFormGroup.value.note === '') ? 'red' : '#01110A'}">Note globale*</mat-placeholder>
-                  </mat-form-field>
-                </div>
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="note_deco" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note_deco')?.errors !== null  || secondFormGroup.value.note_deco === '') ? 'red' : '#01110A'}">Note déco *</mat-placeholder>
-                  </mat-form-field>
-                </div>
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="note_quality" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note_quality')?.errors !== null  || secondFormGroup.value.note_quality === '') ? 'red' : '#01110A'}">Note qualité *</mat-placeholder>
-                  </mat-form-field>
-                </div>
-                <div class="gridCell">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="quality_price" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('quality_price')?.errors !== null  || secondFormGroup.value.quality_price === '') ? 'red' : '#01110A'}">Rapport qualité prix *</mat-placeholder>
-                  </mat-form-field>
-                </div>
-                <div class="gridCell" *ngIf="firstFormGroup.value.place === 'Restaurant'">
-                  <mat-form-field hideRequiredMarker="true">
-                    <input matInput formControlName="note_quantity" autocomplete="disabled" type="number">
-                    <mat-placeholder [ngStyle]="{'color': (secondFormGroup.get('note_quantity')?.errors !== null  || secondFormGroup.value.note_quantity === '') ? 'red' : '#01110A'}">Note quantité *</mat-placeholder>
-                  </mat-form-field>
-                </div>
-              </form>
-            </div>
-          </mat-grid-tile>
-
-        <!--  Commentaire -->
-          <mat-grid-tile class="shadow" colspan="3" rowspan="4">
-            <div class="formContainer">
-              <form [formGroup]="firstFormGroup" class="single one">
-                <div class="gridCell">
-                  <mat-form-field style="width: 60% !important;" hideRequiredMarker="true">
-                    <textarea matInput placeholder="Commentaire" formControlName="comment"></textarea>
-                  </mat-form-field>
-                </div>
-              </form>
-            </div>
-          </mat-grid-tile>
-        
-        <!--  Adresses -->
-          <mat-grid-tile class="shadow" colspan="2" rowspan="4">
-            <div class="formContainer">
-              <form>
-                <div class="commentsButton">
-                  <button mat-button (click)="setAddressLine(true)"><mat-icon>add</mat-icon></button>
-                  <button *ngIf="addresses.length > 1" mat-button (click)="setAddressLine(false)"><mat-icon>minimize</mat-icon></button>
-                </div>
-                
-                <div class="addressesContainer hideScroll">
-                  <div class="addresses" *ngFor="let address of addresses; index as i;">
-                    <mat-form-field class="address">
-                      <input matInput placeholder="Adresse" (input)="setAddress($event,i,'address')" autocomplete="disabled">
-                    </mat-form-field>
-                    <mat-form-field class="code">
-                      <input matInput placeholder="Code Postal" (input)="setAddress($event,i,'code')" autocomplete="disabled" type="number">
-                    </mat-form-field>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </mat-grid-tile>
-      </mat-grid-list>
-      <div style="display: flex; justify-content: flex-end;">
-        <button mat-button matStepperNext>Horaires et points positifs/négatifs <mat-icon>navigate_next</mat-icon></button>
-      </div>
-    </mat-step>
-
-    <mat-step>
-      <mat-grid-list cols="2" rowHeight="1vh" gutterSize="10vh">
-      <!--  Horaires -->
-        <mat-grid-tile class="shadow" colspan="1" rowspan="8">
-          <div class="formContainer">
-            <form class="space">
-              <p><mat-checkbox style="display: flex !important; align-items: center;" (change)="fillHoraires($event)"> Remplir tous les champs avec les horaires du Lundi</mat-checkbox></p>
-              <div class="allHoraires">
-                <div class="horairesDay" *ngFor="let horaires of allHoraires;">
-                  <div class="top">
-                    <mat-label>{{horaires.day}}</mat-label>
-                    <button (click)="changeDisplay(horaires.day)" class="addHoraires" *ngIf="!displayHoraire[horaires.day]">
-                      <mat-icon>add</mat-icon>
-                    </button>
-                    <button (click)="changeDisplay(horaires.day)" class="addHoraires" *ngIf="displayHoraire[horaires.day]">
-                      <mat-icon>remove</mat-icon>
-                    </button>
-                  </div>
-                  <div class="horairesFormField">
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                      <mat-form-field appearance="outline">
-                        <mat-label>Ouverture</mat-label>
-                        <input type="time" (change)="setHoraires($event, horaires.day,'ouverture')" matInput autocomplete="disabled" [value]="horaires.ouverture">
-                      </mat-form-field>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                      <mat-form-field appearance="outline">
-                        <mat-label>Fermeture midi</mat-label>
-                        <input type="time" (change)="setHoraires($event, horaires.day,'fermeture_midi')" matInput autocomplete="disabled" [value]="horaires.fermeture_midi">
-                      </mat-form-field>
-                    </div>
-
-                    <div *ngIf="displayHoraire[horaires.day]" style="display: flex; justify-content: center; align-items: center;">
-                      <mat-form-field appearance="outline">
-                        <mat-label>Ouverture soir</mat-label>
-                        <input type="time" (change)="setHoraires($event, horaires.day,'ouverture_soir')" matInput autocomplete="disabled" [value]="horaires.ouverture_soir">
-                      </mat-form-field>
-                    </div>
-
-                    <div *ngIf="displayHoraire[horaires.day]" style="display: flex; justify-content: center; align-items: center;">
-                      <mat-form-field appearance="outline">
-                        <mat-label>Fermeture</mat-label>
-                        <input type="time" (change)="setHoraires($event, horaires.day,'fermeture')" matInput autocomplete="disabled" [value]="horaires.fermeture">
-                      </mat-form-field>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
+<div class="body" [ngStyle]="{'background' : backgroundColor}">
+  <div class="first">
+    <div class="topbarContainer">
+      <div class="navbar">
+          <div class="container">
+              <img id="logo" [src]="logoImageSrc" routerLink="/home">
+              <round-button id="mainLink" text="Mes lieux" [styleInfos]="buttonColor" routerLink="/filter"></round-button>         
           </div>
-        </mat-grid-tile>
-      <!--  Commentaires -->
-        <mat-grid-tile class="shadow" colspan="1" rowspan="8">
-          <div class="formContainer">
-            <form>
-              <mat-label>Points positifs</mat-label>
-              <div class="commentsButton">
-                <button mat-button (click)="setCommentLine(true,true)"><mat-icon>add</mat-icon></button>
-                <button mat-button (click)="setCommentLine(true,false)"><mat-icon>minimize</mat-icon></button>
-              </div>
-              <div class="comments">
-                <mat-form-field *ngFor="let positif of positifs; index as i;">
-                  <input matInput placeholder="Positif" (input)="setComment($event,i,true)" autocomplete="disabled">
-                </mat-form-field>
-              </div>
-      
-              <mat-label>Points négatifs</mat-label>
-              <div class="commentsButton">
-                <button mat-button (click)="setCommentLine(false,true)"><mat-icon>add</mat-icon></button>
-                <button mat-button (click)="setCommentLine(false,false)"><mat-icon>minimize</mat-icon></button>
-              </div>
-              <div class="comments">
-                <mat-form-field *ngFor="let negatif of negatifs; index as i;">
-                  <input matInput placeholder="Négatif" (input)="setComment($event,i,false)" autocomplete="disabled">
-                </mat-form-field>
-              </div>
-        
-              <button type="submit" mat-button>Terminer</button>
-            </form>
-          </div>
-        </mat-grid-tile>
-      </mat-grid-list>
-      <div style="display: flex; justify-content: space-between;">
-        <button mat-button matStepperPrevious><mat-icon>navigate_before</mat-icon> Informations générales</button>
-        <button mat-button (click)="add()">Ajouter ce lieu</button>  
       </div>
-    </mat-step>
+    </div>
+    <div class="section" id="firstSection">
+      <h3 class="subtitle" id="main" [@title]="showFirstTitle" [ngStyle]="{'left': firstSectionPosition}">Infos essentielles</h3>
+      <div class="nameAndAddress">
+        <app-input id="nameAndAddress" [errorMessage]="nameError" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteName" [value]="placeInfo.name" text="Nom" [styleInfo]="validName() ? validInput : invalidInput" (input)="setValue($event,'name')"></app-input>
+        <app-input id="nameAndAddress" [errorMessage]="addressError" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteAddress" [value]="placeInfo.address" (change)="checkAddress()" text="Adresse" [styleInfo]="validAddress ? validInput : invalidInput" (input)="setValue($event,'address')"></app-input>  
+      </div>
+      <div class="selects">
+        <round-select [errorMessage]="categoryError" [multiselect]="false" (selectionChange)="setValue($event,'category')" [selectAll]="false" [infos]="placeInfo.category.length > 0 ? validSelectInfos : invalidSelectInfos" [data]="typesSelect" text="Catégorie"></round-select>
+        <round-select [errorMessage]="typeError" [multiselect]="false" id="restaurantType" [ngStyle]="{'width' : placeInfo.category === 'Restaurant' ? '30vw' : '0','margin-left' : placeInfo.category === 'Restaurant' ? '10vw' : '0','overflow' : placeInfo.category === 'Restaurant' ? 'visible' : 'hidden','opacity' : placeInfo.category === 'Restaurant' ? '1' : '0'}" (selectionChange)="setValue($event,'type')" [selectAll]="false" [infos]="placeInfo.type.length > 0 ? validSelectInfos : invalidSelectInfos" [data]="restaurantsTypesSelect" text="Type de restaurant"></round-select>
+      </div>
+      <div class="checkboxs">
+        <div class="line">
+          <checkbox [value]="placeInfo.tested" (checked)="setValue($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.tested && placeInfo.category !== ''">{{placeInfo.category}} testé</p>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.tested && placeInfo.category === ''">Lieu testé</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.tested && placeInfo.category !== ''">{{placeInfo.category}} non testé</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.tested && placeInfo.category === ''">Lieu non testé</p>
+        </div>
 
-  </mat-horizontal-stepper>
+        <div class="line">
+          <checkbox [value]="placeInfo.visible" (checked)="setValue($event,'visible')" [styleInfos]="checkboxInfos"></checkbox>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.visible && placeInfo.category !== ''">{{placeInfo.category}} visible pour les autres utilisateurs</p>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.visible && placeInfo.category === ''">Lieu visible pour les autres utilisateurs</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.visible && placeInfo.category !== ''">{{placeInfo.category}} invisible pour les autres utilisateurs</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.visible && placeInfo.category === ''">Lieu invisible pour les autres utilisateurs</p>
+        </div>
+        
+      </div>
+    </div>
+    <div class="section" id="map" *ngIf="marker != null">
+      <google-map
+        [height]="mapHeight"
+        [width]="mapWidth"
+        [zoom]="mapZoom"
+        [center]="mapCenter"
+        [options]="mapOptions"
+      >
+      <map-marker
+        [position]="marker"
+        [options]="markerOptions"
+      ></map-marker>
+      </google-map>
+      <div class="stations" *ngIf="stations.length > 0">
+        <div class="line" *ngFor="let station of stations">
+          <div class="station">
+            <p>{{station.name}}</p>
+            <div class="lignesPictures">
+              <img *ngFor="let ligne of station.lignes" [src]="'../../assets/images-lignes/'+station.reg+'/'+ligne+'.png'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section" [ngStyle]="{'display' : placeInfo.tested && canSubmit() ? 'flex' : 'none'}">
+      <h3 class="subtitle">Qu'est-ce que t'en penses ?</h3>
+      <app-textfield [value]="comment.comment" text="Commentaire" [styleInfo]="normalInput" (input)="setValue($event,'comment')"></app-textfield>
+      <div class="grades">
+        <app-input [value]="comment.quality_price" class="number" text="Rapport qualité/prix" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quality_price')"></app-input>
+        <app-input [value]="comment.quantity" class="number" text="Quantité" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quantity')"></app-input>
+        <app-input [value]="comment.service" class="number" text="Qualité du service" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'service')"></app-input>    
+      </div>
+    </div>
+    <div class="section" *ngIf="canSubmit()">
+      <h3 class="subtitle">Horaires</h3>
+
+      <div class="ligneHoraires" *ngFor="let h of horaires; index as i">
+        <div class="titleHoraires">
+          <h3 class="center">{{h.day}}</h3>
+          <round-button id="fireSecondLine" [text]="h.secondLine ? '-' : '+'" [styleInfos]="secondLineButton" (click)="setSecondLine(i)"></round-button>         
+        </div>
+        <div class="inputs">
+          <app-input type="time" [value]="h.ouverture" text="Ouverture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'ouverture')"></app-input>
+          <app-input type="time" [value]="h.fermeture_midi" [text]="h.secondLine ? 'Fermeture Midi' : 'Fermeture'" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'fermeture_midi')"></app-input>
+          <app-input type="time" *ngIf="h.secondLine" [value]="h.ouverture_soir" text="Réouverture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'ouverture_soir')"></app-input>
+          <app-input type="time" *ngIf="h.secondLine" [value]="h.fermeture" text="Fermeture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'fermeture')"></app-input>  
+        </div>
+      </div>
+    </div>
+    <div class="section" *ngIf="canSubmit()">
+      <h3 class="subtitle">Informations compémentaires</h3>
+      <div class="pictures">
+        <div class="picture" *ngFor="let picture of pictures; index as i;"
+        [ngStyle]="{'background-image': 'url('+picture.src+')'}">
+        <fa-icon [icon]="crossIcon" (click)="removeImage(i)"></fa-icon>
+        </div>
+        <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="facadeImage($event)"></upload-button>
+      </div>
+      <app-input [value]="placeInfo.website" text="Site Web" [styleInfo]="normalInput" (input)="setValue($event,'website')"></app-input>
+      <app-input [value]="placeInfo.link_menu" text="Lien Menu" [styleInfo]="normalInput" (input)="setValue($event,'menu')"></app-input>  
+    </div>
+    
+    
+    
+  </div>
+  <round-button *ngIf="device !== 'mobile'" id="submit" text="Enregistrer" (click)="add()" [styleInfos]="canSubmit() ? validButton : invalidButton"></round-button>         
+  <fa-icon id="submitMobile" [icon]="checkIcon" *ngIf="device === 'mobile'" (click)="add()" 
+  [ngStyle]="{'background' : canSubmit() ? 'var(--thirdColor)' : 'var(--secondColor)'}"></fa-icon>
+  <div class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '10vh' : '0','background' : canSubmit() ? 'var(--thirdColor)' : 'var(--secondColor)'}">
+    <p>{{errorMessage}}</p>
+  </div>
+</div>
   

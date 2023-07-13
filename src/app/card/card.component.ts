@@ -1,13 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { CardParams } from '../model/cardParams';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { PlacesService } from '../services/places.service';
 import { DatabaseService } from '../services/database.service';
-import { Liked } from '../model/liked';
-import { Station } from '../model/station';
-import { LigneInStation } from '../model/ligneInStation';
-import { Ligne } from '../model/ligne';
 import { Router } from '@angular/router';
+import { ColorPalette } from 'src/assets/style-infos/palettes';
+import { ThemeService } from '../services/theme.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-card',
@@ -16,51 +15,41 @@ import { Router } from '@angular/router';
 })
 export class CardComponent implements OnInit {
 
-  constructor(private place: PlacesService, private data: DatabaseService, private router: Router) { }
+  constructor(private place: PlacesService, private data: DatabaseService, private router: Router,
+    private elementRef: ElementRef,private themeService: ThemeService) { 
+    this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
+      this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
+      this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
+      this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
+      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
+      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+
+    });
+  }
+  private themeSubscriber: Subscription;
 
   @Input() params!: CardParams;
-  public ligneStations: LigneInStation[] = [];
+  protected isOpened: boolean = false;
 
   heartIcon = solidHeart;
   like: boolean = false;
 
   ngOnInit(): void {
-    this.setTypePictures();
     let id: string = "";
     id = localStorage.getItem("id");
-    this.data.getLikesOfUser(id).subscribe((res: Liked[]) => {
-      const find = res.find((element: Liked) => element.id_place === this.params.data.id);
-      if(find != null)  this.like = true;
-    });
-    this.params.stationsInPlace.forEach((station: Station) => {
-      this.data.getLignesOfStation(station.name).subscribe((lignes: Ligne[]) => {
-        lignes.forEach((ligne: Ligne) => {
-          this.ligneStations.push({
-            name_ligne: ligne.name,
-            name_station: station.name
-          });
-        });
-      });
-    });
+    this.isOpened = this.place.isOpened(this.params.horaires);
   }
 
-  setTypePictures(): void{
-    if(this.params.pictures.length === 0 ){
-      const iconType = this.place.getTypeIcon(this.params.data.type);
-      this.params.pictures.push({
-        id: "",
-        id_place: "",
-        src: iconType
-      });
-    }
+  ngOndestroy(){
+    this.themeSubscriber.unsubscribe();
   }
 
   navigate(): void{
-    if(this.router.url === "/restaurants" || this.router.url === "/bars" ||this.router.url === "/loisirs"){
-      this.place.saveFilters(this.params.data.id);
-    } else{
+    // if(this.router.url === "/restaurants" || this.router.url === "/bars" ||this.router.url === "/loisirs"){
+    //   this.place.saveFilters(this.params.data.id);
+    // } else{
       this.router.navigate(['/showed',this.params.data.id]);
-    }
+    // }
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { StorageService } from '../services/storage.service';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
@@ -8,17 +8,15 @@ import { Router } from '@angular/router';
 import { DatabaseService } from '../services/database.service';
 import { Horaires } from '../model/horaires';
 import { Pictures } from '../model/pictures';
-import { Bar } from '../model/bar';
 import { Comment } from '../model/comment';
-import { Address } from '../model/address';
-import { Restaurant } from '../model/restaurant';
 import { CardParams } from '../model/cardParams';
 import { CircleNoteParams } from '../model/circle-notes-params';
-import { Liked } from '../model/liked';
-import { Ligne } from '../model/ligne';
-import { Station } from '../model/station';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { desktopParams, mobileParams } from '../shared/circleNoteParams';
+import { ColorPalette } from 'src/assets/style-infos/palettes';
+import { ThemeService } from '../services/theme.service';
+import { SelectData, SelectInfos } from '../shared/model/designs';
+import { Restaurant } from '../model/places';
 
 
 
@@ -29,23 +27,29 @@ import { desktopParams, mobileParams } from '../shared/circleNoteParams';
 })
 export class ShowedComponent implements OnInit, OnDestroy {
 
-  place!: Restaurant;
-  pictures: Pictures[] = [];
-  addresses: Address[] = [];
-  stations: Station[] = [];
-  lignes: Ligne[] = [];
-  horaires: Horaires[] = [];
-  positifComments: string[] = [];
-  negatifComments: string[] = [];
-  typeOfPlace: string = "";
-  getStations: Subject<boolean> = new Subject();
-  getLignes: Subject<boolean> = new Subject();
+  protected place!: Restaurant;
+  protected pictures: Pictures[] = [];
+  protected addresses: SelectData[] = [];
+  protected types: SelectData[] = [];
+  protected lignes: SelectData[] = [];
+  protected stations: SelectData[] = [];
+  protected comments: SelectData[] = [
+    {id: "Positif", name: "Positif"},
+    {id: "Négatif", name: "Négatif"}
+  ];
+  protected horaires: Horaires[] = [];
+  protected comment: string[] = [];
+  protected positifComments: string[] = [];
+  protected negatifComments: string[] = [];
+  protected typeOfPlace: string = "";
+  protected getStations: Subject<boolean> = new Subject();
+  protected getLignes: Subject<boolean> = new Subject();
 
   
-  cardParamsSimilarPlaces : CardParams[] = [];
-  cardParamsSameLigne: CardParams[] = [];
-  cardParamsSameStation: CardParams[] = [];
-  cardParamsSameArrondissement: CardParams[] = [];
+  protected cardParamsSimilarPlaces : CardParams[] = [];
+  protected cardParamsSameLigne: CardParams[] = [];
+  protected cardParamsSameStation: CardParams[] = [];
+  protected cardParamsSameArrondissement: CardParams[] = [];
 
   private clickHandler: boolean = true;
   private positionResult : number = 0;
@@ -53,36 +57,57 @@ export class ShowedComponent implements OnInit, OnDestroy {
   private positionStation : number = 0;
   private positionArrondissement : number = 0;
 
-  colorNote: string = "";
-  percent: number = 0;
+  protected colorNote: string = "";
+  protected percent: number = 0;
 
-  station: string = "Aucun";
-  urlArrondissement: string = "";
-  darkenMetroBackground: boolean = false;
-  darkenArrondissementBackground: boolean = true;
-  colorMetroTitle: string = "#ffffff";
+  protected station: string = "Aucun";
+  protected urlArrondissement: string = "";
+  protected darkenMetroBackground: boolean = false;
+  protected darkenArrondissementBackground: boolean = true;
+  protected colorMetroTitle: string = "#ffffff";
 
-  circleNoteParamsCard!: CircleNoteParams;
-  circleNoteParamsPlace!: CircleNoteParams;
+  protected circleNoteParamsCard!: CircleNoteParams;
+  protected circleNoteParamsPlace!: CircleNoteParams;
 
-  randomPosition: any[] = [];
-  randomPositionNotes: any[] = [];
-  randomAnimation: any[] = [];
-  randomAnimationNotes: any[] = [];
+  protected randomPosition: any[] = [];
+  protected randomPositionNotes: any[] = [];
+  protected randomAnimation: any[] = [];
+  protected randomAnimationNotes: any[] = [];
 
-  isAdmin: boolean = false;
-  isVisit: boolean = false;
+  protected isAdmin: boolean = false;
+  protected isVisit: boolean = false;
 
-  heart = regularHeart;
-  like: boolean = false;
+  protected heart = regularHeart;
+  protected like: boolean = false;
+
+  protected toShow: string = "horaires";
+
+  protected selectInfos: SelectInfos = {
+    backgroundColor: 'var(--white)',
+    textColor: 'var(--mainColor)',
+    hoverBackgroundColor: 'var(--mainColor)',
+    hoverTextColor: 'var(--white)',
+  }
 
   constructor(
     private storageService: StorageService, 
     private dataService: DatabaseService,
     private route: ActivatedRoute,
     private placeService: PlacesService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private elementRef: ElementRef,
+    private themeService: ThemeService
+  ) {
+    this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
+      this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
+      this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
+      this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
+      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
+      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+    });
+  }
+  private themeSubscriber: Subscription = new Subscription();
+
 
   ngOnInit(): void {
     this.setCircleNoteParams();
@@ -121,99 +146,10 @@ export class ShowedComponent implements OnInit, OnDestroy {
 
   setPlaceInfo(id: string){
     const user: string = localStorage.getItem("id");
-    this.dataService.getLikesOfUser(user).subscribe((res: Liked[]) => {
-      const find = res.find((element: Liked) => element.id_place === id);
-      if(find != null)  this.like = true;
-    });
-    this.dataService.getPlaceById(id).subscribe(res => {
-      this.place = res;
-      if(this.place.note_quantity != null) this.typeOfPlace = "Restaurant";
-      else  this.typeOfPlace = "Bar";
-      this.setRandomPositionNotes(4);
-      this.setAllPlacesInfos(this.place);
-      this.dataService.getStationsOfPlace(id).subscribe((res: Station[]) => {
-        this.stations.push(...res);
-        this.getStations.next(true);
-      });
-      this.dataService.getLignesOfPlace(id).subscribe((lignes: Ligne[]) => {
-        this.lignes.push(...lignes);
-        this.getLignes.next(true);
-      })
-      this.dataService.getPicturesOfPlace(id).subscribe(res => {
-        if(res.length === 0 ){
-          const iconType = this.placeService.getTypeIcon(this.place.type);
-          this.pictures.push({
-            id: "",
-            id_place: "",
-            src: iconType
-          });
-        }
-      });
-      this.setColorNote(Number(this.place.note_globale));
-      this.urlArrondissement = "assets/arrondissement_" + this.place.arrondissement +".jpg";
-      if(this.place.tested) this.percent = Number(this.place.note_globale) * 10;
-      else this.percent = this.place.note_globale * 20;
-    });
-    this.dataService.getCommentOfPlace(id).subscribe((comments: Comment[]) => {
-      comments.forEach((comment: Comment) => {
-        if(comment.positif === 'true') this.positifComments.push(comment.detail);
-        else  this.negatifComments.push(comment.detail);
-      });
-    });
-    this.dataService.getHorairesOfPlace(id).subscribe((horaires: Horaires[]) => {
-      this.horaires = horaires;
-    });
-    this.dataService.getAddressOfPlace(id).subscribe((addresses: Address[]) => {
-      this.addresses = addresses;
-    });
   }
 
   setAllPlacesInfos(place: any){
-    if(this.typeOfPlace === "Restaurant"){
-      this.dataService.getRestaurantsByType(place.type).subscribe((restaurants: Restaurant[]) => {
-        restaurants.forEach((element: Restaurant,index: number) => {
-          if(element.id === place.id) restaurants.splice(index,1);
-        });
-        restaurants = this.placeService.removeDuplicate(restaurants);
-        
-        this.setCardParams(restaurants,"type");
-  
-      });
-      this.dataService.getRestaurantsByArrondissement(place.arrondissement).subscribe((restaurants: Restaurant[]) => {
-        restaurants.forEach((element: Restaurant,index: number) => {
-          if(element.id === place.id) restaurants.splice(index,1);
-        });
-        restaurants = this.placeService.removeDuplicate(restaurants);
-        this.setCardParams(restaurants,"arrondissement");
-      });
-      this.getStations.subscribe(() => {
-        this.dataService.getRestaurantsOfMultipleStations(this.stations).subscribe((res: any[]) => {
-          this.setCardParams(res,"station");
-        });
-      });
-      this.getLignes.subscribe(() => {
-        this.dataService.getRestaurantsOfMultipleLignes(this.lignes).subscribe((res: any[]) => {
-          this.setCardParams(res,"ligne");
-        });
-      });
-    }
-    else{
-      this.dataService.getBarByType(place.type).subscribe((bars: Bar[]) => {
-        bars.forEach((element: Bar,index: number) => {
-          if(element.id === place.id) bars.splice(index,1);
-        });
-        bars = this.placeService.removeDuplicate(bars);
-        this.setCardParams(bars,"type");
-  
-      });
-      this.dataService.getBarByArrondissement(place.arrondissement).subscribe((bars: Bar[]) => {
-        bars.forEach((element: Bar,index: number) => {
-          if(element.id === place.id) bars.splice(index,1);
-        });
-        bars = this.placeService.removeDuplicate(bars);
-        this.setCardParams(bars,"arrondissement");
-      });
-    }
+
   }
 
   setCardParams(data: any[], type: string){
@@ -232,64 +168,6 @@ export class ShowedComponent implements OnInit, OnDestroy {
       this.cardParamsSameStation = [];
     }
     else if(type === "type")  this.cardParamsSimilarPlaces = [];
-
-    data.forEach((place: Bar) => {
-      let statInPlace: Station[] = [];
-      let lignesInStat: Ligne[] = [];
-      let params: CardParams = {
-        pictures: [],
-        circleNoteParams: this.circleNoteParamsCard,
-        stationsInPlace: [],
-        lignesInStation: [],
-        addresses: [],
-        horaires: [],
-        data: place
-      }
-      this.dataService.getStationsOfPlace(place.id).subscribe(res => {
-        statInPlace.push(...res);
-        params.stationsInPlace = statInPlace;
-        res.forEach((station: Station,index: number) => {
-          this.dataService.getLignesOfStation(station.name).subscribe((ligne: Ligne[]) => {
-            lignesInStat.push(...ligne);
-            params.lignesInStation = lignesInStat;
-            this.dataService.getPicturesOfPlace(place.id).subscribe(pic => {
-              params.pictures = pic;
-              if(type === "arrondissement" && index === res.length -1){
-                this.cardParamsSameArrondissement.push(params);
-              }
-              else if(type === "ligne" && index === res.length -1){
-                this.cardParamsSameLigne.push(params);
-              }
-              else if(type === "station" && index === res.length -1){
-                this.cardParamsSameStation.push(params);
-              }
-              else if(type === "type" && index === res.length -1){
-                this.cardParamsSimilarPlaces.push(params);
-              }
-            });
-          });
-        });
-      });
-    });
-  }
-
-  changeIcon(){
-    if(this.heart === regularHeart){
-      this.heart = solidHeart;
-      this.dataService.addLike({
-        id: "",
-        id_place: this.place.id,
-        id_user: localStorage.getItem("id")
-      });
-    }
-    else{
-      this.dataService.deleteLike({
-        id: "",
-        id_place: this.place.id,
-        id_user: localStorage.getItem("id")
-      })
-      this.heart = regularHeart;
-    }
   }
 
   test(e:any){
@@ -310,6 +188,7 @@ export class ShowedComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     sessionStorage.removeItem(this.storageService.keys.PLACEDETAILS);
+    this.themeSubscriber.unsubscribe();
   }
 
   scrollRight(element: string) {
@@ -531,14 +410,22 @@ export class ShowedComponent implements OnInit, OnDestroy {
     this.router.navigate([`/showed/${restaurant.id}`]);
   }
 
-  openMaps(address: Address){
-    const url = "https://www.google.com/maps/search/?api=1&query=" + encodeURI(address.address + ", " + address.code_postal);
+  openMaps(address: string){
+    const url = "https://www.google.com/maps/search/?api=1&query=" + encodeURI(address);
     window.open(url);
   }
 
   cast(value: unknown){
     let toReturn = value as string;
     return toReturn;
+  }
+
+  selectionChange(event: SelectData[],toShow: string){
+    this.toShow = toShow;
+    this.cardParamsSameLigne = [];
+    this.cardParamsSameStation = [];
+    this.cardParamsSimilarPlaces = [];
+    this.cardParamsSameArrondissement = [];
   }
 
 }

@@ -1,3 +1,14 @@
+app-navbar{
+    position: fixed;
+    z-index: 99;
+    height: 10vh;
+    top: 0;
+}
 
+:root{
+    --mainColor: var(--mainColor);
+    --white: var(--white);
+    --black: var(--black);
+}
 
   

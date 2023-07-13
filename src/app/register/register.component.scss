@@ -57,7 +57,7 @@
 .background{
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/login.jpg");
+    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/common/login.jpg");
     background-size: cover;
 }
 
@@ -99,9 +99,6 @@
 @media screen and (max-width: 600px){
     .form{
         width: 70vw;
-    }
-    .background{
-        background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/login_mobile.jpg");
     }
     #logoIcon{
         width: 75%;

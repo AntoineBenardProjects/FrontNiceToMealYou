@@ -13,12 +13,21 @@
 .line{
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    height: 14%;
+    justify-content: center;
+    margin: .5vh 0;
+    padding: 2vh 0;
+    border: 2px solid var(--mainColor);
+    border-radius: 50px;
     width: 100%;
+    .container{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+    }
     #hour{
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         width: 60%;
     }
 }

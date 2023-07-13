@@ -15,7 +15,6 @@ import { UserPageRoutingModule } from './user-page-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { NavbarModule } from '../navbar/navbar.module';
-import { UploadButtonModule } from '../upload-button/upload-button.module';
 
 
 @NgModule({
@@ -40,7 +39,6 @@ import { UploadButtonModule } from '../upload-button/upload-button.module';
     NavbarModule,
     FormsModule,
     CardModule,
-    UploadButtonModule
   ]
 })
 export class UserPageModule {

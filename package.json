@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "node --max_old_space_size=8192 ./node_modules/.bin/ng",
     "start": "ng serve",
-    "build": "NODE_OPTIONS='--max-old-space-size=8192' next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=8192' ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -17,6 +17,7 @@
     "@angular/core": "^14.2.8",
     "@angular/fire": "^7.4.1",
     "@angular/forms": "^14.2.8",
+    "@angular/google-maps": "^14.0.0",
     "@angular/material": "^13.3.9",
     "@angular/platform-browser": "^14.2.8",
     "@angular/platform-browser-dynamic": "^14.2.8",
@@ -33,13 +34,14 @@
     "font-awesome": "^4.7.0",
     "idb": "^7.1.0",
     "ng-circle-progress": "^1.6.0",
+    "ngx-device-detector": "^4.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.7",
-    "@angular/cli": "^15.2.4",
+    "@angular/cli": "^15.2.8",
     "@angular/compiler-cli": "^14.2.8",
     "@types/aos": "^3.0.4",
     "@types/jasmine": "~3.10.0",

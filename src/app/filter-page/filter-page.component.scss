@@ -1,0 +1,145 @@
+.body{
+    position: relative;
+    transition: all 400ms;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+.infosFilterBar{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    top: 0;
+    height: 100%;
+    width: 15%;
+    background-color: var(--mainColor);
+    box-shadow: 0 0 .5em 0 var(--mainColor);
+    position: absolute;
+    transition: .5s;
+    z-index: 10;
+    .fireSideBarOpenState{
+        position: absolute;
+        cursor: pointer;
+        height: 5vh;
+        width: 5vw;
+        z-index: 100;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        background: var(--black);
+        color: var(--black);
+        transition: .5s;
+        font-size: 25px;
+        span{
+            transition: .5s;
+        }
+    }
+    .selectClosed{
+        padding: 0;
+        opacity: 0;
+        height: 0;
+        width: 70%;
+        transition: .5s;
+    }
+    .selectOpen,checkbox{
+        padding-top: 10vh;
+        width: 70%;
+        transition: .5s;
+    }
+}
+.transportFilterBar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 0;
+    height: 100%;
+    width: 15%;
+    background-color: var(--secondColor);
+    box-shadow: 0 0 .5em 0 var(--secondColor);
+    position: absolute;
+    transition: .5s;
+    right: 0;
+    z-index: 10;
+    .fireBottomBarOpenState{
+        position: absolute;
+        cursor: pointer;
+        height: 5vh;
+        width: 5vw;
+        z-index: 100;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        background: var(--black);
+        color: var(--white);
+        transition: .5s;
+        font-size: 25px;
+        span{
+            transition: .5s;
+        }
+    }
+    .selectClosed{
+        padding: 0;
+        opacity: 0;
+        height: 0;
+        width: 70%;
+        transition: .5s;
+    }
+    .selectOpen,checkbox{
+        padding-top: 10vh;
+        width: 70%;
+        transition: .5s;
+    }
+}
+.map{
+    display: flex;
+    width: 100vw;
+}
+.topbarContainer{
+    position: absolute;
+    height: 100px;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 0;
+    z-index: 100;
+    .navbar{
+        position: fixed;
+        height: 100px;
+        width: 60vw;
+        left: 0;
+        right: 0;
+        margin: auto;
+        top: 0;
+        .container{
+            position: relative;
+            height: 100%;
+            #logo{
+                position: absolute;
+                top: 0;
+                width: 100px;
+                transition: all 400ms;
+                z-index: 100;
+            }
+            #add{
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                right: 0;
+                z-index: 100;
+                width: 3vw;
+            }
+            img{
+                transition: .5s;
+                cursor: pointer;
+                transform: scale(1);
+                &:hover{
+                    transform: scale(1.15);
+                }
+            }
+        }
+    }
+    
+}

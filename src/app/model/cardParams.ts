@@ -1,17 +1,13 @@
-import { Address } from "./address";
-import { Bar } from "./bar";
+import { SelectData } from "../shared/model/designs";
 import { CircleNoteParams } from "./circle-notes-params";
 import { Horaires } from "./horaires";
-import { Ligne } from "./ligne";
 import { Pictures } from "./pictures";
-import { Station } from "./station";
+import { Restaurant } from "./places";
 
 export interface CardParams{
     pictures :Pictures[],
-    circleNoteParams: CircleNoteParams,
-    stationsInPlace: Station[],
-    lignesInStation: Ligne[],
-    addresses: Address[],
+    circleNoteParams?: CircleNoteParams,
     horaires: Horaires[],
-    data: Bar
+    addressesSelect?: SelectData[]
+    data?: Restaurant
 }

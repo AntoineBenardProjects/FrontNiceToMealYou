@@ -1,29 +1,10 @@
-<div class="logoComp" *ngIf="user != null">
-    <div id="typeOfPlacesComp">
-        <button matTooltip="On mange où ?" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('restaurants')">
-            <mat-icon class="icon">restaurant_menu</mat-icon>
-        </button>
-        <button matTooltip="Où boire un verre" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('bars')">
-            <mat-icon class="icon">local_bar</mat-icon>
-        </button>
-        <button matTooltip="Trouver votre loisir" [ngStyle]="{'color' : color}" class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('loisirs')">
-            <mat-icon class="icon">hot_tub</mat-icon>
-        </button>
-    </div>
-    <div id="logoComp">
-        <h1 [ngStyle]="{'color' : color}" id="logo">NICE TO MEAL YOU</h1>
-    </div>
-    <div id="iconesComp" style="flex-direction: row-reverse;">
-        <img matTooltip="Page utilisateur" *ngIf="user.img != null && user.img !== ''" class="user" [src]="user.img" (click)="navigate('user')">
-        <button matTooltip="Page utilisateur" *ngIf="!verifyPortfolio && (user.img == null || user.img === '')" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('user')">
-            <mat-icon class="icon">account_circle</mat-icon>
-        </button>
-        <button matTooltip="Accueil" [ngStyle]="{'color' : color}" class="biggerComp" (click)="navigate('home')">
-            <mat-icon class="icon">home</mat-icon>
-        </button>
-        <button matTooltip="Ajouter un lieu" [ngStyle]="{'color' : color}" class="biggerComp" *ngIf="verifyAdmin" (click)="navigate('add')">
-            <mat-icon class="icon">add</mat-icon>
-        </button>
+<div class="container center">
+    <div class="buttonsContainer">
+        <round-button (click)="navigate('restaurants')" text="Où manger" [styleInfos]="buttonColor"></round-button>
+        <round-button (click)="navigate('bars')" text="Où boire" [styleInfos]="buttonColor"></round-button>
+        <round-button (click)="navigate('loisirs')"text="Où sortir" [styleInfos]="buttonColor"></round-button>
+        <round-button (click)="navigate('home')" text="Accueil" [styleInfos]="buttonColor"></round-button>
+        <round-button (click)="navigate('user')" text="Page utilisateur" [styleInfos]="buttonColor"></round-button>    
     </div>
 </div>
 

@@ -1,401 +1,98 @@
-body{
-    overflow-x: hidden;
-}
+// body{
+//     background: var(--white);
+// }
+// .top{
+//     display: flex;
+//     height: 100vh;
+//     .right{
+//         padding: 5vh 0;
+//         width: 20vw;
+//         justify-content: center;
+//     }
+//     .left,.right{
+//         height: 90vh;
+//         display: flex;
+//         flex-direction: column;
+//         align-items: center;
+//         color: var(--white);
+//         .mat-card-avatar{
+//             margin-bottom: 3vh;
+//             height: 150px;
+//             width: 150px;
+//             border: 2px solid var(--white);
+//         }
+//         round-select{
+//             padding-top: 2vh;
+//             width: 15vw;
+//         }
+//         .title{
+//             padding: 1vh 0;
+//             font-size: 25px;
+//         }
+//         .right{
+//             justify-content: center;
+//         }
+//     }
+//     .center{
+//         width: 60vw;
+//         display: flex;
+//         flex-direction: column;
+//         align-items: center;
+//         justify-content: center;
+//         height: 80vh;
+//         position: relative;
+//         padding-top: 20vh;
+//         progress-bar{
+//             position: absolute;
+//             top: 5vh;
+//             left: 5vh;
+//         }
+//         show-horaires{
+//             width: 50%;
+//         }
+//     }
+//     .left{
+//         width: 16vw;
+//         padding: 5vh 2vw;
+//         background: var(--mainColor);
+//     }
+// }
+// p{
+//     word-break:normal;
+// }
 
-@keyframes bigMove {
-    0%,100%{
-        transform: translate(0,0);
-    }
-    50%{
-        transform: translate(2vh,2vh);
-    }
-}
+// button{
+//     padding: 0;
+// }
+// .placesRoll{
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     width: 80%;
+//     position: relative;
+//     .results{
+//         height: 80vh;
+//         width: 50vw;
+//     }
+// }
+// app-card{
+//     margin: 0 5vw;
+// }
+// .scrollButton{
+//     display: flex; align-items: center; width: 10vw; height: 100%;
+//     button{
+//         cursor: pointer; height: 10%; width: 100%; color: var(--white); background: var(--mainColor);
+//     }
+// }
 
-@keyframes bigMoveReverse {
-    0%,100%{
-        transform: translate(0,0);
-    }
-    50%{
-        transform: translate(2vh,-2vh);
-    }
-}
 
-.img,.good{
-    img{
-        animation: bigMove 10s linear infinite;
-    }
-}
 
-.img,.good,.bad{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 3vh;
-    overflow: hidden;
-    img{
-        width: 45%;
-    }
-    .desc{
-        display: flex; align-items: center; justify-content: center; width: 45%; font-size: 22px;text-align: justify;
-        height: 100%;
-        overflow: hidden;
-    }
-}
-
-.inf{
-    display: flex; flex-direction: column; align-items: center;
-    height: 100vh;
-    justify-content: space-evenly;
-    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/info_details.jpg");
-    background-size: cover;
-    position: relative;
-
-    #notes{
-        display: flex;
-        align-items: center;
-        position: absolute;
-        top: 10vh;
-        right: 0;
-    }
-
-    .note_globale{
-        margin-right: 50%;
-        animation: bigMoveReverse 10s linear infinite;
-        animation-delay: 3.5s;
-        width: 30vh; height: 30vh;
-    }
-
-    show-horaires{
-        margin-right: 40%;
-        font-size: 3vh;
-        height: 35%;
-        width: 30%;
-        padding: 5vh;
-        border: 2px solid #FCFFFC;
-        animation: bigMove 10s linear infinite;
-        animation-delay: 2.5s;
-    }
-}
-
-.bad{
-    img{
-        animation: bigMoveReverse 10s linear infinite;
-        animation-delay: 2s;
-        margin-left: 20%;
-        animation-delay: 4s;
-    
-    }
-    padding-left: 15%;
-}
-
-.good{
-    animation-delay: 1.5s;
-    padding-right: 15%;
-}
-
-.good,.bad{
-    width: 80%;
-    img{
-        width: 30%;
-    }
-    #desc{
-        display: flex; justify-content: center;
-    }
-    mat-nav-list{
-        width: 45%;
-    }
-    .mat-list-item{
-        color: #01110A !important;
-        font-size: 22px !important;
-    }
-}
-
-.addressesContainer{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    right: 5vw;
-    height: 40vh;
-    bottom: 0;
-    max-width: 50vw;
-    position: absolute;
-}
-
-.lineShowed{
-    animation: bigMove 10s linear infinite;
-    display: flex; justify-content: center; align-items: center;
-    cursor: pointer;
-    transform: scale(1);
-    transition: all 200ms;
-    color: #FCFFFC;
-    &:hover{
-        transform: scale(1.05);
-    }
-    p{
-        font-size: 4vh;
-        width: fit-content;
-        color: #FCFFFC;
-    }
-    mat-icon{
-        font-size: 4vh;
-        height: 28px;
-    }
-}
-
-.title{
-    display: flex; font-size: 7vh; justify-content: center; align-items: center; height: 11vh; cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-    padding-bottom: 10%;
-    color: #01110A;
-}
-
-p{
-    word-break:normal;
-}
-
-button{
-    padding: 0;
-}
-
-.mat-list-base .mat-list-item .mat-line{
-    white-space: normal;
-}
-
-#imgDesc{
-    display: flex; align-items:center; justify-content:center; width: 40%;
-}
-
-.subtitle{
-    color: #FCFFFC;
-    position: absolute;
-    top: 5vw;
-    left: 5vw;
-    font-size: 5vh;
-}
-.placesRoll{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    position: relative;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    padding: 20vh 0;
-    .results{
-        height: 90vh;
-        width: 61vw;
-    }
-    circle-note{
-        height: 60px;
-        width: 60px;
-    }
-}
-
-#metro{
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../assets/subway.jpg');
-    flex-direction: column;
-    .half{
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 50%;
-        padding: 20vh 0;
-    }
-}
-
-#similar{
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../assets/restaurant.jpg');
-}
-
-app-card{
-    margin: 0 5vw;
-}
-.scrollButton{
-    display: flex; align-items: center; width: 10vw; height: 100%; color: #FCFFFC;
-    button{
-        cursor: pointer; height: 50%; width: 100%;
-    }
-}
-
-.top{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 110vh;
-}
-fa-icon{
-    cursor: pointer;
-    position: fixed;
-    top: 15vh;
-    left: 2vw;
-    z-index: 3;
-    font-size: 4vh;
-    color: #01110A;
-    transition: all 400ms;
-    padding: 2vh;
-    text-transform: uppercase;
-    transform: scale(1);
-    &:hover{
-        transform: scale(1.15);
-    }
-}
-
-.edit{
-    cursor: pointer;
-    position: fixed;
-    top: 20vh;
-    right: 2vw;
-    z-index: 3;
-    font-size: 4vh;
-    background-color: #01110A;
-    color: #FCFFFC;
-    transition: all 400ms;
-    padding: 2vh;
-    text-transform: uppercase;
-    &:hover{
-        color: #01110A;
-        background-color: #FCFFFC;
-    }
-}
 @media screen and (max-width: 600px){
     app-card{
         margin: 0 15vw;
     }
     .top{
         min-height: 80vh;
-    }
-    
-    .inf{
-        height: 150vh;
-        .note_globale{
-            position: absolute;
-            top: 15vh;
-            left: 10vw;
-        }
-        show-horaires{
-            position: absolute;
-            top: 50vh;
-            margin: 0;
-        }
-        .addressesContainer{
-            width: 100%;
-            max-width: 100%;
-        }
-    }
-    .img{
-        flex-direction: column;
-        height: fit-content;
-        img,.desc{
-            width: 92%;
-        }
-        .desc{
-            font-size: 16px;
-            padding-top: 10vh;
-            padding-bottom: 10vh;
-        }
-    }
-    .inf{
-        circle-note{
-            width: 15vh;
-            height: 15vh;
-        }
-        show-horaires{
-            margin-left: 0;
-            font-size: 2vh;
-            padding: 3vh;
-            width: 80%;
-        }
-        .lineShowed{
-            padding-right: 0;
-            p{
-                font-size: 16px;
-            }
-        }
-    }
-    .good,.bad{
-        width: 100%;
-        padding: 0;
-        .mat-list-item{
-            font-size: 2vh !important;
-        }
-        img{
-            margin: 0;
-        }
-    }
-    .placesRoll{
-        height: 70%;
-        circle-note{
-            height: 30px;
-            width: 30px;
-        }
-    }
-    #metro{
-        flex-direction: column;
-    }
-    #similar{
-        flex-direction: column-reverse;
-    }
-    .split{
-        .similar{
-            width: 100%;
-            animation: none !important;
-        }
-        .placesRoll{
-            width: 100%;
-        }
-    }
-    #station{
-        p{
-            font-size: 2vh !important;
-        }
-        .mat-card-avatar{
-            height: 15px !important;
-            width: 15px !important;
-        }
-    }
-    .results{
-        width: 80%;
-        overflow: auto;
-    }
-    .similar{
-        justify-content: space-around;
-    }
-    .title{
-        font-size: 4vh;
-        padding-bottom: 0;
-    }
-    .similar{
-        height: 40%;
-    }
-    #lineShowed{
-        width: 40vw;
-    }
-    #infosP{
-        width: 35vw;
-        font-size: 14px;
-    }
-    #desc{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    #border{
-        width: 90%;
-        border-left: 0;
-        border-top: 2px solid #bcbcbc;
-        padding-top: 1vh;
-    }
-    #imgDesc{
-        padding-bottom: 1vh;
-    }
-    .desc{
-        font-size: 15px;
-    }
-    show-lignes{
-        display: none;
     }
     .compare{
         display: none;
@@ -404,31 +101,6 @@ fa-icon{
         width: 60vw;
         font-size: 3vh;
     }
-    .card{
-        height: 70%;
-    }
-    .mat-card-header{
-        justify-content: space-between;
-    }
-    #ligH{
-        width: 40vw;
-    }
-    #ligneHoraires{
-        display: block;
-    }
-    .mat-card-title{
-        font-size: 1.75vh;
-    }
-    .phone{
-        display: none;
-    }
-    .phoneLignes{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    
     .scrollButton{
         display: none;
     }

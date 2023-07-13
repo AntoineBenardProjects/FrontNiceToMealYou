@@ -1,5 +1,3 @@
-<app-navbar [color]="'#01110A'"></app-navbar>
-
 <body>
     <div class="imgAndLogin">
       <div class="half">
@@ -20,11 +18,9 @@
       </div>
       <div class="half">
         <div id="img" *ngIf="img != null && img != 'null'" [ngStyle]="{'background' :'url('+img+')'}">
-          <upload-button type="picture" (file)="getFile($event)"></upload-button>
         </div>
         <div *ngIf="img == null || img === 'null'" id="img">
           <mat-icon>image</mat-icon>
-          <upload-button type="picture" (file)="getFile($event)"></upload-button>
         </div>
         <form [formGroup]="passwordForm" class="form">
           <mat-form-field hideRequiredMarker="true">
@@ -50,15 +46,12 @@
             <div class="select">
               <div class="searchBar">
                 <input matInput class="bar" [(ngModel)]="searchTerm" type="text" placeholder="Rechercher une station" autocomplete="disabled" />
-                <button (click)="filter(searchTerm)">
+                <button>
                   <mat-icon>search</mat-icon>
                 </button>
               </div>
   
               <div style="display: flex; flex-direction: column; height: 100%; align-items: center; width: 100%;">
-                <div class="content" (click)="select(element.name)" *ngFor="let element of filteredData">
-                  <p>{{element.name}}</p>
-                </div>
               </div>
               
             </div>
@@ -79,13 +72,6 @@
     <div class="placesLiked">
         <img src="../../assets/like.jpg">
         <div class="places">
-            <div class="liked" *ngFor="let place of placesLiked">
-                <mat-icon>whatshot</mat-icon>
-                <p>{{place.name}}</p>
-            </div>
-            <div style="display: flex; justify-content: center; align-items: center; height: 100%;" *ngIf="placesLiked.length === 0">
-                <h1>Pas de restaurants likés</h1>
-            </div>
         </div>
     </div>
 </body>

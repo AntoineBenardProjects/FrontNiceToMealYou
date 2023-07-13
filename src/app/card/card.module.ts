@@ -12,6 +12,7 @@ import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
 import { CardComponent } from './card.component';
 import { CardRoutingModule } from './card-routing.module';
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { ProgressBarModule } from '../shared/design/progress-bar/progress-bar.module';
 
 
 
@@ -31,6 +32,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
     MatListModule,
     FormsModule,
     ShowHorairesModule,
+    ProgressBarModule,
     CardRoutingModule
   ],
   exports: [

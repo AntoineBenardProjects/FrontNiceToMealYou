@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ButtonsModule } from '../shared/design/buttons/buttons.module';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSidenavModule,
     MatDialogModule,
     BrowserAnimationsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ButtonsModule
   ],
   exports: [
     NavbarComponent

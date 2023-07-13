@@ -1,0 +1,127 @@
+.inputBox{
+    position: relative;
+    width: 100%;
+    &:hover{
+        span{color: var(--hoverTextColor);};
+        opacity: 1 !important;
+        &::before{
+            width: 100%;
+        }
+        input{border-color: var(--hoverBorderColor); background: transparent; color: var(--hoverTextColor);}
+    }
+    &::before{
+        background: var(--hoverBackgroundColor);
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        border-radius: 5px;
+        transition: var(--hoverTransition);
+    }
+}
+
+.inputBox input{
+    position: relative;
+    width: calc(100% - 34px);
+    padding: var(--fontSize);
+    border: 1px solid var(--borderColor);
+    outline: none;
+    background: var(--backgroundColor);
+    border-radius: 5px;
+    color: var(--textColor);
+    font-size: var(--fontSize);
+    transition: .5s;
+    z-index: 2;
+}
+
+.inputBox span{
+    position: absolute;
+    top:0;
+    left: 0;
+    padding: var(--fontSize);
+    pointer-events: none;
+    font-size: var(--fontSize);
+    color: var(--placeholderColor);
+    transition: .5s;
+    z-index: 3;
+    border-radius: 5px;
+}
+
+.inputBox .placeholderUp ~ span,
+.inputBox input:focus ~ span,
+.inputBox input[type="time"] ~ span{
+    color: var(--placeholderColorActive);
+    transform: translateX(15px) translateY(-8px);
+    font-size: 10px;
+    padding: 0 10px;
+    background: var(--backgroundColor);
+    border-left: 1px solid var(--borderColorActive);
+    border-right: 1px solid var(--borderColorActive);
+}
+
+.inputBox .placeholderUp,
+.inputBox input:focus,
+.inputBox input[type="time"]{
+    border: 1px solid var(--borderColorActive);
+}
+
+.inputBox:has(input:focus){
+    &::before{width: 0;}
+    input{color: var(--textColor);}
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.grade{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 1vw;
+    margin: auto !important;
+    height: fit-content;
+    font-weight: 800;
+}
+
+.autocomplete{
+    cursor: pointer;
+    position: absolute;
+    top: 8vh;
+    width: 100%;
+    box-shadow: 0 30px 30px rgba(23,26,26,0.1);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 5px;
+    p{
+        padding-left: 1vw;
+        font-size: 16px;
+    }
+    #address{
+        font-size: 12px;
+    }
+    &:hover{
+        background: var(--backgroundColorAutoActive) !important;
+        p{
+            color: var(--textColorAutoActive) !important;
+        }
+    }
+}
+
+.error{
+    font-size: 12px;
+    color: var(--secondColor);
+    transition: 1s;
+    width: max-content;
+}

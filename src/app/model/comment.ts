@@ -1,6 +1,11 @@
 export interface Comment{
-    id: string,
-    detail: string,
-    positif: string,
-    id_place: string
+    comment?: string
+    id_place: string,
+    id_user: string
+}
+
+export interface RestaurantsGrades extends Comment{
+    quantity?: number,
+    quality_price?: number,
+    service?: number
 }

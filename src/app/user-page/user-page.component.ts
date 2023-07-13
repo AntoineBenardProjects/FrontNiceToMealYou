@@ -1,18 +1,13 @@
 import { Component } from '@angular/core';
 import { CardParams } from '../model/cardParams';
 import { CircleNoteParams } from '../model/circle-notes-params';
-import { Liked } from '../model/liked';
-import { Restaurant } from '../model/restaurant';
-import { Station } from '../model/station';
-import { StationOfUser } from '../model/stationOfUser';
 import { DatabaseService } from '../services/database.service';
-import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { User } from '../model/users';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Message } from '../model/message';
-import { Observable, map } from 'rxjs';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MessageComponent } from '../message/message.component';
 import { PlacesService } from '../services/places.service';
+import { User } from '../model/user';
 
 
 @Component({
@@ -38,11 +33,7 @@ export class UserPageComponent {
   public circleNoteParams: CircleNoteParams;
   public selected: string[] = [];
   public searchTerm: string = "";
-  public placesLiked: Restaurant[] = [];
 
-
-  public allStations: Station[] = [];
-  public filteredData: Station[] = [];
 
   ngOnInit(){
     this.loginForm = this._formBuilder.group({
@@ -53,21 +44,6 @@ export class UserPageComponent {
       oldPassword : [''],
       newPassword: [''],
       retypeNewpassword: ['', [this.validateRetypePassword.bind(this)]]
-    });
-    this.data.getLikesOfUser(this.id).subscribe((likes: Liked[]) => {
-      likes.forEach((like: Liked) => {
-        this.data.getPlaceById(like.id_place).subscribe((place: Restaurant) => {
-          this.placesLiked.push(place);
-        });
-      });
-    });
-    this.data.getStationsOfUser(this.id).subscribe((station: StationOfUser[]) => {
-      station.forEach((element: StationOfUser) => {
-        this.selected.push(element.name_station);
-      });
-    });
-    this.data.getAllStations().subscribe((station: Station[]) => {
-      this.allStations = station;
     });
   }
 
@@ -155,17 +131,6 @@ export class UserPageComponent {
     });
   }
 
-  filter(searchTerm: string) {
-    if(searchTerm.length === 0) this.filteredData = [];
-    else{
-      this.filteredData = this.allStations.filter((element: Station) => {
-        const name: string = element.name.toLowerCase();
-        if(name.includes(searchTerm.toLowerCase()))  return true;
-        else  return false;
-      });
-    }
-  }
-
   select(element: any){
     let indexToSuppress = null;
     this.selected.forEach((station,index) => {
@@ -173,21 +138,5 @@ export class UserPageComponent {
     });
     if(indexToSuppress != null) this.selected.splice(indexToSuppress,1);
     else  this.selected.push(element);
-
-    let stationOfUser: StationOfUser[] = [];
-    this.selected.forEach((element: string) => {
-      const infos: StationOfUser = {
-        id: "",
-        id_user: this.id,
-        name_station: element
-      }
-      stationOfUser.push(infos);
-    });
-
-    this.data.deleteStationOfUser(this.id).subscribe(res => {
-      stationOfUser.forEach((element: StationOfUser) => {
-        this.data.addStationOfUser(element);
-      });
-    });
   }
 }

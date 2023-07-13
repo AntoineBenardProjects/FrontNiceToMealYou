@@ -1,4 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ColorPalette } from 'src/assets/style-infos/palettes';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'graph-bar',
@@ -10,6 +13,8 @@ export class GraphBarComponent {
   @Input()  quality: number;
   @Input()  quality_price: number;
   @Input()  note_deco: number;
+  @Input()  width: number = 50;
+  @Input()  height: number = 35;
 
   colorQuantity: string = "white";
   colorQuality: string = "white";
@@ -17,7 +22,20 @@ export class GraphBarComponent {
   colorDeco: string = "white";
 
 
-  constructor(){}
+  private themeSubscriber: Subscription = new Subscription();
+  constructor(
+    private elementRef: ElementRef,
+    private themeService: ThemeService
+  ){
+    this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
+      this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
+      this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
+      this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
+      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
+      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+
+    });
+  }
 
   ngOnInit(){
     this.colorQuantity = this.setColors(this.quantity);
@@ -26,13 +44,21 @@ export class GraphBarComponent {
     this.colorDeco = this.setColors(this.note_deco);
   }
 
+  ngOnDestroy(){
+    this.themeSubscriber.unsubscribe();
+  }
+
   setColors(note): string{
     let color: string = "";
-    if(note >= 8) color = "#4D8B31"
-    else if(note >= 6 && note < 8) color = "#FFC800" 
-    else if(note >= 4.5 && note < 6) color = "#FF8427" 
-    else color = "#6A2E35" 
+    if(note > 7.5) color = "#60993E";
+    else if(note >= 4 && note <= 7.5) color = "var(--mainColor)"; 
+    else color = "#9E2B25"; 
 
     return color;
   }
+}
+
+interface Size{
+  height: number,
+  width: number,
 }

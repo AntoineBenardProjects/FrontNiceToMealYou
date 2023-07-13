@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { Data } from 'src/data';
 import { Horaires } from '../model/horaires';
-import { TypePicture } from '../model/typePicture';
 
 @Injectable({
   providedIn: 'root'
@@ -71,6 +70,14 @@ export class PlacesService {
     this.filters.next(id);
   }
 
+  setId(){
+    let id: string ="";
+    for(let i = 0; i < 15; i++){
+      id += (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    }
+    return id;
+  }
+
   getImageChange(): Observable<boolean>{
     return this.triggerImage.asObservable();
   }
@@ -114,14 +121,7 @@ export class PlacesService {
     return day;
   }
 
-  getTypeFacade(type: string){
-    ///console.log(type)
-    const find: TypePicture = Data.find((element: TypePicture) => element.type === type);
-    return find.url;
-  }
+  getNearByTransports(coords: google.maps.LatLng){
 
-  getTypeIcon(type: string){
-    const find: TypePicture = Data.find((element: TypePicture) => element.type === type);
-    return find.urlIcon;
   }
 }

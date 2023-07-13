@@ -17,6 +17,10 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CardModule } from '../card/card.module';
 import { NavbarModule } from '../navbar/navbar.module';
+import { InputsModule } from '../shared/design/inputs/inputs.module';
+import { ButtonsModule } from '../shared/design/buttons/buttons.module';
+import { GoogleMapsModule } from '@angular/google-maps';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 
@@ -28,21 +32,20 @@ import { NavbarModule } from '../navbar/navbar.module';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     HomeRoutingModule,
     HttpClientModule,
-    FormsModule,
     BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
-    MatSelectModule,
     MatCardModule,
     MatListModule,
-    MatButtonModule,
     NgCircleProgressModule.forRoot({}),
-    MatTooltipModule,
     NavbarModule,
-    CardModule
+    InputsModule,
+    ButtonsModule,
+    CardModule,
+    GoogleMapsModule,
+    FontAwesomeModule
   ]
 })
 export class HomeModule { }

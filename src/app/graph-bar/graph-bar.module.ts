@@ -10,7 +10,7 @@ import { GraphBarComponent } from './graph-bar.component';
   ],
   imports: [
     BrowserModule,
-    MatTooltipModule,
+    MatTooltipModule
   ],
   exports: [
     GraphBarComponent

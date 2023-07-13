@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
-import { User } from '../model/users';
+import { User } from '../model/user';
 import { DatabaseService } from '../services/database.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MessageComponent } from '../message/message.component';

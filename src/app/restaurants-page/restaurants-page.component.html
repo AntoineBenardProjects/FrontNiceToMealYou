@@ -1,95 +1,61 @@
-<app-navbar [color]="'#01110A'"></app-navbar>
-
-<div class="ads">
-    <h2 class="title">Restaurants sur Paris</h2>
-    <p>Trouvez votre prochain restaurant parisien.</p>
-</div>
-
-<div class="sort">
-    <div id="sorter">
-        <mat-select [(ngModel)]="typesSelect" (openedChange)="sort($event)" placeholder="Type" #allType multiple class="select" required>
-            <mat-select-trigger>
-                Type
-            </mat-select-trigger>
-            <mat-option (click)="toggleAllType()" [value]="0">All</mat-option>
-            <mat-option *ngFor="let option of types" [value]="option">
-                {{option}}
-            </mat-option>
-        </mat-select>
-    </div>
-
-    <div id="sorter">
-        <mat-select (openedChange)="sort($event)" placeholder="Ligne" #allLigne multiple class="select" required>
-            <mat-select-trigger>
-                Ligne
-            </mat-select-trigger>
-            <mat-option *ngFor="let option of lignes" [value]="option">
-                {{option.name}}
-            </mat-option>
-            <mat-option (click)="toggleAllLigne()" [value]="0">All</mat-option>
-        </mat-select>
-    </div>
-
-    <div id="sorter">
-        <mat-select (openedChange)="sort($event)" placeholder="Arrondissement" #allArrondissement multiple class="select" required>
-            <mat-select-trigger>
-                Arrondissement
-            </mat-select-trigger>
-            <mat-option *ngFor="let option of arrondissements" [value]="option">
-                {{option}}
-            </mat-option>
-            <mat-option (click)="toggleAllArrondissement()" [value]="0">All</mat-option>
-        </mat-select>
-    </div>
-
-    <div id="sorter">
-        <mat-select (openedChange)="sort($event)" #tested placeholder="Testé" multiple class="select" required>
-            <mat-option *ngFor="let option of testedOptions" [value]="option">
-                {{option}}
-            </mat-option>
-        </mat-select>
-    </div>
-
-    <div id="sorter">
-        <mat-select (openedChange)="sort($event)" #opened placeholder="Ouvert" multiple class="select" required>
-            <mat-option *ngFor="let option of openedOptions" [value]="option">
-                {{option}}
-            </mat-option>
-        </mat-select>
-    </div>
-
-    <div id="filter">
-        <button mat-button (click)="sortByNote()">
-            <mat-icon>sort</mat-icon>
-        </button>
-        <button mat-button (click)="sortByOrder()">
-            <mat-icon>sort_by_alpha</mat-icon>
-        </button>
-    </div>
-</div>
-
-<div class="restaurants" *ngIf="getData">
-    {{scroll()}}
-    <div class="snowAnimation">
-        <div class="posDepart">
-            <img [ngStyle]="{'animation-delay' : i + 's', 'top' : randomPosition[i] + '%'}" mat-card-avatar *ngFor="let plat of allPictures;index as i;" [src]="plat.src">
+<!-- <div class="body">
+    <div class="sort" [ngStyle]="{'transform' : openSidebar ? 'translateX(-20vw)' : 'translateX(0)'}">
+        <div class="container">
+            <div class="sidebarContainer">
+                <div class="sidebarButton center" (click)="toggleSidebar()">
+                    <span class="arrow" [ngStyle]="{'transform' : openSidebar ? 'rotate(0deg)' : 'rotate(180deg)'}">&#x3e;</span>    
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="line" *ngFor="let params of cardParams">
-
-        <app-card class="carte" id="bestCard" [params]="params"></app-card>
-
-        <div class="details">
-            <p id="title">{{params.data.type}}</p>
-            <show-horaires [color]="'#FCFFFC'" [horaires]="params.horaires"></show-horaires>
-            <p id="title" *ngFor="let address of params.addresses">{{address.address}}, {{address.code_postal}}</p>
+        
+        <div id="sorter">
+            <round-select (selectionChange)="sort($event,'type')" [infos]="selectsInfos" [data]="typesSelect" text="Type"></round-select>
+        </div>
+    
+        <div id="sorter" *ngIf="getLignesData">
+            <round-select [infos]="selectsInfos" (selectionChange)="sort($event,'ligne')" [data]="lignesSelect" [numberData]="true" text="Ligne"></round-select>
+        </div>
+    
+        <div id="sorter">
+            <round-select [infos]="selectsInfos" (selectionChange)="sort($event,'arrondissement')" [data]="arrondissementsSelect" [numberData]="true" text="Arrondissement"></round-select>
+        </div>
+    
+        <div id="sorter">
+            <round-select [infos]="selectsInfos" (selectionChange)="sort($event,'open')" [data]="testedAndOpenedSelect" text="Ouvert"></round-select>
+        </div>
+    
+        <div id="sorter">
+            <round-select [infos]="selectsInfos" (selectionChange)="sort($event,'test')" [data]="testedAndOpenedSelect" text="Testé"></round-select>
+        </div>
+    
+        <div id="filter">
+            <button (click)="sortByNote()">
+                <mat-icon>sort</mat-icon>
+            </button>
+            <button (click)="sortByOrder()">
+                <mat-icon>sort_by_alpha</mat-icon>
+            </button>
         </div>
     </div>
     
+    <div class="restaurants" *ngIf="getData" [ngStyle]="{'margin-left' : openSidebar ? '0' : '20%'}">
+        {{scroll()}}
+        <div class="line" *ngFor="let params of cardParams">
+    
+            <app-card class="carte" id="bestCard" [params]="params"></app-card>
+    
+            <div class="details">
+                <round-select [addressSort]="true" [multiselect]="false" [selectAll]="false" [infos]="addressesSelectInfos" [data]="params.addressesSelect" text="Adresses"></round-select>
+                <show-horaires [color]="'var(--black)'" [horaires]="params.horaires"></show-horaires>
+            </div>
+        </div>
+        
+    
+    
+    </div>
 
+    <loading *ngIf="!getData && !nothing"></loading>
 
+    <h1 class="nothing" *ngIf="nothing"> Aucun restaurant ne correspond</h1>
 </div>
-
-<loading *ngIf="!getData && !nothing"></loading>
-
-<h1 class="nothing" *ngIf="nothing"> Aucun restaurant ne correspond</h1>
+ -->

@@ -1,33 +1,75 @@
-app-navbar .biggerComp{
-    color: #01110A !important;
-}
-.ads{
+.body{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 30vh; 
-    width: 100%; 
 }
-
 .sort{
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
+    position: fixed;
+    top: 10vh;
+    padding: 5vh 0;
     align-items: center;
-    height: 10vh; 
-    width: 100%; 
-    border-bottom: 1px solid #dddddd;
+    height: 80vh; 
+    width: 20%; 
+    background: var(--mainColor);
+    z-index: 10;
+    transition: .5s;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    .container{
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        inset: 0;
+        z-index: -1;
+        background: var(--transparent);
+    }
+    .sidebarContainer{
+        position: relative;
+        height: 100%;
+        width: 100%;
+        background: transparent;
+        z-index: -1;
+        .sidebarButton{
+            position: absolute;
+            cursor: pointer;
+            height: 5vh;
+            width: 5vh;
+            top: 5vh;
+            right: -5vh;
+            z-index: 100;
+            border-top-right-radius: 50px;
+            border-bottom-right-radius: 50px;
+            background: var(--mainColor);
+            color: var(--white);
+            span{
+                transition: .5s;
+            }
+        }
+    }
+    #sorter{
+        display: flex; flex-direction: column; align-items: center; margin-left: 2%; margin-right: 2%;
+    }
+    #filter{
+        display: flex; justify-content: space-around; width: 100%;
+        button{
+            border: 0;
+            background: transparent;
+            color: var(--white);
+        }
+    }
 }
-
 .select{
     width: 10vw;
 }
-
 .restaurants{
     display: flex;
     flex-direction: column;
-    background: #01110A;
+    background: var(--white);
     position: relative;
+    width: 100%;
+    transition: .5s;
+    padding: 10vh;
 }
 
 .carte {
@@ -38,8 +80,6 @@ app-navbar .biggerComp{
     font-size: 30px;
     text-align: center;
     cursor: pointer;
-    margin-left: 3vw;
-    margin-right: 3vw;
     width: 45%;
     z-index: 2;
 }
@@ -47,8 +87,9 @@ app-navbar .biggerComp{
 .details{
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    color: #FCFFFC;
+    justify-content: space-between;
+    align-items: flex-end;
+    color: var(--black);
     height: 81vh;
     width: 45%;
     #title{
@@ -57,7 +98,9 @@ app-navbar .biggerComp{
     }
     show-horaires{
         height: 75%;
-        width: 75%;
+        width: 100%;
+    }
+    round-select{
         z-index: 2;
     }
 }
@@ -65,7 +108,7 @@ app-navbar .biggerComp{
 .line{
     display: flex;
     width: 100%;
-    justify-content: space-evenly;
+    justify-content: center;
     height: 100vh;
     align-items: center;
 }
@@ -120,14 +163,6 @@ h2{
 .mat-button{
     min-width: 36px !important;
     padding: 0 !important;
-}
-
-#sorter{
-    display: flex; flex-direction: column; align-items: center; margin-left: 2%; margin-right: 2%;
-}
-
-#filter{
-    display: flex; width: 55%; justify-content: flex-end;
 }
 
 .snowAnimation{

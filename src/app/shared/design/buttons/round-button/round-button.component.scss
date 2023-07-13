@@ -1,0 +1,35 @@
+button{
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 5px;
+    height: 100%;
+    padding: 1vh 0;
+    border: 2px solid;
+    width: 100%;
+    background: var(--backgroundColor);
+    color: var(--textColor);
+    z-index: 1;
+    transition: all 400ms;
+    &:hover{
+        color: var(--textColorHover);
+        opacity: 1 !important;
+        &::before{
+            width: 100%;
+        }
+        border-color: var(--borderColorActive);
+    }
+    border-color: var(--borderColor);
+    &::before{
+        background: var(--backgroundColorActive);
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        z-index: -1;
+        border-radius: 5px;
+        transition: 0.4s;
+    }
+}

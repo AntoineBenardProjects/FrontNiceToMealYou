@@ -1,158 +1,47 @@
-<app-navbar [color]="'#01110A'"></app-navbar>
-
+<mat-card style="display: none;"></mat-card>
 <body *ngIf="place != null">
     <div class="top">
-        <h2 class="title" *ngIf="place.the_fork != null && place.the_fork.length > 0" matTooltip="Bon plan TheFork" matTooltipPosition="after">
-            <a style="text-decoration: none; color: #01110A" [href]="place.the_fork">{{place.name}}</a>
-        </h2>
-        <h2 class="title" *ngIf="place.the_fork == null || place.the_fork.length === 0">{{place.name}}</h2>
-        <div class="img" *ngIf="place != null">
-            <img [src]="place.facade">
-            <h4 class="desc" *ngIf="place.comment">{{place.comment}}</h4>
+        <div class="left">
+            <img mat-card-avatar>
+            <p class="title">{{place.name}}</p>
+            <round-select (selectionChange)="selectionChange($event,'stations')" *ngIf="stations.length >0" [addressSort]="true" [multiselect]="false" [selectAll]="false" [infos]="selectInfos" [data]="stations" text="Stations"></round-select>
+            <round-select (selectionChange)="selectionChange($event,'lignes')" *ngIf="lignes.length >0" [numberData]="true" [addressSort]="true" [multiselect]="false" [selectAll]="false" [infos]="selectInfos" [data]="lignes" text="Lignes"></round-select>
+            <round-select (selectionChange)="selectionChange($event,'horaires')" [addressSort]="true" [multiselect]="false" [selectAll]="false" [infos]="selectInfos" [data]="addresses" text="Adresses"></round-select>
+            <round-select (selectionChange)="selectionChange($event,'types')" [multiselect]="false" [selectAll]="false" [infos]="selectInfos" [data]="types" text="Types"></round-select>
+            <round-select (selectionChange)="selectionChange($event,'comments')" [multiselect]="false" [selectAll]="false" [infos]="selectInfos" [data]="comments" text="Commentaires"></round-select>
         </div>
-    </div>
-    
-    
-    <div class="inf">
-        <!-- <ng-container *ngIf="randomPositionNotes.length > 0">
-            <div id="stations" [ngStyle]="{'left': randomPositionNotes[i].left + '%', 'top': randomPositionNotes[i].top + '%', 'animation-delay': i*0.6 + 's'}">
-                <img mat-card-avatar [src]="'../../assets/' + ligne.name_ligne + '.png'">
-                <p>{{ligne.name_station}}</p>
-            </div>
-        </ng-container> -->
-        <graph-bar id="notes" [quantity]="place.note_quantity" [quality]="place.quality" [quality_price]="place.quality_price" [note_deco]="place.note_deco"></graph-bar>
-                        
-        <circle-progress class="note_globale" *ngIf="place.tested" [percent]="place.note_globale * 10" [radius]="circleNoteParamsPlace.radius" [outerStrokeWidth]="circleNoteParamsPlace.strokeWidth" [innerStrokeWidth]="0"
-        [outerStrokeColor]="colorNote" [animation]="true" [animationDuration]="300" [titleFontSize]="circleNoteParamsPlace.titleFontSize" 
-        [subtitleFontSize]="circleNoteParamsPlace.subtitleFontSize" [title]="place.note_globale.toString()" [units]="''" [subtitle]="'/10'" [titleColor]="colorNote"
-        [subtitleColor]="'#FCFFFC'"></circle-progress>
-        <circle-progress class="note_globale" *ngIf="!place.tested" [percent]="place.note_globale * 20" [radius]="circleNoteParamsPlace.radius" [outerStrokeWidth]="circleNoteParamsPlace.strokeWidth" [innerStrokeWidth]="0"
-        [outerStrokeColor]="colorNote" [animation]="true" [animationDuration]="300" [titleFontSize]="circleNoteParamsPlace.titleFontSize" 
-        [subtitleFontSize]="circleNoteParamsPlace.subtitleFontSize" [title]="place.note_globale.toString()" [units]="''" [subtitle]="'/5'" [titleColor]="colorNote"
-        [subtitleColor]="'#FCFFFC'"></circle-progress>
-
-        <div class="addressesContainer" *ngIf="addresses.length > 0">
-            <div *ngFor="let address of addresses" class="lineShowed" (click)="openMaps(address)">
-                <p>{{address.address}}, {{address.code_postal}}</p>
-                <mat-icon>location_on</mat-icon>
-            </div>
-        </div>
+        <div class="center">
+            <progress-bar [card]="false" [tested]="place.tested"></progress-bar>
+            <show-horaires *ngIf="toShow === 'horaires' && horaires.length > 0" [fontSize]="20" [horaires]="horaires" class="list"></show-horaires>
+            <div class="placesRoll" id="similar" *ngIf="toShow === 'types' && cardParamsSimilarPlaces.length > 0">
+                <h2 class="subtitle" style="color: #FCFFFC;">Même type</h2>
         
-        <show-horaires *ngIf="horaires.length > 0" [color]="'#FCFFFC'" [horaires]="horaires" class="list"></show-horaires>
-        
-    </div>
-    
-    <div class="good">
-        <img src="../../assets/red_light.jpg">
-        <mat-nav-list *ngIf="positifComments.length > 0">
-            <ng-container *ngFor="let positif of positifComments">
-                <mat-list-item *ngIf="positif.length > 0">
-                    <span matLine>{{ positif }}</span>
-                    <mat-icon>check</mat-icon>
-                </mat-list-item>
-            </ng-container> 
-        </mat-nav-list>
-        <h4 id="desc"  *ngIf="positifComments.length === 0">Aucun point positif</h4>
-    </div>
-    
-    <div class="bad">
-        <mat-nav-list *ngIf="negatifComments.length > 0">
-            <ng-container *ngFor="let negatif of negatifComments">
-                <mat-list-item *ngIf="negatif.length > 0">
-                    <span matLine>{{ negatif }}</span>
-                    <mat-icon>close</mat-icon>
-                </mat-list-item>
-            </ng-container>
-        </mat-nav-list>
-        <h4 id="desc" *ngIf="negatifComments.length === 0">Aucun point négatif</h4>
-        <img src="../../assets/green_light.jpg">
-    </div>
-
-    <div [ngStyle]="{'background': 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('+urlArrondissement+')'}" class="placesRoll" *ngIf="cardParamsSameArrondissement.length > 0">
-        <h2 *ngIf="place.arrondissement !== 1" class="subtitle">Dans le {{place.arrondissement}}ème</h2>
-        <h2 *ngIf="place.arrondissement === 1" class="subtitle">Dans le {{place.arrondissement}}er</h2>
-
-        <div *ngIf="cardParamsSameArrondissement.length > 2" class="scrollButton">
-            <button (click)="scrollLeft('arrondissement')" mat-button>
-                <mat-icon>keyboard_arrow_left</mat-icon>
-            </button>
-        </div>
-        
-        <div class="results" id="arrondissement">
-            <app-card [params]="params" class="card" *ngFor="let params of cardParamsSameArrondissement;" (click)="reload(params.data)"></app-card>
-        </div>
-        
-        <div *ngIf="cardParamsSameArrondissement.length > 2" class="scrollButton">
-            <button (click)="scrollRight('arrondissement')" mat-button>
-                <mat-icon>keyboard_arrow_right</mat-icon>
-            </button>
-        </div>
-    </div>
-    <div class="placesRoll" id="similar" *ngIf=" cardParamsSimilarPlaces.length > 0">
-        <h2 class="subtitle" style="color: #FCFFFC;">Même type</h2>
-
-        <div *ngIf="cardParamsSimilarPlaces.length > 2" class="scrollButton">
-            <button (click)="scrollLeft('results')" mat-button>
-                <mat-icon>keyboard_arrow_left</mat-icon>
-            </button>
-        </div>
-        
-        <div class="results" id="results" *ngIf="cardParamsSimilarPlaces.length > 0">
-            <app-card [params]="params" class="card" *ngFor="let params of cardParamsSimilarPlaces;" (click)="reload(params.data)"></app-card>
-        </div>
-        
-        <div *ngIf="cardParamsSimilarPlaces.length > 2" class="scrollButton">
-            <button (click)="scrollRight('results')" mat-button>
-                <mat-icon>keyboard_arrow_right</mat-icon>
-            </button>
-        </div>
-    </div>
-    
-    <div class="placesRoll" id="metro" *ngIf="cardParamsSameStation.length > 0 || cardParamsSameLigne.length > 0">
-        <div class="half" *ngIf="cardParamsSameStation.length > 0">
-            <h2 class="subtitle" *ngIf="cardParamsSameStation.length > 2">Sur les mêmes stations</h2>    
-            <h2 class="subtitle" *ngIf="cardParamsSameStation.length === 1">Sur la même station</h2>    
-
-            <div *ngIf="cardParamsSameStation.length > 2" class="scrollButton">
-                <button (click)="scrollLeft('station')" mat-button>
-                    <mat-icon>keyboard_arrow_left</mat-icon>
-                </button>
+                <div *ngIf="cardParamsSimilarPlaces.length > 2" class="scrollButton">
+                    <button (click)="scrollLeft('results')" mat-button>
+                        <mat-icon>keyboard_arrow_left</mat-icon>
+                    </button>
+                </div>
+                
+                <div [ngStyle]="{'justify-content' : cardParamsSimilarPlaces.length === 1 ? 'center' : 'flex-start'}" class="results" id="results" *ngIf="cardParamsSimilarPlaces.length > 0">
+                    <app-card [params]="params" class="card" *ngFor="let params of cardParamsSimilarPlaces;" (click)="reload(params.data)"></app-card>
+                </div>
+                
+                <div *ngIf="cardParamsSimilarPlaces.length > 2" class="scrollButton">
+                    <button (click)="scrollRight('results')" mat-button>
+                        <mat-icon>keyboard_arrow_right</mat-icon>
+                    </button>
+                </div>
             </div>
-            
-            <div class="results" id="station" *ngIf="cardParamsSameStation.length > 0">
-                <app-card [params]="params" class="card" *ngFor="let params of cardParamsSameStation;" (click)="reload(params.data)"></app-card>
-            </div>
-            
-            <div *ngIf="cardParamsSameStation.length > 2" class="scrollButton">
-                <button (click)="scrollRight('station')" mat-button>
-                    <mat-icon>keyboard_arrow_right</mat-icon>
-                </button>
+            <div *ngIf="toShow === 'comments' && comment.length > 0">
+                <p *ngFor="let c of comment">{{c}}</p>
             </div>
         </div>
-        
-        <div class="half"  *ngIf="cardParamsSameLigne.length > 0">
-            <h2 *ngIf="cardParamsSameLigne.length === 1" class="subtitle">Sur la même ligne</h2>    
-            <h2 *ngIf="cardParamsSameLigne.length > 1" class="subtitle">Sur les mêmes lignes</h2>    
-
-            <div *ngIf="cardParamsSameLigne.length > 2" class="scrollButton">
-                <button (click)="scrollLeft('ligne')" mat-button>
-                    <mat-icon>keyboard_arrow_left</mat-icon>
-                </button>
-            </div>
-            
-            <div class="results" id="ligne" *ngIf="cardParamsSameLigne.length > 0">
-                <app-card [params]="params" class="card" *ngFor="let params of cardParamsSameLigne;" (click)="reload(params.data)"></app-card>
-            </div>
-            
-            <div *ngIf="cardParamsSameLigne.length > 2" class="scrollButton">
-                <button (click)="scrollRight('ligne')" mat-button>
-                    <mat-icon>keyboard_arrow_right</mat-icon>
-                </button>
-            </div>
+        <div class="right">
+            <graph-bar [height]="3" [width]="20" id="notes"></graph-bar>                
         </div>
-    </div>   
+    </div>  
     
 </body>
 
-<button *ngIf="place != null && isAdmin" mat-button class="edit" [routerLink]="['/edit',place.id]">éditer</button>
-<fa-icon *ngIf="!isVisit" [icon]="heart" (click)="changeIcon()"></fa-icon>
+<!-- <button *ngIf="place != null && isAdmin" mat-button class="edit" [routerLink]="['/edit',place.id]">éditer</button>
+<fa-icon *ngIf="!isVisit" [icon]="heart" (click)="changeIcon()"></fa-icon> -->
