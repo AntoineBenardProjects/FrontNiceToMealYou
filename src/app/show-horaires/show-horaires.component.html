@@ -1,0 +1,14 @@
+<div class="border" [ngStyle]="{'color': color}">
+    <div class="horaires">
+        <div class="line" [ngStyle]="{'background' : horaire.day === today ? 'var(--mainColor)' : 'var(--white)' ,'color' : horaire.day === today ? 'var(--white)' : 'var(--mainColor)'}" *ngFor="let horaire of horaires">
+            <div class="container">
+                <p [ngStyle]="{'font-size.px' : fontSize}">{{horaire.day}}</p>
+                <div id="hour">
+                    <p [ngStyle]="{'font-size.px' : fontSize}" *ngIf="horaire.fermeture == null">{{horaire.ouverture}}-{{horaire.fermeture_midi}}</p>
+                    <p [ngStyle]="{'font-size.px' : fontSize}" *ngIf="horaire.ouverture == null">-</p>
+                    <p [ngStyle]="{'font-size.px' : fontSize}" *ngIf="horaire.fermeture != null && horaire.fermeture !== ''">{{horaire.ouverture}}-{{horaire.fermeture_midi}}/{{horaire.ouverture_soir}}-{{horaire.fermeture}}</p>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

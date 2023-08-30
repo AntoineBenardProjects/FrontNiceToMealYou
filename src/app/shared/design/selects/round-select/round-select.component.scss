@@ -1,0 +1,133 @@
+.dropdown{
+    position: relative;
+    border-radius: 5px;
+    &:hover{
+        .top .container .active, .arrow{color: var(--topHoverTextColor);};
+        opacity: 1 !important;
+        .top::before{
+            width: 100%;
+        }
+        .top{border-color: var(--topHoverBorderColor);}
+    }
+    
+}
+.dropdown[data-open="true"]{
+    .top .container p, .arrow{color: var(--topHoverTextColor);};
+    opacity: 1 !important;
+    .top::before{
+        width: 100%;
+    }
+    .top{border-color: var(--topHoverBorderColor);}
+}
+.placeholder{
+    color: var(--color);
+    transform: translateY(calc(-3.5vh - 10px));
+    font-size: 10px !important;
+    padding: 0 10px;
+    background: var(--backgroundColor);
+    border-left: 1px solid var(--borderColor);
+    border-right: 1px solid var(--borderColor);
+    border-radius: 5px;
+    height: fit-content;
+}
+.top{
+    height: 7vh;
+    width: calc(100% - 2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--backgroundColor);
+    color: var(--color);
+    border-radius: 5px;
+    border: 1px solid var(--borderColor);
+    cursor: pointer;
+    &::before{
+        background: var(--topHoverBackgroundColor);
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        border-radius: 5px;
+        transition: .5s;
+    }
+    .container{
+        width: 90%;
+        position: relative;
+        p{
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            transition: .5s;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+        }
+    }
+}
+.arrow{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    color: var(--color);
+    transition: .5s;
+    pointer-events: none;
+    transform: rotate(90deg);
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.options{
+    position: absolute;
+    box-shadow: 0 30px 30px rgba(23,26,26,0.1);
+    background-color: var(--backgroundColor);
+    color: var(--color);
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: height .5s;
+    height: 0;
+    z-index: 100;
+    max-height: 30vh;
+    overflow-y: auto;
+    margin-top: 2vh;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+    div{
+        display: flex;
+        align-items: center;
+        padding-left: 1vw;
+        cursor: pointer;
+        width: 100%;
+        position: relative;
+        &::before{
+            background: var(--topHoverBackgroundColor);
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            border-radius: 5px;
+            transition: .5s;
+        }
+        &:hover{
+            p{
+                color: var(--hoverTextColor) !important;
+            }
+            &::before{width: 100%;}
+        }
+        p{z-index: 1;}
+    }
+}
+
+.error{
+    font-size: 12px;
+    color: var(--secondColor);
+    transition: 1s;
+    width: max-content;
+}

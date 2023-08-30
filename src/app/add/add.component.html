@@ -1,0 +1,112 @@
+<div class="body" [ngStyle]="{'background' : backgroundColor}">
+  <div class="first">
+    <div class="topbarContainer">
+      <div class="navbar">
+          <div class="container">
+              <img id="logo" [src]="logoImageSrc" routerLink="/home">
+              <round-button id="mainLink" text="Mes lieux" [styleInfos]="buttonColor" routerLink="/filter"></round-button>         
+          </div>
+      </div>
+    </div>
+    <div class="section" id="firstSection">
+      <h3 class="subtitle" id="main" [@title]="showFirstTitle" [ngStyle]="{'left': firstSectionPosition}">Infos essentielles</h3>
+      <div class="nameAndAddress">
+        <app-input id="nameAndAddress" [errorMessage]="nameError" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteName" [value]="placeInfo.name" text="Nom" [styleInfo]="validName() ? validInput : invalidInput" (input)="setValue($event,'name')"></app-input>
+        <app-input id="nameAndAddress" [errorMessage]="addressError" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteAddress" [value]="placeInfo.address" (change)="checkAddress()" text="Adresse" [styleInfo]="validAddress ? validInput : invalidInput" (input)="setValue($event,'address')"></app-input>  
+      </div>
+      <div class="selects">
+        <round-select [errorMessage]="categoryError" [multiselect]="false" (selectionChange)="setValue($event,'category')" [selectAll]="false" [infos]="placeInfo.category.length > 0 ? validSelectInfos : invalidSelectInfos" [data]="typesSelect" text="Catégorie"></round-select>
+        <round-select [errorMessage]="typeError" [multiselect]="false" id="restaurantType" [ngStyle]="{'width' : placeInfo.category === 'Restaurant' ? '30vw' : '0','margin-left' : placeInfo.category === 'Restaurant' ? '10vw' : '0','overflow' : placeInfo.category === 'Restaurant' ? 'visible' : 'hidden','opacity' : placeInfo.category === 'Restaurant' ? '1' : '0'}" (selectionChange)="setValue($event,'type')" [selectAll]="false" [infos]="placeInfo.type.length > 0 ? validSelectInfos : invalidSelectInfos" [data]="restaurantsTypesSelect" text="Type de restaurant"></round-select>
+      </div>
+      <div class="checkboxs">
+        <div class="line">
+          <checkbox [value]="placeInfo.tested" (checked)="setValue($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.tested && placeInfo.category !== ''">{{placeInfo.category}} testé</p>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.tested && placeInfo.category === ''">Lieu testé</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.tested && placeInfo.category !== ''">{{placeInfo.category}} non testé</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.tested && placeInfo.category === ''">Lieu non testé</p>
+        </div>
+
+        <div class="line">
+          <checkbox [value]="placeInfo.visible" (checked)="setValue($event,'visible')" [styleInfos]="checkboxInfos"></checkbox>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.visible && placeInfo.category !== ''">{{placeInfo.category}} visible pour les autres utilisateurs</p>
+          <p style="color: var(--thirdColor);" *ngIf="placeInfo.visible && placeInfo.category === ''">Lieu visible pour les autres utilisateurs</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.visible && placeInfo.category !== ''">{{placeInfo.category}} invisible pour les autres utilisateurs</p>
+          <p style="color: var(--secondColor);" *ngIf="!placeInfo.visible && placeInfo.category === ''">Lieu invisible pour les autres utilisateurs</p>
+        </div>
+        
+      </div>
+    </div>
+    <div class="section" id="map" *ngIf="marker != null">
+      <google-map
+        [height]="mapHeight"
+        [width]="mapWidth"
+        [zoom]="mapZoom"
+        [center]="mapCenter"
+        [options]="mapOptions"
+      >
+      <map-marker
+        [position]="marker"
+        [options]="markerOptions"
+      ></map-marker>
+      </google-map>
+      <div class="stations" *ngIf="stations.length > 0">
+        <div class="line" *ngFor="let station of stations">
+          <div class="station">
+            <p>{{station.name}}</p>
+            <div class="lignesPictures">
+              <img *ngFor="let ligne of station.lignes" [src]="'../../assets/images-lignes/'+station.reg+'/'+ligne+'.png'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section" [ngStyle]="{'display' : placeInfo.tested && canSubmit() ? 'flex' : 'none'}">
+      <h3 class="subtitle">Qu'est-ce que t'en penses ?</h3>
+      <app-textfield [value]="comment.comment" text="Commentaire" [styleInfo]="normalInput" (input)="setValue($event,'comment')"></app-textfield>
+      <div class="grades">
+        <app-input [value]="comment.quality_price" class="number" text="Rapport qualité/prix" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quality_price')"></app-input>
+        <app-input [value]="comment.quantity" class="number" text="Quantité" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quantity')"></app-input>
+        <app-input [value]="comment.service" class="number" text="Qualité du service" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'service')"></app-input>    
+      </div>
+    </div>
+    <div class="section" *ngIf="canSubmit()">
+      <h3 class="subtitle">Horaires</h3>
+
+      <div class="ligneHoraires" *ngFor="let h of horaires; index as i">
+        <div class="titleHoraires">
+          <h3 class="center">{{h.day}}</h3>
+          <round-button id="fireSecondLine" [text]="h.secondLine ? '-' : '+'" [styleInfos]="secondLineButton" (click)="setSecondLine(i)"></round-button>         
+        </div>
+        <div class="inputs">
+          <app-input type="time" [value]="h.ouverture" text="Ouverture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'ouverture')"></app-input>
+          <app-input type="time" [value]="h.fermeture_midi" [text]="h.secondLine ? 'Fermeture Midi' : 'Fermeture'" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'fermeture_midi')"></app-input>
+          <app-input type="time" *ngIf="h.secondLine" [value]="h.ouverture_soir" text="Réouverture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'ouverture_soir')"></app-input>
+          <app-input type="time" *ngIf="h.secondLine" [value]="h.fermeture" text="Fermeture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'fermeture')"></app-input>  
+        </div>
+      </div>
+    </div>
+    <div class="section" *ngIf="canSubmit()">
+      <h3 class="subtitle">Informations compémentaires</h3>
+      <div class="pictures">
+        <div class="picture" *ngFor="let picture of pictures; index as i;"
+        [ngStyle]="{'background-image': 'url('+picture.src+')'}">
+        <fa-icon [icon]="crossIcon" (click)="removeImage(i)"></fa-icon>
+        </div>
+        <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="facadeImage($event)"></upload-button>
+      </div>
+      <app-input [value]="placeInfo.website" text="Site Web" [styleInfo]="normalInput" (input)="setValue($event,'website')"></app-input>
+      <app-input [value]="placeInfo.link_menu" text="Lien Menu" [styleInfo]="normalInput" (input)="setValue($event,'menu')"></app-input>  
+    </div>
+    
+    
+    
+  </div>
+  <round-button *ngIf="device !== 'mobile'" id="submit" text="Enregistrer" (click)="add()" [styleInfos]="canSubmit() ? validButton : invalidButton"></round-button>         
+  <fa-icon id="submitMobile" [icon]="checkIcon" *ngIf="device === 'mobile'" (click)="add()" 
+  [ngStyle]="{'background' : canSubmit() ? 'var(--thirdColor)' : 'var(--secondColor)'}"></fa-icon>
+  <div class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '10vh' : '0','background' : canSubmit() ? 'var(--thirdColor)' : 'var(--secondColor)'}">
+    <p>{{errorMessage}}</p>
+  </div>
+</div>
+  

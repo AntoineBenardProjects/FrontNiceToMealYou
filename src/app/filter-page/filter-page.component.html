@@ -1,0 +1,43 @@
+<div class="body" [ngStyle]="{'background' : backgroundColor}">
+    <div class="topbarContainer">
+        <div class="navbar">
+            <div class="container">
+                <img id="logo" src="../../assets/logo/black_logo.png" routerLink="/home">
+                <img id="add" src="../../assets/common/add_marker.png" routerLink="/add">
+            </div>
+        </div>
+      </div>
+    <div class="infosFilterBar" [ngStyle]="{'left' : openSidebar ? '0' : '-15%'}">
+        <div class="fireSideBarOpenState center" (click)="toggleSidebar()" [ngStyle]="{'top' : openSidebar ? '0' : '5vh', 'right' : openSidebar ? '0' : '-5vw', 'background' : openSidebar ? 'transparent' : 'var(--mainColor)'}">
+            <span class="arrow" [ngStyle]="{'transform' : openSidebar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconSidebar}}</span>    
+        </div>
+        <round-select class="selectOpen" (selectionChange)="filter($event,'category')" [infos]="selectInfosLeft" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'type')" [infos]="selectInfosLeft" [data]="typesSelect" text="Type" [ngStyle]="{'height' : typesSelect.length > 1 ? 'fit-content' : '0','padding-top' : typesSelect.length > 1 ? '10vh' : '0','opacity' : typesSelect.length > 1 ? '1' : '0'}"></round-select>
+        <checkbox [value]="tested" (checked)="filter($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
+        <!-- <checkbox text="Ouvert uniquement" [value]="openOnly" (checked)="filter($event,'openOnly')" [styleInfos]="checkboxInfos"></checkbox> -->
+
+    </div>
+    <div class="transportFilterBar" [ngStyle]="{'right' : openTransportbar ? '0' : '-15%'}">
+        <div class="fireBottomBarOpenState center" (click)="toggleBottombar()" [ngStyle]="{'top' : openTransportbar ? '0' : '5vh', 'left' : openTransportbar ? '0' : '-5vw', 'background' : openTransportbar ? 'transparent' : 'var(--secondColor)'}">
+            <span class="arrow" [ngStyle]="{'transform' : openTransportbar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconTransportbar}}</span>    
+        </div>
+        <round-select *ngIf="regionSelect.length > 0" class="selectOpen" (selectionChange)="filter($event,'region')" [selectAll]="false" [multiselect]="false" [infos]="selectInfosRight" [data]="regionSelect" text="Région"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'ligne')" [infos]="selectInfosRight" [data]="lignesSelect" text="Ligne" [ngStyle]="{'height' : lignesSelect.length > 0 ? 'fit-content' : '0','padding-top' : lignesSelect.length > 0 ? '10vh' : '0','opacity' : lignesSelect.length > 0 ? '1' : '0'}"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'station')" [infos]="selectInfosRight" [data]="stationsSelect" text="Station" [ngStyle]="{'height' : stationsSelect.length > 0 ? 'fit-content' : '0','padding-top' : stationsSelect.length > 0 ? '10vh' : '0','opacity' : stationsSelect.length > 0 ? '1' : '0'}"></round-select>
+    </div>
+    <div class="map" [ngStyle]="{'justify-content' : (this.openSidebar && !this.openTransportbar) ? 'flex-end' : 'flex-start'}">
+        <google-map
+        [height]="mapHeight"
+        [width]="mapWidth"
+        [zoom]="mapZoom"
+        [center]="mapCenter"
+        [options]="mapOptions"
+      >
+      <map-marker *ngFor="let marker of markers"
+        [position]="marker"
+        [options]="markerOptions"
+      ></map-marker>
+      </google-map>
+    </div>
+
+</div>

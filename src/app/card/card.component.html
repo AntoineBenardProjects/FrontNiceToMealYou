@@ -1,0 +1,20 @@
+<mat-card style="display: none;"></mat-card>
+<div class="card">
+    <div class="card__content center">
+        <div class="card__front" (click)="navigate()">
+            <img>
+            <div class="body">
+                <progress-bar [tested]="params.data.tested"></progress-bar>
+                <!-- <p *ngIf="isOpened">Ouvert</p>
+                <p *ngIf="!isOpened">Fermé</p> -->
+            </div>
+            <p class="footer center">{{params.data.name}}</p>
+        </div>
+        <div class="card__back center" (click)="navigate()">
+            <div class="lignesList">
+            </div>
+            <div class="stationsList center">
+            </div>
+        </div>
+    </div>
+</div>

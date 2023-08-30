@@ -1,0 +1,106 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    height: 35vh;
+    width: 25vw;
+    color: #01110A;
+    background-color: #FCFFFC;
+    border: 1px solid #FCFFFC;
+    border-radius: 20px;
+}
+
+::ng-deep .form{
+    .mat-focused .mat-form-field-label {
+        color: #01110A !important;
+    }
+
+    .mat-input-element {
+        caret-color: #01110A !important;
+    }
+
+    .mat-input-element::selection {
+        background-color: grey !important;
+    }
+    
+    .mat-form-field-underline {
+        /*change color of underline*/
+        background-color: #01110A;
+    } 
+    
+    .mat-form-field-ripple{
+        /*change color of underline when focused*/
+        background-color: #01110A !important;
+    }
+
+    .mat-form-field.mat-focused {
+        .mat-form-field-infix {
+            background: rgba(1,17,10, 0.4);
+        }
+        .mat-input-element::selection{
+            background-color: var(--background-color-2) !important;
+        }
+    }
+}
+
+.login{
+    display: flex; 
+    justify-content:center; 
+    align-items: center; 
+    flex-direction: column; 
+    height: 100%; 
+    width: 100%;
+    color: #FCFFFC;
+}
+
+.background{
+    height: 100vh;
+    width: 100vw;
+    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/common/login.jpg");
+    background-size: cover;
+}
+
+.title{
+    font-size: 75px;
+    font-weight: bold;
+}
+
+.connect{
+    height: 50%;
+    background-color: #01110A;
+    color: #FCFFFC;
+    transition: all 200ms;
+    transform: scale(1);
+    &:hover{
+        transform: scale(1.15);
+    }
+}
+
+.create{
+    height: 50%;
+    background-color: #FCFFFC;
+    color: #01110A;
+    transition: all 200ms;
+    transform: scale(1);
+    &:hover{
+        transform: scale(1.15);
+        background-color: rgba(1,17,10,0.3);
+    }
+}
+
+#logoIcon{
+    display: flex; width: 25%; height: 12vh; justify-content: flex-end; align-items: center;
+    mat-icon{
+        font-size: 7vh; margin-right: 10%;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .form{
+        width: 70vw;
+    }
+    #logoIcon{
+        width: 75%;
+    }
+}

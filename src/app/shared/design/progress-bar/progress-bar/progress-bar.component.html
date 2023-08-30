@@ -1,0 +1,13 @@
+<div class="percent center">
+    <div class="dot"></div>
+    <svg [attr.height]="size" [attr.width]="size">
+        <circle [attr.cx]="center.x" [attr.cy]="center.y" [attr.r]="radius"></circle>
+        <circle [attr.cx]="center.x" [attr.cy]="center.y" [attr.r]="radius" 
+        [attr.stroke-dasharray]="strokeDashArray" [attr.stroke-dashoffset]="strokeDashOffset"></circle>
+    </svg>
+    <div class="number center">
+        <p class="value"[ngStyle]="{'font-size.px' : fontSizeNote}">{{note}}</p>
+        <div class="unit" *ngIf="tested" [ngStyle]="{'font-size.px' : fontSizeUnit,'color': unitColor}">/10</div>
+        <div class="unit" *ngIf="!tested" [ngStyle]="{'font-size.px' : fontSizeUnit,'color': unitColor}">/5</div>
+    </div>
+</div>

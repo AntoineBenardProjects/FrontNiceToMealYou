@@ -1,0 +1,239 @@
+.body{
+    transition: all 400ms ;
+}
+.navbar{
+    position: fixed;
+    height: 100px;
+    width: 100vw;
+    .container{
+        position: relative;
+        height: 100%;
+        #logo{
+            position: absolute;
+            top: 0;
+            left: 1vw;
+            width: 100px;
+            transition: all 400ms;
+            z-index: 100;
+        }
+        #mainLink{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            right: 2vw;
+            text-align: center;
+            width: 10vw;
+            height: 40%;
+            z-index: 100;
+        }
+    }
+}
+
+.first{
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    background: transparent;
+    .topbarContainer{
+        position: absolute;
+        height: 100px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .topbar{
+            display: flex;
+            justify-content: flex-end;
+            width: 40%;
+            margin-left: 30%;
+            .link{
+                -webkit-user-select: none;  
+                -moz-user-select: none;    
+                -ms-user-select: none;      
+                user-select: none;
+                position: relative;
+                cursor: pointer;
+                font-size: 16px;
+                margin-right: 3vw !important;
+                color: var(--mainColor);
+                &:hover{
+                    &::before{
+                        width: 100%;
+                    }
+                }
+                &::before{
+                    content: '';
+                    position: absolute;
+                    bottom: -5px;
+                    height: 2px;
+                    width: 0;
+                    background: var(--mainColor);
+                    transition: all 400ms;
+                }
+            }
+        }
+    }
+    .logo{
+        position: absolute;
+        z-index: 2;
+        font-size: 150px;
+        color: var(--logoColor);
+        opacity: 0;
+        -webkit-user-select: none;  
+        -moz-user-select: none;    
+        -ms-user-select: none;      
+        user-select: none;
+    }
+    #topLogo{top: 30vh;}
+    #bottomLogo{top: calc(30vh + 150px);}
+    .slogan{
+        text-align: center;
+        position: absolute;
+        z-index: 2;
+        color: var(--mainColor);
+        font-size: 35px;
+        left: 25vw;
+        bottom: 25vh;
+        width: 0;
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        height: 35px;
+    }
+}
+.types{
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    .container{
+        display: flex;
+        justify-content: space-between;
+        width: 70vw;
+    }
+}
+.presentation{
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    .line{
+        display: flex;
+        align-items: center;
+        width: 60vw;
+        height: 65vh;
+        max-height: 65vh;
+        .icon{
+            overflow: hidden;
+            position: relative;
+            width: 40%;
+            height: 100%;
+            fa-icon{
+                font-size: 75px;
+                color: var(--secondColor);
+                width: 40%;
+                left: 0;
+                right: 0;
+                margin: auto;
+                text-align: center;
+                position:absolute;
+            }
+            .shadow{
+                position:absolute;
+                height: 22px;
+                width: 75px;
+                border-radius: 50%;
+                transform: scale(1);
+                left: 0;
+                right: 0;
+                margin: auto;
+                bottom: 35%;
+            }
+        }
+        .infos{
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 60%;
+            height: 60%;
+            justify-content: space-around;
+            .details{
+                font-size: 20px;
+                line-height: 30px;
+                transition: 800ms;
+            }
+            .title{
+                font-size: 30px;
+                font-weight: 600;
+                transition: 800ms;
+            }
+        }
+    }
+    #location{
+        padding-right: 30%;
+    }
+    #filter{
+        padding-left: 30%;
+        flex-direction: row-reverse;
+    }
+    .bars{
+        position: relative;
+        width: 100vw;
+        .bar{
+            position: absolute;
+            height: 1px;
+            width: 10%;
+            background: var(--secondColor);
+            animation: barMovement linear infinite;
+            left: -10%;
+        }
+    }
+    #firstBars .bar{
+        animation-duration: 12s;
+    }
+    #secondBars .bar{
+        animation-duration: 6s;
+    }
+    #firstBars .bar:nth-child(2){
+        animation-delay: 4s;
+    }
+    #firstBars .bar:nth-child(3){
+        animation-delay: 8s;
+    }
+    #secondBars .bar:nth-child(1){
+        animation-delay: 1s;
+    }
+    #secondBars .bar:nth-child(2){
+        animation-delay: 3s;
+    }
+    #secondBars .bar:nth-child(3){
+        animation-delay: 5s;
+    }
+}
+
+@keyframes barMovement {
+    0%{left: -10%;}
+    50%{left: 50%}
+    100%{left: 110%;}
+}
+
+@media screen and (max-width: 600px){
+    .first .topbarContainer .topbar{display: none;}
+    .navbar .container #mainLink{width: 30vw; top: 0;bottom: 0;margin: auto;}
+    .first .logo{font-size: 50px;}
+    .first #bottomLogo{top: calc(30vh + 75px);}
+    .first .slogan{display: none;}
+    .types .container{flex-direction: column; height: 70%; width: 100%; align-items: center;}
+    .presentation #location,.presentation #filter{padding-right: 0; padding-left: 0;}
+    .presentation .line .infos .details{font-size: 14px; line-height: 20px;}
+    .presentation .line .infos .title{font-size: 20px;}
+    .presentation .line{width: 90vw;}
+    .presentation .line .icon .shadow{height: 15px; width: 50px;}
+    .presentation .line .icon fa-icon{font-size: 50px;}
+    .first .topbarContainer{z-index: 100;}
+}

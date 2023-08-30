@@ -1,0 +1,80 @@
+<div class="body" [ngStyle]="{'background' : backgroundColor}">
+    <div class="first">
+        <div class="topbarContainer">
+            <div class="navbar">
+                <div class="container">
+                    <img id="logo" [src]="logoImageSrc">
+                    <round-button id="mainLink" text="Mes lieux" [styleInfos]="buttonColor"></round-button>         
+                </div>
+            </div>
+            <div class="topbar">
+                <p class="link" (click)="navigate('about')">Pourquoi NiceToMealYou</p>
+                <p class="link">Bonnes adresses</p>
+                <p class="link">Mon compte</p>
+            </div>
+        </div>
+        <h1 id="topLogo" class="logo" [@topLogo]="triggerLogoAnimation" 
+        [ngStyle]="{'left.vw': logoPosition}">NiceTo</h1>
+        <h1 id="bottomLogo" class="logo" [@bottomLogo]="triggerLogoAnimation"
+        [ngStyle]="{'right.vw': logoPosition}">MealYou</h1>
+        <h3 class="slogan" [@slogan]="triggerLogoAnimation">N'oubliez plus les bonnes adresses.</h3>
+    </div>
+
+
+    <div class="types">
+        <div class="container">
+            <link-card src="../../assets//common/map.jpg" text="La carte" [styleInfos]="linkCardInfos"  (click)="navigate('filter', 'restaurants')"></link-card>
+            <link-card src="../../assets//common/restaurants.jpg" text="Ajouter un lieu" [styleInfos]="linkCardInfos"(click)="navigate('add')"></link-card>
+            <link-card src="../../assets//common/help.jpg" text="Donne nous tes bonnes idées" [styleInfos]="linkCardInfos"></link-card>    
+        </div>
+    </div>
+
+    <div class="presentation" id="about">
+        <div class="line">
+            <div class="icon">
+                <fa-icon [ngStyle]="{'top.%' : positionPresentationIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="presentationIcon"></fa-icon>
+                <div [ngStyle]="{'transform' : 'scale('+positionPresentationIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
+            </div>
+            <div class="infos">
+                <h3 class="title" [ngStyle]="{'opacity': positionPresentationIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Pourquoi NiceToMealYou ?</h3>
+                <p class="details" [ngStyle]="{'opacity': positionPresentationIcon.textOpacity ? '1' : '0', 'color': styleLine.textColor}">
+                    Le but de cet outil est de noter ses bonnes adresses afin, entre autres, de les visualiser sur une carte ou de les partager à vos amis. 
+                </p>
+            </div>
+        </div>
+        <div class="bars" id="firstBars">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="line" id="location">
+            <div class="icon">
+                <fa-icon [ngStyle]="{'top.%' : positionLocationIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="locationIcon"></fa-icon>
+                <div [ngStyle]="{'transform' : 'scale('+positionLocationIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
+            </div>
+            <div class="infos">
+                <h3 class="title" [ngStyle]="{'opacity': positionLocationIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Utilisez la carte</h3>
+                <p class="details" [ngStyle]="{'opacity': positionLocationIcon.textOpacity ? '1' : '0', 'color': styleLine.textColor}">
+                    Observer la carte avec toutes vos adresses afin de mieux choisir votre prochaine sortie.
+                </p>
+            </div>
+        </div>
+        <div class="bars" id="secondBars">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="line" id="filter">
+            <div class="icon">
+                <fa-icon [ngStyle]="{'top.%' : positionFilterIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="filterIcon"></fa-icon>
+                <div [ngStyle]="{'transform' : 'scale('+positionFilterIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
+            </div>
+            <div class="infos">
+                <h3 class="title" [ngStyle]="{'opacity': positionFilterIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Filtrez vos adresses</h3>
+                <p class="details" [ngStyle]="{'opacity': positionFilterIcon.textOpacity ? '1' : '0', 'color': styleLine.textColor}">
+                    Filtrez les adresses par villes, arrondissement, transports et pleins d'autres paramètres.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+@import "~font-awesome/css/font-awesome.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Arvo&family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;0,1000;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900;1,1000&display=swap');
+@import './app/app.component.scss';
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css'; 
+
+::-moz-selection, ::selection {
+    color: var(--mainColor) !important;
+    background: var(--white) !important;
+}
+
+// * {
+//     box-shadow: 0 0 0 3px red inset;
+// }
+/* You can add global styles to this file, and also import other style files */
+html, body {max-width: 100vw; margin: 0; font-family: Century Gothic Std,arial,sans-serif; background-color: #FCFFFC; overflow-x: hidden;}
+
+body{
+    overflow-x: hidden;
+}
+$mainColor: var(--mainColor);
+$white: var(--white);
+
+::-webkit-scrollbar {
+    width: 1vw;
+}
+  
+::-webkit-scrollbar-track {
+    background: $white;
+}
+  
+::-webkit-scrollbar-thumb {
+    background: $mainColor;
+    opacity: .7;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: $mainColor;
+}
+
+h1{
+    font-family: 'Arvo', serif !important;
+}
+
+p,span,input,h4,h2,h3,td,th,button,textarea{
+    font-family: 'Nunito', sans-serif !important;
+    margin: 0 !important;
+}
+
+round-button{
+    width: 15vw;
+}
+
+.center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+mat-icon,.fa{
+    cursor: pointer;
+}
+
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.results{
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.mat-step-header{
+    background-color: transparent !important;
+}
+
+.mat-card-image{
+    margin: 0;
+}
+
+.mat-drawer-content{
+    height: 89vh;
+}
+
+
+tspan{
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.cdk-overlay-pane{
+    display: flex;
+    align-items: center;
+}
+
+mat-sidenav-content{
+    main{
+        padding: 0 !important;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .placesRoll .results{
+        width: 100% !important;
+    }
+    .placesRoll{
+        height: 120vh;
+    }
+    #metro{
+        padding: 0 !important;
+        height: 240vh;
+    }
+    .half .results{
+        width: 100%;
+    }
+    .half{
+        padding: 0 !important;
+    }
+    .info{
+        width: 60vw;
+    }
+    #results{
+        overflow: auto;
+        max-width: 100%;
+        width: 100%;
+    }
+    .material-icons{
+        font-size: 18px;
+    }
+    .lignes{
+        span.mat-line{
+            font-size: 12px !important;
+            color: #FCFFFC;
+            width: fit-content;
+            padding: 4px !important;
+            white-space: break-spaces !important;
+        }
+        .mat-list-item{
+            max-width: 60vw;
+        }
+    }
+}

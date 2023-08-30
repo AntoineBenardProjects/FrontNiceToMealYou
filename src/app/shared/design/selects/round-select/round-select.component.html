@@ -1,0 +1,18 @@
+<div class="dropdown" [id]="idDropdown" data-open="">
+    <div class="top" (click)="click()">
+        <div class="container">
+            <p [ngClass]="toShow.length > 0 ? 'placeholder' : 'active'" [ngStyle]="{'font-size.px' : selectSize.font}">{{text}}</p>
+            <p *ngIf="toShow.length > 0" class="active" [ngStyle]="{'font-size.px' : selectSize.font}">{{toShow}}</p>
+            <span class="arrow" [ngStyle]="{'transform' : isOpened ? 'rotate(-90deg)' : 'rotate(90deg)'}">&#x3e;</span>        
+        </div>
+    </div>
+    <div [id]="idOptions" class="options" [ngStyle]="{'height' : isOpened ? optionsSize : '0','top.vh' : selectSize.height + 1}">
+        <div *ngFor="let option of dataTable" (click)="sendData(option.id)" 
+        [ngStyle]="{'background': option.selected ? hoverBackgroundColor : optionBackgroundColor, 'height.vh' : selectSize.height}">
+        <!-- {{test(option.selected)}} -->
+            <p [ngStyle]="{'color': option.selected ? hoverTextColor : optionColor, 'font-size.px' : selectSize.font}">{{option.name}}</p>
+        </div>
+    </div>
+</div>
+<p class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '24px' : '0', 'opacity': errorAnimation ? '1' : '0'}">{{errorMessage}}</p>
+

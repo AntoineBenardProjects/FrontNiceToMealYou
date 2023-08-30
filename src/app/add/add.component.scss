@@ -1,0 +1,272 @@
+.body{
+    position: relative;
+    transition: all 400ms ;
+}
+.first{
+    position: relative;
+    width: 100vw;
+    background: transparent;
+    min-height: 80vh;
+    .topbarContainer{
+        position: absolute;
+        height: 100px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        left: 0;
+        top: 0;
+        .navbar{
+            position: fixed;
+            height: 100px;
+            width: 100vw;
+            left: 0;
+            top: 0;
+            .container{
+                position: relative;
+                height: 100%;
+                #logo{
+                    position: absolute;
+                    top: 0;
+                    left: 1vw;
+                    width: 100px;
+                    transition: all 400ms;
+                    z-index: 100;
+                }
+                #mainLink{
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    margin: auto;
+                    right: 2vw;
+                    text-align: center;
+                    width: 10vw;
+                    height: 40%;
+                    z-index: 100;
+                }
+            }
+        }
+        
+    }
+    .subtitle{
+        position: absolute;
+        top: 20vh;
+        font-size: 75px;
+        font-weight: 700;
+    }
+    .section{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding-left: 10vw;
+        min-height: 100vh;
+        max-height: 100%;
+        transition: 1s;
+        padding-top: 30vh;
+        .nameAndAddress{
+            display: flex;
+            width: 70%;
+            justify-content: space-between;
+        }
+        .selects{
+            display: flex;
+            align-items: center;
+            width: 70%;
+            round-select{
+                transition: opacity 1s, margin-left 1s, overflow 1s, width 1s;
+                width: 30vw
+            }
+        }
+        .checkboxs{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 70%;
+            .line{
+                display: flex;
+                align-items: center;
+                p{
+                    font-size: 16px;
+                    padding-left: 2vw;
+                }
+            }
+        }
+        .stations{
+            display: flex;
+            flex-direction: column;
+            width: 70%;
+            border: 1px solid var(--thirdColor);
+            border-radius: 5px;
+            .line{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 2vh 0;
+                width: 100%;
+                &:nth-child(even){
+                    background: var(--mainColor);
+                    p{color: var(--black);}
+                }
+                &:nth-child(odd){
+                    background: transparent;
+                    p{color: var(--black);}
+                }
+            }
+            .station{
+                display: flex;
+                justify-content: space-between;
+                width: 80%;
+                .lignesPictures{
+                    display: flex;
+                    max-width: 60%;
+                    & > *{margin-left: 1vw;}
+                    img{height: 25px;}
+                }
+                p{font-size: 16px; font-weight: 800;}
+            }
+        }
+        .grades{
+            display: flex;
+            justify-content: space-between;
+            width: 70%;
+        }
+        .pictures{
+            display: flex;
+            position: relative;
+            width: fit-content;
+            flex-direction: row-reverse;
+            .picture{
+                height: 75px;
+                width: 75px;
+                border: 1px solid var(--black);
+                border-radius: 5px;
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-size: cover;
+                margin-right: 2vw;
+                position: relative;
+                fa-icon{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 32px;
+                    width: 32px;
+                    position: absolute;
+                    bottom: -16px;
+                    right: -16px;
+                    background: var(--black);
+                    color: var(--white);
+                    border-radius: 50%;
+                    transform: scale(1);
+                    cursor: pointer;
+                    transition: 400ms;
+                    &:hover{
+                        transform: scale(1.15);
+                    }
+                }
+            }
+            .picture:first-child{border-style: dashed; fa-icon{display: none;}}
+            upload-button{
+                position: absolute;
+                right: calc(2vw + 16px);
+                bottom: 16px;
+                z-index: 1;
+            }
+        }
+        .ligneHoraires{
+            app-input{display: flex; width: 20vw;margin: auto;}
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            .titleHoraires{
+                display: flex;
+                justify-content: space-between;
+                width: 70%;
+                h3{font-size: 30px;}
+                round-button{width: 5vw;}
+                padding-bottom: 5vh;
+            }
+            .inputs{
+                display: grid;
+                grid-template-columns: auto auto;
+                width: 70%;
+                grid-gap: 5vh;
+            }
+        }
+    }
+    .section > *{
+        margin: 5vh 0;
+    }
+}
+#nameAndAddress{
+    width: 30vw;
+}
+#map{
+    padding-bottom: 30vh;
+}
+#submit{
+    position: fixed;
+    right: 1vw;
+    bottom: 2vh;
+    width: 10vw;
+}
+#logo{
+    cursor: pointer;
+}
+#submitMobile{
+    position: fixed;
+    right: 1vw;
+    bottom: 2vh;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    justify-content: center;
+    height: 32px;
+    width: 32px;
+    color: var(--white);
+    transition: 400ms;
+}
+.number{
+    width: 15vw;
+}
+.error{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    color: var(--white);    
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .8s;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: 35%;
+
+}
+app-input{width: fit-content;}
+#restaurantType{width: 15vw;}
+round-select{width: 10vw;}
+google-map{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+app-textfield{width: 70%;}
+
+@media screen and (max-width: 600px){
+    .first .topbarContainer .navbar{position: absolute;}
+    .first .topbarContainer .navbar .container #mainLink{width: 30vw; top: 0;bottom: 0;margin: auto;}
+    .first .title{font-size: 35px;}
+    .first .double{flex-direction: column;}
+    .first .section{width: 100%;}
+    round-select{width: 40vw;}
+    .number{
+        width: 60vw;
+    }
+
+}
