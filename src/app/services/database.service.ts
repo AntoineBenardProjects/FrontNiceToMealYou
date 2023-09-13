@@ -7,9 +7,9 @@ import { Comment, RestaurantsGrades } from '../model/comment';
 import { Horaires } from '../model/horaires';
 import { Pictures } from '../model/pictures';
 import { PlacesService } from './places.service';
-import { Restaurant } from '../model/places';
+import { Place, Restaurant } from '../model/places';
 import { PlaceOfUser, User } from '../model/user';
-import { Coords, Station } from '../model/transports';
+import { Coords, Station, StationOfPlace } from '../model/transports';
 
 @Injectable({
   providedIn: 'root'
@@ -480,6 +480,19 @@ export class DatabaseService {
       }    });
     return toReturn;
   }
+  verifyPlaceOfUser(placeOfUser: PlaceOfUser){
+    let promise: Subject<boolean | Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.connectionUrl + "/verify/place/" + encodeURIComponent(JSON.stringify(placeOfUser)),this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        res > 0 ? promise.next(true) : promise.next(false);
+      }
+      else{
+        console.log(res.error);
+      }
+    });
+    return promise;
+  }
   getPlaceOfUser(id: string){
     let promise: Subject<string[]> = new Subject();
     this.setAuthorizationHeader();
@@ -506,6 +519,19 @@ export class DatabaseService {
 
   ////////////////////////////////////////  Station ////////////////////////////////////////
   private stationUrl: string = "/station";
+  getStationById(id: string){
+    let toReturn: Subject<Station | Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get<Station>(this.serverUrl + this.stationUrl + "/station/id/" + id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
   getStationOfPlaceByCoords(location: Coords,region: string){
     let toReturn: Subject<any> = new Subject();
     this.setAuthorizationHeader();
@@ -537,7 +563,7 @@ export class DatabaseService {
     return toReturn;
   }
   getStationOfPlaceById(id: string){
-    let toReturn: Subject<any> = new Subject();
+    let toReturn: Subject<StationOfPlace[] | Message> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationUrl + "/id/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
@@ -618,10 +644,14 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  getPlacesIdByLigne(ligne: string){
-    let toReturn: Subject<string[]> = new Subject();
+  getPlacesByLigneAndUser(ligne: string,id_user: string){
+    let toReturn: Subject<Place[]> = new Subject();
     this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/ligne/" + ligne,this.httpOptions).subscribe((res:any) => {
+    const params = {
+      ligne: ligne,
+      id_user: id_user
+    }
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/ligne/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         toReturn.next(res);
       }
@@ -635,6 +665,23 @@ export class DatabaseService {
     let toReturn: Subject<string[]> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationUrl + "/station/" + encodeURIComponent(JSON.stringify(station)),this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
+  getPlacesByStationAndUser(station: Station, id_user: string){
+    let toReturn: Subject<Place[] | Message> = new Subject();
+    const params = {
+      station: station,
+      id_user: id_user
+    }
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/station/user/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         toReturn.next(res);
       }
@@ -666,7 +713,7 @@ export class DatabaseService {
     });
     this.httpClient.get<Station>(this.serverUrl + this.stationUrl + "/RegAndName/" + encodeURIComponent(params),this.httpOptions).subscribe((res: any) => {
       if(res != null){
-        toReturn.next(res);
+        toReturn.next(res.id);
       }
       else  toReturn.next({error: true, message: "L'id n'a pas pu être trouvé"});
     });

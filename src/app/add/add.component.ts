@@ -13,8 +13,9 @@ import { AutocompleteInfos, ButtonInfos, CheckboxInfos, InputInfos, SelectData, 
 import { TypePicture } from '../model/typePicture';
 import { faCheck, faXmark, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { PlacesService } from '../services/places.service';
-import { Station } from '../model/transports';
+import { Station, StationOfPlace } from '../model/transports';
 import { HttpClient } from '@angular/common/http';
+import { PlaceOfUser } from '../model/user';
 
 @Component({
   selector: 'app-add',
@@ -339,9 +340,13 @@ export class AddComponent {
         comment: "",
       }
     });
-    this.databaseService.getStationOfPlaceById(this.placeInfo.id).subscribe((res: Station[]) => {
-      this.stations = res;
-      console.log(res);
+    this.stations = [];
+    this.databaseService.getStationOfPlaceById(this.placeInfo.id).subscribe((res: StationOfPlace[]) => {
+      res.forEach((element: StationOfPlace) => {
+        this.databaseService.getStationById(element.id_station).subscribe((station: Station) => {
+          this.stations.push(station);
+        });
+      });
     });
     this.databaseService.getHorairesOfPlace(id, localStorage.getItem("id")).subscribe((res: Horaires[]) => {
       if(res.length > 0){
@@ -670,7 +675,7 @@ export class AddComponent {
 
 
 //////////////////////////////////////////////  Navbar  //////////////////////////////////////////////
-  protected logoImageSrc: string = "../../assets/logo/black_logo.png";
+  protected logoImageSrc: string = "../../assets/logo/red_logo.png";
   protected buttonColor: ButtonInfos = {
     color: 'var(--mainColor)',
     colorActive: 'var(--black)',
@@ -695,9 +700,9 @@ export class AddComponent {
 
 
   setColorsOnScroll(scrollPosition: number): void {
-    const firstSectionPosition:Position = {
-      top:document.getElementById("firstSection").getBoundingClientRect().top + document.getElementById("firstSection").getBoundingClientRect().height,
-      height: document.getElementById("firstSection").getBoundingClientRect().height
+    let firstSectionPosition:Position = {
+      top:0,
+      height: 0
     } 
     let complementSectionPosition:Position = {
       top: 0,
@@ -711,6 +716,12 @@ export class AddComponent {
       top: 0,
       height:0
     };
+    if(document.getElementById("firstSection") != null){
+      firstSectionPosition = {
+        top:document.getElementById("firstSection").getBoundingClientRect().top + document.getElementById("firstSection").getBoundingClientRect().height,
+        height: document.getElementById("firstSection").getBoundingClientRect().height
+      } 
+    }
     if(document!.getElementById("complementSection") != null){
       complementSectionPosition = {
         top:document!.getElementById("complementSection").getBoundingClientRect().top + document.getElementById("complementSection").getBoundingClientRect().height,
@@ -731,6 +742,7 @@ export class AddComponent {
     }
     
     if(firstSectionPosition.top > 0 && firstSectionPosition.top < firstSectionPosition.height){
+      this.logoImageSrc = "../../assets/logo/red_logo.png";
       this.backgroundColor = 'var(--mainColor)';
       this.canSubmit() ? this.titleColor = 'var(--thirdColor)' : this.titleColor = 'var(--secondColor)';
       this.normalInput = {
@@ -757,6 +769,7 @@ export class AddComponent {
       this.colorBodyHoraires = 'var(--black)';
     }
     else if((complementSectionPosition.top > 0 && complementSectionPosition.top < complementSectionPosition.height) || (gradeSectionPosition.top > 0 && gradeSectionPosition.top < gradeSectionPosition.height)){
+      this.logoImageSrc = "../../assets/logo/white_logo.png";
       this.backgroundColor = 'var(--black)';
       this.titleColor = 'var(--white)';
       this.normalInput = {
@@ -782,6 +795,7 @@ export class AddComponent {
       this.colorHeaderHoraires1 = 'var(--black)';
       this.colorBodyHoraires = 'var(--white)';
     } else if(horairesSectionPosition.top > 0 && horairesSectionPosition.top < horairesSectionPosition.height){
+      this.logoImageSrc = "../../assets/logo/black_logo.png";
       this.titleColor = 'var(--black)';
       this.backgroundColor = 'var(--white)';
       this.backgroundHeaderHoraires1 = 'var(--black)';
@@ -847,7 +861,6 @@ export class AddComponent {
         if(res != null){
           this.placeInfo.id = res.id;
           this.databaseService.updateRestaurant(this.placeInfo);
-          this.databaseService.addPlaceOfUser({idPlace: this.placeInfo.id, idUser: localStorage.getItem("id")});
           this.errorMessage = "Le " + this.placeInfo.category + " a été modifié !";
           if(this.googleHoraires.length > 0){
             this.databaseService.getHorairesOfPlace(this.placeInfo.id, 'google').subscribe((hor: Horaires[]) => {
@@ -866,25 +879,19 @@ export class AddComponent {
               this.databaseService.addHoraires(element);
             });
           }
-          
           if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
             this.databaseService.getHorairesOfPlace(this.placeInfo.id, localStorage.getItem("id")).subscribe((hor: Horaires[]) => {
-              if(hor.length === 0){
+              if(hor.length === 0 || hor[0].id_user === 'google'){
                 this.horaires.forEach((element: Horaires) => {
                   element.id_place = this.placeInfo.id;
                   element.id_user = localStorage.getItem("id");
                   this.databaseService.addHoraires(element);
                 });
-              } else{
-                this.horaires.forEach((h: Horaires) => {
-                  h.id_place = this.placeInfo.id;
-                  h.id_user = localStorage.getItem("id");
-                  this.databaseService.updateHoraires(h);
-                });
               }
             });
-          }
+          } 
           this.databaseService.getHorairesOfPlace(this.placeInfo.id, 'google').subscribe((hor: Horaires[]) => {
+            console.log(hor);
             if(hor.length === 0){
               this.googleHoraires.forEach((element: Horaires) => {
                 element.id_place = this.placeInfo.id;
@@ -893,8 +900,14 @@ export class AddComponent {
               });
             }
           });
+          const placeOfUser: PlaceOfUser = {idPlace: this.placeInfo.id,idUser: localStorage.getItem("id")};
+          this.databaseService.verifyPlaceOfUser(placeOfUser).subscribe((verify: boolean) => {
+            if(!verify) this.databaseService.addPlaceOfUser(placeOfUser);
+          });
         } else{
           this.placeInfo.id = this.placesService.setId();
+          const placeOfUser: PlaceOfUser = {idPlace: this.placeInfo.id,idUser: localStorage.getItem("id")};
+          this.databaseService.addPlaceOfUser(placeOfUser);
           this.databaseService.addRestaurant(this.placeInfo);
           this.pictures.forEach((element: Pictures) => {
             element.id_user = this.placeInfo.id;
@@ -906,23 +919,22 @@ export class AddComponent {
               this.databaseService.addStationOfPlace(this.placeInfo.id, res);
             });
           });
-          
+          if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
+            this.horaires.forEach((element: Horaires) => {
+              element.id_place = this.placeInfo.id;
+              element.id_user = localStorage.getItem("id")
+              this.databaseService.addHoraires(element);
+            });
+          }
+          this.googleHoraires.forEach((element: Horaires) => {
+            element.id_place = this.placeInfo.id;
+            element.id_user = "google";
+            this.databaseService.addHoraires(element);
+          });
           this.errorMessage = "Le " + this.placeInfo.category + " a été ajouté !";
         }
         
-        if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
-          this.horaires.forEach((element: Horaires) => {
-            element.id_place = this.placeInfo.id;
-            element.id_user = localStorage.getItem("id")
-            this.databaseService.addHoraires(element);
-          });
-        }
-        this.googleHoraires.forEach((element: Horaires) => {
-          element.id_place = this.placeInfo.id;
-          element.id_user = "google";
-          this.databaseService.addHoraires(element);
-        });
-        console.log(this.placeInfo);
+        
         if(this.comment.id_place === '' || this.comment.id_user === ''){
           this.comment.id_place = this.placeInfo.id;
           this.comment.id_user = idUser;
@@ -930,9 +942,9 @@ export class AddComponent {
         } else {
           this.databaseService.updateCommentRestaurants(this.comment);
         }
-        setTimeout(() => {
-          this.router.navigate([sessionStorage.getItem("lastPage")]);
-        }, 3000);
+        // setTimeout(() => {
+        //   this.router.navigate([sessionStorage.getItem("lastPage")]);
+        // }, 3000);
       });
     } else{
       this.errorMessage = "Le formulaire n'est pas complet";
