@@ -1,17 +1,17 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import { MessageComponent } from './message.component';
 
 
 
 
 @NgModule({
   declarations: [
-    MessageModule,
+    MessageComponent,
   ],
   imports: [
     BrowserModule,
-    MatBottomSheetModule,
-  ]
+  ],
+  exports: [MessageComponent]
 })
 export class MessageModule { }

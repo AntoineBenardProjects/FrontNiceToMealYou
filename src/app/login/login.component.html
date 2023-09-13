@@ -1,21 +1,32 @@
 <div class="background">
+    <div class="title">
+        <h1 class="first" data-text="I">C</h1>
+        <h1 class="first" data-text="N">O</h1>
+        <h1 class="first" data-text="S">N</h1>
+        <h1 class="second" data-text="C">N</h1>
+        <h1 class="second" data-text="R">E</h1>
+        <h1 class="second" data-text="I">X</h1>
+        <h1 class="third" data-text="P">I</h1>
+        <h1 class="third" data-text="T">O</h1>
+        <h1 class="third" data-text="I">N</h1>
+    </div>
+    <div class="img center">
+        <h3>Pas encore inscrit ?</h3>
+        <round-button [styleInfos]='signupButtonColor' text="S'inscrire" (click)="navigateToRegister()"></round-button>
+    </div>
     <div class="login">
         
-        <form [formGroup]="formGroup" class="form" (ngSubmit)="connect()">
-            <div style="display:flex; flex-direction: column; justify-content: center; height: 70%;">
-                <app-input text="Login" ngDefaultControl formControlName="login"></app-input>
-                <app-input type="password" text="Mot de passe" ngDefaultControl formControlName="password"></app-input>
-
+        <form class="form" (ngSubmit)="connexion()">
+            <div class="infos center">
+                <app-input text="Login" (input)="setValue($event,'Login')"></app-input>
+                <app-input type="password" text="Mot de passe" (input)="setValue($event,'Password')"></app-input>
             </div>
-    
-            <div style="display: flex; height: 30%; width: 100%; align-items: center; justify-content: space-around;">
-                <round-button [styleInfos]='buttonColor' text="S'inscrire"></round-button>
-                <round-button type="submit" [styleInfos]='buttonColor' text="Se connecter"></round-button>
-            </div>
+            <round-button type="submit" [styleInfos]='connexionButtonColor' text="Se connecter"></round-button>
         </form>    
     </div>
-
-    <div class="img"></div>
 </div>
+
+<message [@error]="showMessage" [message]="message" [valid]="valid"></message>
+
 
 

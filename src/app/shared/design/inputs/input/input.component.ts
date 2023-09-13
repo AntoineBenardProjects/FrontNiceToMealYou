@@ -136,6 +136,12 @@ export class InputComponent {
               changes[propName].currentValue !== '' ? this.errorAnimation = true : this.errorAnimation = false;
             },400);
           }
+          break;
+          case 'value': {
+            setTimeout(() => {
+              this.value !== '' ? this.inputClass = "placeholderUp" : this.inputClass = "placeholderDown";
+            },400);
+          }
         }
       }
     }

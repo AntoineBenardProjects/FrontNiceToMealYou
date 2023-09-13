@@ -9,9 +9,14 @@
       </div>
     </div>
     <div class="section" id="firstSection">
-      <h3 class="subtitle" id="main" [@title]="showFirstTitle" [ngStyle]="{'left': firstSectionPosition}">Infos essentielles</h3>
+      <div class="subtitles" [ngStyle]="{'left.vw': firstSectionPosition}">
+        <h1 class="subtitle">InfosEssentielles</h1>
+        <h1 class="subtitle">InfosEssentielles</h1>
+        <h1 class="subtitle">InfosEssentielles</h1>  
+      </div>
+
       <div class="nameAndAddress">
-        <app-input id="nameAndAddress" [errorMessage]="nameError" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteName" [value]="placeInfo.name" text="Nom" [styleInfo]="validName() ? validInput : invalidInput" (input)="setValue($event,'name')"></app-input>
+        <app-input id="nameAndAddress" [errorMessage]="nameError" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteName" [value]="placeInfo.name" text="Nom" (change)="nameFilled()" [styleInfo]="validName() ? validInput : invalidInput" (input)="setValue($event,'name')"></app-input>
         <app-input id="nameAndAddress" [errorMessage]="addressError" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteAddress" [value]="placeInfo.address" (change)="checkAddress()" text="Adresse" [styleInfo]="validAddress ? validInput : invalidInput" (input)="setValue($event,'address')"></app-input>  
       </div>
       <div class="selects">
@@ -37,32 +42,18 @@
         
       </div>
     </div>
-    <div class="section" id="map" *ngIf="marker != null">
-      <google-map
-        [height]="mapHeight"
-        [width]="mapWidth"
-        [zoom]="mapZoom"
-        [center]="mapCenter"
-        [options]="mapOptions"
-      >
-      <map-marker
-        [position]="marker"
-        [options]="markerOptions"
-      ></map-marker>
-      </google-map>
-      <div class="stations" *ngIf="stations.length > 0">
-        <div class="line" *ngFor="let station of stations">
-          <div class="station">
-            <p>{{station.name}}</p>
-            <div class="lignesPictures">
-              <img *ngFor="let ligne of station.lignes" [src]="'../../assets/images-lignes/'+station.reg+'/'+ligne+'.png'">
-            </div>
-          </div>
-        </div>
+    <div class="section" [ngStyle]="{'display' : placeInfo.tested && canSubmit() ? 'flex' : 'none'}" id="gradeSection">
+      <div class="subtitles" [ngStyle]="{'right.vw': gradeSectionPosition}">
+        <h1 class="subtitle">TesNotes</h1>
+        <h1 class="subtitle">TesNotes</h1>
+        <h1 class="subtitle">TesNotes</h1>  
+        <h1 class="subtitle">TesNotes</h1>
+        <h1 class="subtitle">TesNotes</h1>
+        <h1 class="subtitle">TesNotes</h1> 
+        <h1 class="subtitle">TesNotes</h1>
+        <h1 class="subtitle">TesNotes</h1>
+        <h1 class="subtitle">TesNotes</h1> 
       </div>
-    </div>
-    <div class="section" [ngStyle]="{'display' : placeInfo.tested && canSubmit() ? 'flex' : 'none'}">
-      <h3 class="subtitle">Qu'est-ce que t'en penses ?</h3>
       <app-textfield [value]="comment.comment" text="Commentaire" [styleInfo]="normalInput" (input)="setValue($event,'comment')"></app-textfield>
       <div class="grades">
         <app-input [value]="comment.quality_price" class="number" text="Rapport qualité/prix" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quality_price')"></app-input>
@@ -70,37 +61,134 @@
         <app-input [value]="comment.service" class="number" text="Qualité du service" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'service')"></app-input>    
       </div>
     </div>
-    <div class="section" *ngIf="canSubmit()">
-      <h3 class="subtitle">Horaires</h3>
-
-      <div class="ligneHoraires" *ngFor="let h of horaires; index as i">
-        <div class="titleHoraires">
-          <h3 class="center">{{h.day}}</h3>
-          <round-button id="fireSecondLine" [text]="h.secondLine ? '-' : '+'" [styleInfos]="secondLineButton" (click)="setSecondLine(i)"></round-button>         
+    <div class="section" id="complementSection" *ngIf="canSubmit()">
+      <div class="subtitles" [ngStyle]="{'left.vw': secondSectionPosition}">
+        <h1 class="subtitle">InfosComplémentaires</h1>
+        <h1 class="subtitle">InfosComplémentaires</h1>
+        <h1 class="subtitle">InfosComplémentaires</h1>  
+      </div>
+      <div class="containerInfos">
+        <div class="stations">
+          <div class="line" *ngFor="let station of stations">
+            <div class="station">
+              <p>{{station.name}}</p>
+              <div class="lignesPictures">
+                <img *ngFor="let ligne of station.lignes" [src]="'../../assets/images-lignes/'+station.reg+'/'+ligne+'.png'">
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="inputs">
-          <app-input type="time" [value]="h.ouverture" text="Ouverture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'ouverture')"></app-input>
-          <app-input type="time" [value]="h.fermeture_midi" [text]="h.secondLine ? 'Fermeture Midi' : 'Fermeture'" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'fermeture_midi')"></app-input>
-          <app-input type="time" *ngIf="h.secondLine" [value]="h.ouverture_soir" text="Réouverture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'ouverture_soir')"></app-input>
-          <app-input type="time" *ngIf="h.secondLine" [value]="h.fermeture" text="Fermeture" [styleInfo]="horairesInput" (input)="setValue($event,'horaires',h.day,'fermeture')"></app-input>  
+        
+        <div class="infos">
+          <app-input [value]="placeInfo.website" text="Site Web" [styleInfo]="normalInput" (input)="setValue($event,'website')"></app-input>
+          <app-input [value]="placeInfo.link_menu" text="Lien Menu" [styleInfo]="normalInput" (input)="setValue($event,'menu')"></app-input>    
         </div>
       </div>
-    </div>
-    <div class="section" *ngIf="canSubmit()">
-      <h3 class="subtitle">Informations compémentaires</h3>
       <div class="pictures">
-        <div class="picture" *ngFor="let picture of pictures; index as i;"
-        [ngStyle]="{'background-image': 'url('+picture.src+')'}">
-        <fa-icon [icon]="crossIcon" (click)="removeImage(i)"></fa-icon>
+        <div class="picture" id="first">
+          <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="facadeImage($event)"></upload-button>
         </div>
-        <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="facadeImage($event)"></upload-button>
+        <div class="picturesContainer">
+          <div class="picture" *ngFor="let picture of pictures; index as i;"
+            [ngStyle]="{'background-image': 'url('+picture.src+')'}">
+            <fa-icon [icon]="crossIcon" (click)="removeImage(i)"></fa-icon>
+          </div>
+        </div>
+        
       </div>
-      <app-input [value]="placeInfo.website" text="Site Web" [styleInfo]="normalInput" (input)="setValue($event,'website')"></app-input>
-      <app-input [value]="placeInfo.link_menu" text="Lien Menu" [styleInfo]="normalInput" (input)="setValue($event,'menu')"></app-input>  
     </div>
-    
-    
-    
+    <div class="section" id="horairesSection" *ngIf="canSubmit()">
+      <div class="subtitles" [ngStyle]="{'right.vw': horairesSectionPosition}">
+        <h1 class="subtitle">Horaires</h1>
+        <h1 class="subtitle">Horaires</h1>
+        <h1 class="subtitle">Horaires</h1>  
+        <h1 class="subtitle">Horaires</h1>
+        <h1 class="subtitle">Horaires</h1>
+        <h1 class="subtitle">Horaires</h1>  
+        <h1 class="subtitle">Horaires</h1>
+        <h1 class="subtitle">Horaires</h1>
+        <h1 class="subtitle">Horaires</h1> 
+      </div>
+
+      <div class="table">
+        <div class="column" id="left">
+          <div class="header center">
+            <h3>Horaires</h3>
+          </div>
+          <div class="body center">
+            <p>Ouverture</p>
+          </div>
+          <div class="body center">
+            <p>Première fermeture</p>
+          </div>
+          <div class="body center">
+            <p>Deuxième ouverture</p>
+          </div>
+          <div class="body center">
+            <p>Deuxième fermeture</p>
+          </div>
+        </div>
+        <div class="column" *ngFor="let h of horaires; index as i">
+          <div class="header center" [ngClass]="dayOpen[h.day] ? 'enable' : 'disable'">
+            <h3>{{h.day}}</h3>
+            <fa-icon class="center" [icon]="dayOpen[h.day] ? checkIcon : crossIcon" (click)="closeDay(h.day)"></fa-icon>
+          </div>
+          <div class="body center" [ngClass]="dayOpen[h.day] ? 'enable' : 'disable'">
+            <input type="time" [value]="h.ouverture" (input)="setValue($event,'horaires',h.day,'ouverture')">
+          </div>
+          <div class="body center" [ngClass]="h.ouverture !== '' && dayOpen[h.day] ? 'enable' : 'disable'">
+            <input type="time" [value]="h.fermeture_midi" (input)="setValue($event,'horaires',h.day,'fermeture_midi')">
+          </div>
+          <div class="body center" [ngClass]="h.fermeture_midi !== '' && dayOpen[h.day] ? 'enable' : 'disable'">
+            <input type="time" [value]="h.ouverture_soir" (input)="setValue($event,'horaires',h.day,'ouverture_soir')">
+          </div>
+          <div class="body center" [ngClass]="h.ouverture_soir !== '' && dayOpen[h.day] ? 'enable' : 'disable'">
+            <input type="time" [value]="h.fermeture" (input)="setValue($event,'horaires',h.day,'fermeture')">
+          </div>
+        </div>
+      </div>
+
+      <div class="fillAllHoraires center">
+        <div class="table">
+          <div class="column" id="left">
+            <div class="header center">
+              <h3>Horaires</h3>
+            </div>
+            <div class="body center">
+              <p>Ouverture</p>
+            </div>
+            <div class="body center">
+              <p>Première fermeture</p>
+            </div>
+            <div class="body center">
+              <p>Deuxième ouverture</p>
+            </div>
+            <div class="body center">
+              <p>Deuxième fermeture</p>
+            </div>
+          </div>
+          <div class="column" id="week">
+            <div class="header center">
+              <h3>Rempli tous les champs</h3>
+            </div>
+            <div class="body center">
+              <input type="time" [value]="globalHoraires.ouverture" (input)="setAllHoraires($event,'ouverture')">
+            </div>
+            <div class="body center" [ngClass]="globalHoraires.ouverture !== '' ? 'enable' : 'disable'">
+              <input type="time" [value]="globalHoraires.fermeture_midi" (input)="setAllHoraires($event,'fermeture_midi')">
+            </div>
+            <div class="body center" [ngClass]="globalHoraires.fermeture_midi !== '' ? 'enable' : 'disable'">
+              <input type="time" [value]="globalHoraires.ouverture_soir" (input)="setAllHoraires($event,'ouverture_soir')">
+            </div>
+            <div class="body center" [ngClass]="globalHoraires.ouverture_soir !== '' ? 'enable' : 'disable'">
+              <input type="time" [value]="globalHoraires.fermeture" (input)="setAllHoraires($event,'fermeture')">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
   </div>
   <round-button *ngIf="device !== 'mobile'" id="submit" text="Enregistrer" (click)="add()" [styleInfos]="canSubmit() ? validButton : invalidButton"></round-button>         
   <fa-icon id="submitMobile" [icon]="checkIcon" *ngIf="device === 'mobile'" (click)="add()" 

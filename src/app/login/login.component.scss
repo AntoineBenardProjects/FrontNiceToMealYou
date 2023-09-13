@@ -1,18 +1,65 @@
+.title{
+    position: absolute;
+    top: 10vh;
+    left: 52vw;
+    display: flex;
+    -webkit-box-reflect: below 0px linear-gradient(transparent, rgba(0,0,0,.2));
+    h1{
+        font-size: 75px;
+        animation: color-animation 15s linear infinite;
+    }
+    .first{
+        --color-0: var(--white);
+        --color-1: var(--black);
+        --color-2: var(--secondColor);
+        --color-3: var(--mainColor);
+    }
+    .second{
+        --color-0: var(--white);
+        --color-1: var(--mainColor);
+        --color-2: var(--black);
+        --color-3: var(--secondColor);
+    }
+    .third{
+        --color-0: var(--white);
+        --color-1: var(--secondColor);
+        --color-2: var(--mainColor);
+        --color-3: var(--black);
+    }
+}
+@keyframes color-animation {
+    0%    {color: var(--color-1)}
+    11%   {color: var(--color-1)}
+    17%   {color: var(--color-0)}
+    23%   {color: var(--color-0)}
+    33%   {color: var(--color-2)}
+    44%   {color: var(--color-2)}
+    50%   {color: var(--color-0)}
+    56%   {color: var(--color-0)}
+    67%   {color: var(--color-3)}
+    78%   {color: var(--color-3)}
+    83%   {color: var(--color-0)}
+    89%   {color: var(--color-0)}
+    100%   {color: var(--color-1)}
+}
 .form{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    height: 70%;
+    height: 80%;
     width: 100%;
     border-radius: 20px;
+    .infos{
+        flex-direction: column;
+    }
 }
 app-input{
     margin: 2vh 0;
 }
 .login{
     display: flex; 
-    justify-content:center; 
+    justify-content:flex-end; 
     align-items: center; 
     flex-direction: column; 
     height: 100%; 
@@ -27,9 +74,21 @@ app-input{
     background-color: var(--white);
 }
 .img{
+    flex-direction: column;
     width: 50%;
     background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/common/login.jpg");
     background-size: cover;
+    h3{
+        font-size: 40px;
+        color: var(--white);
+        padding-bottom: 5vh;
+    }
+}
+
+message{
+    height: 0;
+    position: absolute;
+    bottom: 0;
 }
 
 @media screen and (max-width: 600px){

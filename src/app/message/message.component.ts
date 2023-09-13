@@ -1,17 +1,14 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'app-message',
+  selector: 'message',
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss']
 })
 export class MessageComponent {
-  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: string) {}
+  constructor() {}
 
-  message: string = "";
+  @Input() message: string = "";
+  @Input() valid: boolean = false;
 
-  ngOnInit(){
-    this.message = this.data;
-  }
 }

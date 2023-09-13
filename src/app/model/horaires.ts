@@ -6,5 +6,6 @@ export interface Horaires {
     ouverture_soir: string,
     fermeture: string,
     id_place: string,
+    id_user?: string
     secondLine?: boolean
 }

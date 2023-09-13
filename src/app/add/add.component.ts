@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, HostBinding } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Data } from 'src/data';
 import { Comment, RestaurantsGrades } from '../model/comment';
@@ -15,27 +15,12 @@ import { faCheck, faXmark, IconDefinition } from '@fortawesome/free-solid-svg-ic
 import { PlacesService } from '../services/places.service';
 import { Station } from '../model/transports';
 import { HttpClient } from '@angular/common/http';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.scss'],
-  animations: [
-    trigger('title', [
-    state('show', style({
-      left: '10vw'
-    })),
-    state('hidden', style({
-      width: '-50vw'
-    })),
-    transition('* => hidden', [
-      animate('1.5s ease-out')
-    ]),
-    transition('* => show', [
-      animate('1.5s ease-out')
-    ])
-  ])]
+  animations: []
 })
 export class AddComponent {
 
@@ -96,6 +81,7 @@ export class AddComponent {
     hoverBackgroundColor: "var(--thirdColor)",
     hoverTextColor: "var(--white)",
     hoverBorderColor: "var(--thirdColor)",
+    
   }
   protected invalidInput: InputInfos = {
     color: "var(--black)",
@@ -205,16 +191,16 @@ export class AddComponent {
     }
     else if(params === 'name'){
       this.placeInfo.name = event.target.value;
-      if(this.placeInfo.address !== "") this.checkAddress();
     }
     else if(params === 'type'){
-      event[0] != null ? this.placeInfo.type = event[0].name : this.placeInfo.type = "";
+      const find: SelectData = event.find((element: SelectData) => element.selected === true);
+      find != null ? this.placeInfo.type = find.name : this.placeInfo.type = "";
       this.placeInfo.type === "" ?  this.typeError = "Le lieu doit avoir un type" : this.typeError = "";
     }
     else if(params === 'comment')  this.comment.comment = event.target.value;
-    else if(params === 'quantity')  this.comment.quantity = event.target.value;
-    else if(params === 'quality_price')  this.comment.quality_price = event.target.value;
-    else if(params === 'service')  this.comment.service = event.target.value;
+    else if(params === 'quantity')  this.comment.quantity = Number(event.target.value);
+    else if(params === 'quality_price')  this.comment.quality_price = Number(event.target.value);
+    else if(params === 'service')  this.comment.service = Number(event.target.value);
     else if(params === 'website')  this.placeInfo.website = event.target.value;
     else if(params === 'menu')  this.placeInfo.link_menu = event.target.value;
     else if(params === 'tested')  this.placeInfo.tested = event;
@@ -223,6 +209,47 @@ export class AddComponent {
       find[moment] = event.target.value;
     }
     else if(params === 'visible'){this.placeInfo.visible = event;}
+  }
+
+  protected globalHoraires: Horaires = {
+    day: "",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: ""
+  }
+  setAllHoraires(event: any,moment: string): void{
+    this.globalHoraires[moment] = event.target.value;
+    this.horaires.forEach((element: Horaires) => {
+      element[moment] = event.target.value;
+    });
+    this.horaires = this.horaires.slice();
+  }
+  protected dayOpen: DayOpen = {
+    Lundi: true,
+    Mardi: true,
+    Mercredi: true,
+    Jeudi: true,
+    Vendredi: true,
+    Samedi: true,
+    Dimanche: true
+  }
+  closeDay(day: string): void{
+    this.dayOpen[day] = !this.dayOpen[day];
+    let find: Horaires = this.horaires.find((horaires: Horaires) => horaires.day === day);
+    if(this.dayOpen[day]){
+      find.ouverture = this.globalHoraires.ouverture;
+      find.fermeture_midi = this.globalHoraires.fermeture_midi;
+      find.ouverture_soir = this.globalHoraires.ouverture_soir;
+      find.fermeture = this.globalHoraires.fermeture;  
+    } else{
+      find.ouverture = '';
+      find.fermeture_midi = '';
+      find.ouverture_soir = '';
+      find.fermeture = '';  
+    }
+    this.horaires = this.horaires.slice();
   }
   protected restaurantsTypesSelect: SelectData[] = [];
   protected typesSelect: SelectData[] = [];
@@ -291,7 +318,9 @@ export class AddComponent {
     return false;
   }
   protected canSubmit() : boolean{
-    if(this.validName() && this.validAddress && this.placeInfo.category !== '' && this.placeInfo.type !== '') return true;
+    if(this.validName() && this.validAddress && this.placeInfo.category !== '' && this.placeInfo.type !== ''){
+      return true;
+    }
     return false;
   }
   fillForm(id: string): void{
@@ -299,9 +328,8 @@ export class AddComponent {
     this.databaseService.getPicturesOfPlaceByUser(id, localStorage.getItem("id")).subscribe((res: Pictures[]) => {
       if(res != null){
         this.pictures = res;
-        this.pictures.splice(0,0,{id: "", src: "", id_place: "",id_user: ""});
       }
-      else this.pictures = [{id: "", src: "", id_place: "",id_user: ""}];
+      else this.pictures = [];
     });
     this.databaseService.getCommentOfPlaceByUser(this.placeInfo.id,localStorage.getItem("id"),this.placeInfo.category).subscribe((res: Comment) => {
       if(res != null) this.comment = res;
@@ -313,11 +341,15 @@ export class AddComponent {
     });
     this.databaseService.getStationOfPlaceById(this.placeInfo.id).subscribe((res: Station[]) => {
       this.stations = res;
+      console.log(res);
     });
-    this.marker = {
-      lat: this.placeInfo.lat,
-      lng: this.placeInfo.lng
-    };
+    this.databaseService.getHorairesOfPlace(id, localStorage.getItem("id")).subscribe((res: Horaires[]) => {
+      if(res.length > 0){
+        this.horaires = res;
+        if(res[0].id_user === 'google') this.googleHoraires = res;  
+      }
+    });
+
     this.validAddress = true;
     this.addressError = "";
     this.typesSelect.forEach((element: SelectData) => {
@@ -343,37 +375,9 @@ export class AddComponent {
   
   
 
-//////////////////////////////////////////////  Map  //////////////////////////////////////////////
-  protected mapHeight = "70vh";
-  protected mapWidth = "70vw";
-  initMapSize() : void{
-    if(sessionStorage.getItem("device") === "mobile"){
-      this.mapWidth = "100%";
-    }
-  }
-  protected mapZoom = 12;
-  protected mapCenter: google.maps.LatLngLiteral = {
-    lat: 48.85611488586469,
-    lng: 2.3552717616178107
-  };
-  protected mapOptions: google.maps.MapOptions = {
-    mapTypeId: 'roadmap',
-    zoomControl: true,
-    disableDoubleClickZoom: true,
-    streetViewControl: false,
-    disableDefaultUI: true,
-    maxZoom: 15,
-    minZoom: 8,
-  };
-  protected marker: google.maps.LatLngLiteral;
-  protected markerOptions: google.maps.MarkerOptions = {
-    draggable: false,
-    animation: google.maps.Animation.DROP,
-    cursor: "pointer",
-    title: this.placeInfo.name
-  };
   protected validAddress: boolean = false;
   protected stations: Station[] = [];
+  protected googleHoraires: Horaires[] = [];
   protected horaires: Horaires[] = [{
     day: "Lundi",
     ouverture: "",
@@ -437,7 +441,12 @@ export class AddComponent {
     id_place: "",
     secondLine: false
   }
-];
+  ];
+
+  protected nameFilled(): void{
+    if(this.placeInfo.id === '' && this.placeInfo.address !== '') this.checkAddress();
+  }
+
   protected checkAddress(): void{
     this.stations = [];
     let geocoder = new google.maps.Geocoder();
@@ -445,7 +454,6 @@ export class AddComponent {
       'address': this.placeInfo.name + ", " + this.placeInfo.address
     }, (results, status) => {
         if (status == google.maps.GeocoderStatus.OK) {
-
           if(results[0].types[0] !== 'street_address'){
             this.databaseService.getPlaceDetails(results[0].place_id).subscribe((res:any) => {
               this.horaires = [];
@@ -595,6 +603,7 @@ export class AddComponent {
               });
   
               this.horaires.push(monday,tuesday,wednesday,thursday,friday,saturday,sunday);
+              this.googleHoraires = this.horaires.slice();
             });
           }
           
@@ -605,13 +614,13 @@ export class AddComponent {
             this.stations = [];
             res.forEach((element:Station) => {
               switch(element.reg){
-                case  "IDF":
+                case  "Île de France":
                   this.stations.push({
                     reg: element.reg,
                     lignes: element.lignes,
                     transport: element.transport,
                     name: element.name,
-                    idPlace: ''
+                    id: ''
                   });
                 break;
               }
@@ -620,11 +629,6 @@ export class AddComponent {
           this.placeInfo.lat = results[0].geometry.location.lat();
           this.placeInfo.lng = results[0].geometry.location.lng();
           this.placeInfo.address = results[0].formatted_address;
-          this.marker = {
-              lat: results[0].geometry.location.lat(),
-              lng: results[0].geometry.location.lng()
-          };
-          this.mapCenter = this.marker;
           this.validAddress = true;
           this.addressError = "";
         } else {
@@ -635,7 +639,7 @@ export class AddComponent {
   }
 
 //////////////////////////////////////////////  Complement  //////////////////////////////////////////////
-  protected pictures: Pictures[] = [{id: "", src: "", id_place: "",id_user: ""}];
+  protected pictures: Pictures[] = [];
   protected crossIcon: IconDefinition = faXmark;
   protected uploadButtonInfos: ButtonInfos = {
     color: 'var(--mainColor)',
@@ -675,16 +679,140 @@ export class AddComponent {
     fontWeight: 1000
   }
 //////////////////////////////////////////////  Animation  //////////////////////////////////////////////
-  protected firstSectionPosition: number = 0;
-  protected showFirstTitle: string = "show";
-  protected showSecondTitle: string = "hidden";
+  protected firstSectionPosition: number = -20;
+  protected secondSectionPosition: number = -20;
+  protected gradeSectionPosition: number = 70;
+  protected horairesSectionPosition: number = 70;
 
+  @HostBinding("style.--titleColor") titleColor: string = 'var(--secondColor)';
+  @HostBinding("style.--pictureColor") pictureColor: string = 'var(--black)';
+  @HostBinding("style.--stationColor1") stationColor1: string = 'var(--black)';
+  @HostBinding("style.--stationColor2") stationColor2: string = 'var(--white)';
+  @HostBinding("style.--backgroundHeaderHoraires1") backgroundHeaderHoraires1: string = 'var(--secondColor)';
+  @HostBinding("style.--backgroundHeaderHoraires2") backgroundHeaderHoraires2: string = 'var(--black)';
+  @HostBinding("style.--colorHeaderHoraires") colorHeaderHoraires1: string = 'var(--white)';
+  @HostBinding("style.--colorBodyHoraires") colorBodyHoraires: string = 'var(--black)';
+
+
+  setColorsOnScroll(scrollPosition: number): void {
+    const firstSectionPosition:Position = {
+      top:document.getElementById("firstSection").getBoundingClientRect().top + document.getElementById("firstSection").getBoundingClientRect().height,
+      height: document.getElementById("firstSection").getBoundingClientRect().height
+    } 
+    let complementSectionPosition:Position = {
+      top: 0,
+      height:0
+    };
+    let gradeSectionPosition:Position = {
+      top: 0,
+      height:0
+    };
+    let horairesSectionPosition:Position = {
+      top: 0,
+      height:0
+    };
+    if(document!.getElementById("complementSection") != null){
+      complementSectionPosition = {
+        top:document!.getElementById("complementSection").getBoundingClientRect().top + document.getElementById("complementSection").getBoundingClientRect().height,
+        height: document!.getElementById("complementSection").getBoundingClientRect().height
+      } 
+    }
+    if(document!.getElementById("gradeSection") != null){
+      gradeSectionPosition = {
+        top:document!.getElementById("gradeSection").getBoundingClientRect().top + document.getElementById("gradeSection").getBoundingClientRect().height,
+        height: document!.getElementById("gradeSection").getBoundingClientRect().height
+      } 
+    }
+    if(document!.getElementById("horairesSection") != null){
+      horairesSectionPosition = {
+        top:document!.getElementById("horairesSection").getBoundingClientRect().top + document.getElementById("horairesSection").getBoundingClientRect().height,
+        height: document!.getElementById("horairesSection").getBoundingClientRect().height
+      } 
+    }
+    
+    if(firstSectionPosition.top > 0 && firstSectionPosition.top < firstSectionPosition.height){
+      this.backgroundColor = 'var(--mainColor)';
+      this.canSubmit() ? this.titleColor = 'var(--thirdColor)' : this.titleColor = 'var(--secondColor)';
+      this.normalInput = {
+        color: "var(--black)",
+        placeholderColor: "var(--black)",
+        placeholderColorActive: "var(--thirdColor)",
+        backgroundColor: "var(--mainColor)",
+        borderColor: "var(--black)",
+        borderColorActive: "var(--thirdColor)",
+        hoverBackgroundColor: "var(--thirdColor)",
+        hoverTextColor: "var(--white)",
+        hoverBorderColor: "var(--thirdColor)",
+      }
+      this.uploadButtonInfos = {
+        color: 'var(--mainColor)',
+        backgroundColor: 'var(--black)'
+      }
+      this.pictureColor = 'var(--black)';
+      this.stationColor1 = 'var(--secondColor)';
+      this.stationColor2 = 'var(--mainColor)';
+      this.backgroundHeaderHoraires1 = 'var(--secondColor)';
+      this.backgroundHeaderHoraires2 = 'var(--black)';
+      this.colorHeaderHoraires1 = 'var(--white)';
+      this.colorBodyHoraires = 'var(--black)';
+    }
+    else if((complementSectionPosition.top > 0 && complementSectionPosition.top < complementSectionPosition.height) || (gradeSectionPosition.top > 0 && gradeSectionPosition.top < gradeSectionPosition.height)){
+      this.backgroundColor = 'var(--black)';
+      this.titleColor = 'var(--white)';
+      this.normalInput = {
+        color: "var(--white)",
+        placeholderColor: "var(--white)",
+        placeholderColorActive: "var(--white)",
+        backgroundColor: "var(--black)",
+        borderColor: "var(--white)",
+        borderColorActive: "var(--white)",
+        hoverBackgroundColor: "var(--white)",
+        hoverTextColor: "var(--black)",
+        hoverBorderColor: "var(--white)",
+      }
+      this.uploadButtonInfos = {
+        color: 'var(--black)',
+        backgroundColor: 'var(--white)'
+      }
+      this.pictureColor = 'var(--white)';
+      this.stationColor1 = 'var(--white)';
+      this.stationColor2 = 'var(--black)';
+      this.backgroundHeaderHoraires1 = 'var(--white)';
+      this.backgroundHeaderHoraires2 = 'var(--mainColor)';
+      this.colorHeaderHoraires1 = 'var(--black)';
+      this.colorBodyHoraires = 'var(--white)';
+    } else if(horairesSectionPosition.top > 0 && horairesSectionPosition.top < horairesSectionPosition.height){
+      this.titleColor = 'var(--black)';
+      this.backgroundColor = 'var(--white)';
+      this.backgroundHeaderHoraires1 = 'var(--black)';
+      this.backgroundHeaderHoraires2 = 'var(--secondColor)';
+      this.colorHeaderHoraires1 = 'var(--white)';
+      this.colorBodyHoraires = 'var(--black)';
+    }
+  }
   moveTitle(scrollPosition: number): void {
-    const stopLogoScroll: number = 500;
-    this.firstSectionPosition = 15 - 5 * (scrollPosition/stopLogoScroll);
+    if(document.getElementById("firstSection") != null){
+      const firstSectionTitleEnd:number = document.getElementById("firstSection").getBoundingClientRect().height/5;    
+      this.firstSectionPosition = -20 - 5 * (scrollPosition/firstSectionTitleEnd);  
+    }
+
+    if(document.getElementById("complementSection") != null){
+      const complementSectionTitleEnd:number = document.getElementById("complementSection").getBoundingClientRect().height/5;    
+      this.secondSectionPosition = -20 - 5 * (scrollPosition/complementSectionTitleEnd);  
+    }
+
+    if(document.getElementById("gradeSection")!=null){
+      const gradeSectionTitleEnd:number = document.getElementById("gradeSection").getBoundingClientRect().height/5;    
+      this.gradeSectionPosition = 70 - 5 * (scrollPosition/gradeSectionTitleEnd);  
+    }
+
+    if(document.getElementById("horairesSection")!=null){
+      const horairesSectionTitleEnd:number = document.getElementById("horairesSection").getBoundingClientRect().height/5;    
+      this.horairesSectionPosition = 70 - 5 * (scrollPosition/horairesSectionTitleEnd);  
+    }
   }
 //////////////////////////////////////////////  Background Page  //////////////////////////////////////////////
-  protected backgroundColor: string = 'var(--mainColor)'
+  protected backgroundColor: string = 'var(--mainColor)';
 
 //////////////////////////////////////////////  Life cycle  //////////////////////////////////////////////
   protected device: string = "";
@@ -694,9 +822,16 @@ export class AddComponent {
 
   ngOnInit(){
     this.device = sessionStorage.getItem("device");
-    this.showFirstTitle = "show";
     this.initOptions("");
-    this.initMapSize();
+  }
+  ngAfterViewInit(){
+    window.addEventListener("wheel", () => {
+      this.moveTitle(window.scrollY);
+    });    
+    window.addEventListener("scroll", () => {
+      this.moveTitle(window.scrollY);
+      this.setColorsOnScroll(window.scrollY);
+    });
   }
   ngOnDestroy(){
     this.themeSubscriber.unsubscribe();
@@ -712,6 +847,52 @@ export class AddComponent {
         if(res != null){
           this.placeInfo.id = res.id;
           this.databaseService.updateRestaurant(this.placeInfo);
+          this.databaseService.addPlaceOfUser({idPlace: this.placeInfo.id, idUser: localStorage.getItem("id")});
+          this.errorMessage = "Le " + this.placeInfo.category + " a été modifié !";
+          if(this.googleHoraires.length > 0){
+            this.databaseService.getHorairesOfPlace(this.placeInfo.id, 'google').subscribe((hor: Horaires[]) => {
+              if(hor.length === 0){
+                this.googleHoraires.forEach((element: Horaires) => {
+                  element.id_place = this.placeInfo.id;
+                  element.id_user = "google";
+                  this.databaseService.updateHoraires(element);
+                });
+              }
+            });
+          } else{
+            this.googleHoraires.forEach((element: Horaires) => {
+              element.id_place = this.placeInfo.id;
+              element.id_user = "google";
+              this.databaseService.addHoraires(element);
+            });
+          }
+          
+          if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
+            this.databaseService.getHorairesOfPlace(this.placeInfo.id, localStorage.getItem("id")).subscribe((hor: Horaires[]) => {
+              if(hor.length === 0){
+                this.horaires.forEach((element: Horaires) => {
+                  element.id_place = this.placeInfo.id;
+                  element.id_user = localStorage.getItem("id");
+                  this.databaseService.addHoraires(element);
+                });
+              } else{
+                this.horaires.forEach((h: Horaires) => {
+                  h.id_place = this.placeInfo.id;
+                  h.id_user = localStorage.getItem("id");
+                  this.databaseService.updateHoraires(h);
+                });
+              }
+            });
+          }
+          this.databaseService.getHorairesOfPlace(this.placeInfo.id, 'google').subscribe((hor: Horaires[]) => {
+            if(hor.length === 0){
+              this.googleHoraires.forEach((element: Horaires) => {
+                element.id_place = this.placeInfo.id;
+                element.id_user = "google";
+                this.databaseService.addHoraires(element);
+              });
+            }
+          });
         } else{
           this.placeInfo.id = this.placesService.setId();
           this.databaseService.addRestaurant(this.placeInfo);
@@ -720,15 +901,28 @@ export class AddComponent {
             this.databaseService.addPicture(element);
           }); 
           this.stations.forEach((element: Station) => {
-            element.idPlace = this.placeInfo.id;
-            this.databaseService.addStationOfPlace(element);
+            const name: string = element.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+            this.databaseService.getIdOfStationByRegAndName(name,element.reg).subscribe((res: string) => {
+              this.databaseService.addStationOfPlace(this.placeInfo.id, res);
+            });
           });
+          
+          this.errorMessage = "Le " + this.placeInfo.category + " a été ajouté !";
+        }
+        
+        if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
           this.horaires.forEach((element: Horaires) => {
             element.id_place = this.placeInfo.id;
+            element.id_user = localStorage.getItem("id")
             this.databaseService.addHoraires(element);
           });
         }
-        this.databaseService.addPlaceOfUser({idPlace: this.placeInfo.id, idUser: localStorage.getItem("id")});
+        this.googleHoraires.forEach((element: Horaires) => {
+          element.id_place = this.placeInfo.id;
+          element.id_user = "google";
+          this.databaseService.addHoraires(element);
+        });
+        console.log(this.placeInfo);
         if(this.comment.id_place === '' || this.comment.id_user === ''){
           this.comment.id_place = this.placeInfo.id;
           this.comment.id_user = idUser;
@@ -736,7 +930,6 @@ export class AddComponent {
         } else {
           this.databaseService.updateCommentRestaurants(this.comment);
         }
-        this.errorMessage = "Le " + this.placeInfo.category + " a été ajouté !";
         setTimeout(() => {
           this.router.navigate([sessionStorage.getItem("lastPage")]);
         }, 3000);
@@ -751,4 +944,17 @@ export class AddComponent {
     
   }
   
+}
+interface DayOpen{
+  Lundi: boolean,
+  Mardi: boolean,
+  Mercredi: boolean,
+  Jeudi: boolean,
+  Vendredi: boolean,
+  Samedi: boolean,
+  Dimanche: boolean
+}
+interface Position{
+  top: number,
+  height: number
 }

@@ -4,6 +4,8 @@ import { ThemeService } from './services/theme.service';
 import { Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { DeviceDetectorService, DeviceInfo } from 'ngx-device-detector';
+import { DatabaseService } from './services/database.service';
+import { User } from './model/user';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +30,7 @@ import { DeviceDetectorService, DeviceInfo } from 'ngx-device-detector';
 })
 export class AppComponent {
   constructor(private elementRef: ElementRef,
-    private themeService: ThemeService,private deviceService: DeviceDetectorService){
+    private themeService: ThemeService,private deviceService: DeviceDetectorService, private dataService: DatabaseService){
     const SelectedPalette: ColorPalette = Palettes.find((element: ColorPalette) => element.name === this.paletteName);
 
     if(SelectedPalette != null) this.themeService.setPalette(SelectedPalette);
@@ -57,7 +59,10 @@ export class AppComponent {
 
   protected paletteName: string = 'Default';
   protected triggerTopBar: string = "hidden";
-
+  private user: User;
+  private verifyAdmin: boolean = false;
+  private verifyPortfolio: boolean = false;
+  
   ngOnInit(){
     const isMobile = this.deviceService.isMobile();
     const isTablet = this.deviceService.isTablet();
@@ -66,6 +71,26 @@ export class AppComponent {
     if(isMobile)  sessionStorage.setItem("device","mobile");
     else if(isTablet)  sessionStorage.setItem("device","tablet");
     else if(isDesktopDevice)  sessionStorage.setItem("device","desktop");
+
+    const token: string = localStorage.getItem("token");
+    this.dataService.loginByToken(token).subscribe((credentials: any) => {
+      if(credentials.role === "Admin") this.verifyAdmin = true;
+      if(credentials.role === "Visit")  this.verifyPortfolio = true;
+      localStorage.setItem("role",credentials.role);
+      localStorage.setItem("id",credentials.id);
+      localStorage.setItem("login",credentials.login);
+
+      this.dataService.getImage(credentials.id).subscribe((img: string) =>{
+        localStorage.setItem("img",img);
+        this.user = {
+          id: credentials.id,
+          img: img,
+          login: credentials.login,
+          password: "",
+          role: credentials.role
+        }
+      });
+    });
 
   }
 

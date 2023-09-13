@@ -2,12 +2,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RegisterComponent } from './register.component';
 import { RegisterRoutingModule } from './register-routing.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { FormsModule } from '@angular/forms';
+import { ButtonsModule } from '../shared/design/buttons/buttons.module';
+import { InputsModule } from '../shared/design/inputs/inputs.module';
+import { MessageModule } from '../message/message.module';
+import { SelectsModule } from '../shared/design/selects/selects.module';
 
 
 @NgModule({
@@ -17,13 +16,11 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
   imports: [
     BrowserModule,
     RegisterRoutingModule,
-    MatFormFieldModule,
+    ButtonsModule,
+    InputsModule,
+    SelectsModule,
     FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatIconModule,
-    MatBottomSheetModule,
-    MatButtonModule
+    MessageModule
   ]
 })
 export class RegisterModule { }

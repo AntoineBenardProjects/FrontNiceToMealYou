@@ -78,5 +78,5 @@ export interface SelectData{
     name: string,
     selected?: boolean,
     subtitle?: string,
-    originalData?: any
+    originalData?: any,
 }

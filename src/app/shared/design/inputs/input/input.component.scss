@@ -7,7 +7,7 @@
         &::before{
             width: 100%;
         }
-        input{border-color: var(--hoverBorderColor); background: transparent; color: var(--hoverTextColor);}
+        input,p{border-color: var(--hoverBorderColor); background: transparent; color: var(--hoverTextColor);}
     }
     &::before{
         background: var(--hoverBackgroundColor);
@@ -69,7 +69,7 @@
 
 .inputBox:has(input:focus){
     &::before{width: 0;}
-    input{color: var(--textColor);}
+    input,p{color: var(--textColor);}
 }
 
 input::-webkit-outer-spin-button,
@@ -91,6 +91,8 @@ input[type=number] {
     margin: auto !important;
     height: fit-content;
     font-weight: 800;
+    color: var(--placeholderColor);
+    z-index: 2;
 }
 
 .autocomplete{
@@ -105,8 +107,10 @@ input[type=number] {
     justify-content: center;
     border-radius: 5px;
     p{
+        color: var(--textColorAuto);
         padding-left: 1vw;
         font-size: 16px;
+        z-index: 2;
     }
     #address{
         font-size: 12px;
