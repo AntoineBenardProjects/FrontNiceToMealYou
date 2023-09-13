@@ -1,11 +1,11 @@
 <div class="inputBox">
-    <input [ngClass]="inputClass" (change)="closeAutocomplete()" (ngModelChange)="checkValidGrade($event)" [(ngModel)]="value" [type]="type" autocomplete="disable">
+    <input [ngClass]="inputClass" (change)="closeAutocomplete()" (ngModelChange)="checkValidGrade($event)" [(ngModel)]="value" [type]="type" autocomplete="disable" max="10" min="0">
     <span>{{text}}</span>
     <p class="grade" *ngIf="showGrade">/10</p>
     <ng-container *ngIf="autocomplete.length > 0 && autocompleteOpened">
         <div (click)="sendAutocomplete(value)" *ngFor="let value of filteredValues" class="autocomplete" [ngStyle]="{'height' : autocompleteOpened ? autocompleteSize : '0', 'background': value.selected ? backgroundColorAutoActive : backgroundColorAuto}">
             <p [ngStyle]="{'color': value.selected ? textColorAutoActive : textColorAuto}">{{value.name}}</p>
-            <p id="address">{{value.subtitle}}</p>
+            <p [ngStyle]="{'color': value.selected ? textColorAutoActive : textColorAuto}" id="address">{{value.subtitle}}</p>
         </div>
     </ng-container>
 </div>

@@ -1,5 +1,13 @@
+.container{
+    max-height: 100%;
+    overflow: hidden;
+    width: 100vw;
+}
 p{
     display: flex;
     justify-content: center;
-    color: #9a0000;
+    color: var(--white);
+    padding: 1vh 2vw;
+    width: fit-content;
+    border-radius: 5px 5px 0 0;
 }

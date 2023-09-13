@@ -105,14 +105,13 @@
         width: 100%;
         position: relative;
         &::before{
-            background: var(--topHoverBackgroundColor);
+            background: var(--hoverBackgroundColor);
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             height: 100%;
             width: 0%;
-            border-radius: 5px;
             transition: .5s;
         }
         &:hover{

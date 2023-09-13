@@ -1,5 +1,5 @@
 export interface Message {
     error: boolean;
-    message: String;
+    message: string;
 }
   

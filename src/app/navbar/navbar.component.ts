@@ -25,9 +25,6 @@ export class NavbarComponent implements OnInit {
     private elementRef: ElementRef,
     private themeService: ThemeService
   ) {
-    this.imageSubscriber = place.getImageChange().subscribe(() => {
-      this.user.img = localStorage.getItem("img");
-    });
     this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
       this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
       this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
@@ -47,35 +44,12 @@ export class NavbarComponent implements OnInit {
     backgroundColorActive: 'var(--white)'
   }
 
-  user: User;
-  verifyAdmin: boolean = false;
-  verifyPortfolio: boolean = false;
-  types: String[] = [];
+  
 
   position : number = 0;
   test: boolean = true;
 
-  ngOnInit(): void {
-    const token: string = localStorage.getItem("token");
-    this.dataService.loginByToken(token).subscribe((credentials: any) => {
-      if(credentials.role === "Admin") this.verifyAdmin = true;
-      if(credentials.role === "Visit")  this.verifyPortfolio = true;
-      localStorage.setItem("role",credentials.role);
-      localStorage.setItem("id",credentials.id);
-      localStorage.setItem("login",credentials.login);
-
-      this.dataService.getImage(credentials.id).subscribe((img: string) =>{
-        localStorage.setItem("img",img);
-        this.user = {
-          id: credentials.id,
-          img: img,
-          login: credentials.login,
-          password: "",
-          role: credentials.role
-        }
-      });
-    });
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(){
     window.addEventListener("scroll", (event) => {

@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { LoginComponent } from './login.component';
 import { LoginRoutingModule } from './login-routing.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { InputsModule } from '../shared/design/inputs/inputs.module';
 import { ButtonsModule } from '../shared/design/buttons/buttons.module';
+import { MessageModule } from '../message/message.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,9 +16,8 @@ import { ButtonsModule } from '../shared/design/buttons/buttons.module';
     ButtonsModule,
     BrowserModule,
     LoginRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatBottomSheetModule
+    MessageModule,
+    FormsModule
   ]
 })
 export class LoginModule { }

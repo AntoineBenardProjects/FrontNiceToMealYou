@@ -215,11 +215,14 @@ export class DatabaseService {
 
   ////////////////////////////////////////  Horaires ////////////////////////////////////////
   private horairesUrl = "/horaires";
-  getHorairesOfPlace(id: string){
+  getHorairesOfPlace(id: string, id_user: string){
     let promise: Subject<Message | Horaires[]> = new Subject();
     this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.horairesUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      // console.log(res);
+    let params = JSON.stringify({
+      idPlace: id,
+      idUser: id_user
+    });
+    this.httpClient.get(this.serverUrl + this.horairesUrl + "/" + encodeURIComponent(params),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         promise.next(res);
       }
@@ -342,6 +345,22 @@ export class DatabaseService {
 
     return toReturn.asObservable();
   }
+  getValidName(name: string){
+    let toReturn: Subject<Message | number> = new Subject();
+
+    this.httpClient.get(this.serverUrl + this.connectionUrl +"/used/"+name,this.httpOptions).subscribe((res: any) => {
+      if(res.error !== true){
+        toReturn.next(res);
+      } else{
+        toReturn.next({
+          error: true,
+          message: res.message
+        });
+      }
+    });
+
+    return toReturn.asObservable();
+  }
   login(userInfo: User){
     let toReturn: Subject<Message> = new Subject();
 
@@ -377,9 +396,10 @@ export class DatabaseService {
   }
   signup(user: User){
     let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
+    // this.setAuthorizationHeader();
     user.id = this.setId();
-    this.httpClient.post(this.serverUrl + this.connectionUrl,user,this.httpOptions).subscribe((res:any) => {
+    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/signup",user,this.httpOptions).subscribe((res:any) => {
+      console.log(res)
       if(res.error == null){
         toReturn.next({error: false, message: "L'utilisateur à été ajouté."});
       }
@@ -503,12 +523,24 @@ export class DatabaseService {
     });
     return toReturn;
   }
+  getLignesOfStation(id: string){
+    let toReturn: Subject<any> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/ligne/station/" + id,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
   getStationOfPlaceById(id: string){
     let toReturn: Subject<any> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationUrl + "/id/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
-        console.log(res);
         toReturn.next(res);
       }
       else {
@@ -521,6 +553,36 @@ export class DatabaseService {
     let toReturn: Subject<string[]> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + "/region",this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
+  getTransportsOfRegion(region: string){
+    let toReturn: Subject<string[]> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/transport/" + region,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
+  getLignesOfRegionByTransport(region: string, transport: string){
+    let toReturn: Subject<string[]> = new Subject();
+    this.setAuthorizationHeader();
+    const body: any = {
+      region: region,
+      transport: transport
+    }
+    this.httpClient.post(this.serverUrl + this.stationUrl + "/ligne/transport",body,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         toReturn.next(res);
       }
@@ -582,13 +644,31 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  addStationOfPlace(station: Station){
+  addStationOfPlace(id_place: string, id_station){
     let toReturn: Subject<Message> = new Subject();
-    this.httpClient.post<Pictures>(this.serverUrl + this.stationUrl,station,this.httpOptions).subscribe(res => {
+    let params = {
+      id_place: id_place,
+      id_station: id_station
+    };
+    this.httpClient.post<Station>(this.serverUrl + this.stationUrl + "/near", params,this.httpOptions).subscribe(res => {
       if(res != null){
-        toReturn.next({error: false, message: "Les stations ont été ajoutées."});
+        toReturn.next({error: false, message: "La station a été ajoutée."});
       }
-      else  toReturn.next({error: true, message: "Les stations n'ont pas pu être ajoutées."});
+      else  toReturn.next({error: true, message: "La station n'a pas pu être ajoutée."});
+    });
+    return toReturn;
+  }
+  getIdOfStationByRegAndName(name: string, reg: string){
+    let toReturn: Subject<string | Message> = new Subject();
+    let params = JSON.stringify({
+      name: name,
+      reg: reg
+    });
+    this.httpClient.get<Station>(this.serverUrl + this.stationUrl + "/RegAndName/" + encodeURIComponent(params),this.httpOptions).subscribe((res: any) => {
+      if(res != null){
+        toReturn.next(res);
+      }
+      else  toReturn.next({error: true, message: "L'id n'a pas pu être trouvé"});
     });
     return toReturn;
   }

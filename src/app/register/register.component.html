@@ -1,23 +1,81 @@
 <div class="background">
-    <div class="login">
-        <div id="logoIcon">
-            <mat-icon>assignment_ind</mat-icon>
-        </div>
-        
-        <form [formGroup]="formGroup" class="form" (ngSubmit)="create()">
-            <div style="display:flex; flex-direction: column; justify-content: center; height: 70%;">
-                <mat-form-field style="padding-top: 15%">
-                    <input matInput placeholder="Login" formControlName="login" required autocomplete="disabled">
-                </mat-form-field>
-                <mat-form-field>
-                    <input matInput placeholder="Mot de passe" formControlName="password" type="password" required>
-                </mat-form-field>
+
+    <div class="top">
+        <div class="titles">
+            <div class="title" [@titleGeneral]="titleGeneralAnimation">
+                <h1 id="fill">Informations</h1>
+                <h1 id="stroke" style="margin-left: 15px;">Générales</h1>    
             </div>
-    
-            <div style="display: flex; height: 30%; width: 100%; align-items: center; justify-content: space-around;">
-                <button mat-button class="create" routerLink="/login">Connexion</button>
-                <button mat-button class="connect" type="submit">Créer son compte</button>  
+
+            <div class="title" [@titleRegion]="titleRegionAnimation">
+                <h1 id="fill" style="color: var(--black);">Tes</h1>
+                <h1 id="stroke" style="margin-left: 15px; -webkit-text-stroke-color: var(--black);">stations</h1>    
+                <h1 id="stroke" style="margin-left: 15px; color: var(--black);">Favorites</h1>    
+            </div>
+            <div class="title" [@titleType]="titleTypeAnimation">
+                <h1 id="fill" style="color: var(--secondColor);">Tes</h1>
+                <h1 id="stroke" style="margin-left: 15px; -webkit-text-stroke-color: var(--secondColor);">Préférences</h1>    
+            </div>
+
+
+        </div>
+        <round-button id="connexion" (click)="navigateToLogin()" id="connexion" [styleInfos]='buttonColor' text="CONNEXION"></round-button>
+    </div>
+
+    <div class="general" [@general]="generalAnimation">
+        <form class="form" (ngSubmit)="create()">
+            <div class="infos center">
+                <app-input [styleInfo]="validName ? validInput : invalidInput" text="Login *" (input)="setValue($event,'Login')"></app-input>
+                <app-input [styleInfo]="validPassword ? validInput : invalidInput" type="password" text="Mot de passe *" (input)="setValue($event,'Password')"></app-input>
+            </div>
+            <div class="picture" [ngStyle]="{'background-image': 'url('+userInfos.img+')', 'border-style' : userInfos.img === '' ? 'dashed' : 'solid'}">
+                <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="facadeImage($event)"></upload-button>
+                <div (click)="removeImg()" *ngIf="userInfos.img !== ''" class="delete center">
+                    <p>x</p>
+                </div>
             </div>
         </form>    
     </div>
+    <div class="region" [@region]="regionAnimation">
+        <form class="selection" (ngSubmit)="create()">
+            <div class="line">
+                <round-select [infos]="selectInfosRegion" [data]="regionSelect" [selectAll]="false" [multiselect]="false" text="Région" (selectionChange)="setPreferenceGeo($event,'reg')"></round-select>
+                <round-select [ngStyle]="{'height' : transportSelect.length >= 1 ? 'fit-content' : '0','padding-left' : transportSelect.length >= 1 ? '10vw' : '0','opacity' : transportSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="transportSelect" [selectAll]="false" [multiselect]="false" text="Transport" (selectionChange)="setPreferenceGeo($event,'trans')"></round-select>
+                <round-select [ngStyle]="{'height' : ligneSelect.length >= 1 ? 'fit-content' : '0','padding-left' : ligneSelect.length >= 1 ? '10vw' : '0','opacity' : ligneSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="ligneSelect" [selectAll]="false" [multiselect]="false" text="Lignes" (selectionChange)="setPreferenceGeo($event,'lig')"></round-select>
+                <round-select [ngStyle]="{'height' : stationSelect.length >= 1 ? 'fit-content' : '0','padding-left' : stationSelect.length >= 1 ? '10vw' : '0','opacity' : stationSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="stationSelect" [selectAll]="true" [multiselect]="true" text="Stations" (selectionChange)="setPreferenceGeo($event,'stat')"></round-select>
+            </div>
+            <div class="line" id="list">
+                <div class="stationCard" id="type" *ngFor="let station of stations">
+                    <h1>{{station.name}}</h1>
+                    <div class="images">
+                        <ng-container>
+                            <img *ngFor="let ligne of station.originalData" [src]="'../../assets/images-lignes/IDF/' + ligne + '.png'">
+                        </ng-container>
+                    </div>
+                    
+                </div>
+            </div>
+        </form>    
+    </div>
+    <div class="taste" [@type]="typeAnimation">
+        <form class="selection" (ngSubmit)="create()">
+            <div class="line">
+                <round-select [infos]="selectInfosType" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie" (selectionChange)="setPreferenceType($event,'cat')"></round-select>
+                <round-select [ngStyle]="{'height' : typeSelect.length >= 1 ? 'fit-content' : '0','padding-left' : typeSelect.length >= 1 ? '10vw' : '0','opacity' : typeSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosType" [data]="typeSelect" [selectAll]="false" [multiselect]="false" text="Type" (selectionChange)="setPreferenceType($event,'type')"></round-select>
+            </div>
+            <div class="line" id="list">
+                <div class="stationCard" *ngFor="let type of types">
+                    <h1>{{type.name}}</h1>
+                    <img [src]="'../../assets/images-types/' + type.originalData">
+                </div>
+            </div>
+        </form>  
+    </div>
+
+    <div class="navigation">
+        <round-button [ngStyle]="{'opacity' : generalAnimation === 'show' ? '0' : '1'}" style="transition: 400ms;" [styleInfos]='buttonColor' text="Retour" (click)="previousStep()"></round-button>
+        <round-button [styleInfos]='buttonColor' [text]="nextStepButtonMessage" (click)="nextStep()"></round-button>
+    </div>
 </div>
+
+<message [@error]="showMessage" [message]="message" [valid]="valid"></message>

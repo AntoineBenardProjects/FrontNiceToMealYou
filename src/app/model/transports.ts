@@ -3,7 +3,7 @@ export interface Station{
     lignes: string[],
     name: string,
     transport: string,
-    idPlace: string
+    id: string
 }
 
 export interface Coords{

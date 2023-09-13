@@ -1,1 +1,3 @@
-<p>{{message}}</p>
+<div class="container center">
+    <p [ngStyle]="{'background-color' : valid ? 'var(--thirdColor)' : 'var(--secondColor)'}">{{message}}</p>
+</div>

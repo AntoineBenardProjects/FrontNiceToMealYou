@@ -1,106 +1,205 @@
-.form{
+.top{
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    padding: 0 5vw;
+    height: 20vh;
+    .titles{
+        display: flex;
+        align-items: center;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+        position: relative;
+        .title{
+            display: flex;
+            position: absolute;
+            left: 0;
+            overflow: hidden;
+            height: 0;
+        }
+    }
+}
+
+round-button{
+    height: 5vh;
+}
+
+h1{
+    display: flex;
+    align-items: center;
+    font-size: 50px;
+    text-transform: uppercase;
+    font-family: 'Argentum' !important;
+    margin: 0;
+}
+#stroke{
+    -webkit-text-stroke: 1px var(--white);
+    color: transparent;
+}
+#fill{
+    color: var(--white);
+}
+
+.selection{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    height: 35vh;
-    width: 25vw;
-    color: #01110A;
-    background-color: #FCFFFC;
-    border: 1px solid #FCFFFC;
-    border-radius: 20px;
-}
-
-::ng-deep .form{
-    .mat-focused .mat-form-field-label {
-        color: #01110A !important;
+    padding: 20vh 5vw;
+    height: 60%;
+    width: 90%;
+    .line{
+        display: flex;
+        height: 40%;
+        width: 100%;
     }
-
-    .mat-input-element {
-        caret-color: #01110A !important;
+    #list{
+        display: grid;
+        grid-template-columns: repeat(3, 3fr);
     }
-
-    .mat-input-element::selection {
-        background-color: grey !important;
-    }
-    
-    .mat-form-field-underline {
-        /*change color of underline*/
-        background-color: #01110A;
-    } 
-    
-    .mat-form-field-ripple{
-        /*change color of underline when focused*/
-        background-color: #01110A !important;
-    }
-
-    .mat-form-field.mat-focused {
-        .mat-form-field-infix {
-            background: rgba(1,17,10, 0.4);
-        }
-        .mat-input-element::selection{
-            background-color: var(--background-color-2) !important;
+    #type{
+        color: var(--white);
+        background: var(--secondColor);
+        img{
+            width: 40px;
+            height: 40px;
         }
     }
+    .stationCard{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 5px;
+        color: var(--white);
+        background: var(--black);
+        height: 7vh;
+        width: 20vw;
+        padding: 0 2vw;
+        h1{
+            font-size: 17px;
+            color: var(--white);
+        }
+        .images{
+            display: flex;
+        }
+        img:last-child{
+            margin-right: 0;
+        }
+        img{
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            margin-right: 1vw;
+        }
+    }
+    round-select{
+        transition: 400ms;
+        width: 15vw;
+    }
 }
-
-.login{
-    display: flex; 
-    justify-content:center; 
-    align-items: center; 
-    flex-direction: column; 
+.form{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    .infos{
+        flex-direction: column;
+    }
+    .column{
+        display: flex;
+        flex-direction: column;
+        height: 60%;
+        width: 40vw;
+    }
+}
+app-input{
+    margin: 2vh 0;
+}
+.general{
+    position: absolute;
     height: 100%; 
     width: 100%;
-    color: #FCFFFC;
+    background-color: var(--secondColor);
+}
+.region{
+    position: absolute;
+    height: 100%; 
+    width: 100%;
+    background-color: var(--white);
+    transform: translateX(100vw);
+}
+.taste{
+    position: absolute;
+    height: 100%; 
+    width: 100%;
+    background-color: var(--mainColor);
+    transform: translateX(200vw);
+}
+.navigation{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5vw;
+    width: 90%;
+    height: 20%;
 }
 
 .background{
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(rgba(1,17,10,0.7),rgba(1,17,10,0.7)), url("../../assets/common/login.jpg");
+}
+.picture{
+    height: 150px;
+    width: 150px;
+    border: 1px solid var(--white);
+    border-radius: 5px;
+    background-repeat: no-repeat;
+    background-position: center center;
     background-size: cover;
-}
-
-.title{
-    font-size: 75px;
-    font-weight: bold;
-}
-
-.connect{
-    height: 50%;
-    background-color: #01110A;
-    color: #FCFFFC;
-    transition: all 200ms;
-    transform: scale(1);
-    &:hover{
-        transform: scale(1.15);
+    position: relative;
+    margin-top: 3vh;
+    upload-button{
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        z-index: 1;
+    }
+    .delete{
+        width: 32px;
+        height: 32px;
+        background: var(--white);
+        color: var(--black);
+        border-radius: 50%;
+        position: absolute;
+        left: -16px;
+        bottom: -16px;
+        z-index: 1;
+        cursor: pointer;
+        transform: scale(1);
+        transition: .5s;
+        &:hover{
+            transform: scale(1.15)
+        }
+        p{
+            pointer-events: none;
+        }
     }
 }
 
-.create{
-    height: 50%;
-    background-color: #FCFFFC;
-    color: #01110A;
-    transition: all 200ms;
-    transform: scale(1);
-    &:hover{
-        transform: scale(1.15);
-        background-color: rgba(1,17,10,0.3);
-    }
-}
-
-#logoIcon{
-    display: flex; width: 25%; height: 12vh; justify-content: flex-end; align-items: center;
-    mat-icon{
-        font-size: 7vh; margin-right: 10%;
-    }
+message{
+    height: 0;
+    position: absolute;
+    bottom: 0;
 }
 
 @media screen and (max-width: 600px){
     .form{
         width: 70vw;
-    }
-    #logoIcon{
-        width: 75%;
     }
 }
