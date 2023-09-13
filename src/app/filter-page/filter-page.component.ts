@@ -7,7 +7,7 @@ import { DatabaseService } from '../services/database.service';
 import { Data } from 'src/data';
 import { TypePicture } from '../model/typePicture';
 import { Station } from '../model/transports';
-import { Restaurant } from '../model/places';
+import { Place, Restaurant } from '../model/places';
 import { PlacesService } from '../services/places.service';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
@@ -50,38 +50,37 @@ export class FilterPageComponent {
       this.openSidebar = !this.openSidebar;
       this.openSidebar ? this.iconSidebar = "x" : this.iconSidebar = "<";
   }
-  protected selectInfosRight: SelectInfos = {
-    backgroundColor: 'var(--secondColor)',
-    textColor: 'var(--white)',
+  protected selectInfos: SelectInfos = {
+    backgroundColor: 'transparent',
+    textColor: 'var(--black)',
     optionTextColor: 'var(--black)',
     optionBackgroundColor: 'var(--white)',
     hoverBackgroundColor: 'var(--mainColor)',
     hoverTextColor: 'var(--black)',
-    borderColor: 'var(--white)',
-    width: 10
-  }
-  protected selectInfosLeft: SelectInfos = {
-    backgroundColor: 'var(--mainColor)',
-    textColor: 'var(--black)',
-    optionTextColor: 'var(--white)',
-    optionBackgroundColor: 'var(--black)',
-    hoverBackgroundColor: 'var(--secondColor)',
-    hoverTextColor: 'var(--white)',
-    borderColor: 'var(--black)',
+    borderColor: 'transparent',
+    borderColorActive: 'transparent',
+    topHoverBorderColor: 'transparent',
     width: 10
   }
   protected checkboxInfos: CheckboxInfos = {
-    color: "var(--white)",
-    backgroundColor: "var(--black)",
-    borderColor: "var(--black)",
-    colorActive: "var(--white)",
-    backgroundColorActive: "var(--thirdColor)",
+    color: "var(--secondColor)",
+    hoverTextColor: 'var(--white)',
+    hoverBackgroundColor: 'var(--secondColor)',
+    hoverBorderColor: 'var(--secondColor)',
+    hoverTextColorValid: 'var(--white)',
+    hoverBackgroundColorValid: 'var(--thirdColor)',
+    hoverBorderColorValid: 'var(--thirdColor)',
+    backgroundColor: "transparent",
+    borderColor: "var(--secondColor)",
+    colorActive: "var(--thirdColor)",
+    backgroundColorActive: "var(--transparent)",
     borderColorActive: "var(--thirdColor)"
   }
   protected categorySelect: SelectData[] = [];
   protected regionSelect: SelectData[] = [];
   protected lignesSelect: SelectData[] = [];
   protected stationsSelect: SelectData[] = [];
+  protected transportsSelect: SelectData[] = [];
 
   protected typesSelect: SelectData[] = [];
 
@@ -118,12 +117,30 @@ export class FilterPageComponent {
       this.sort();
     }
     else if(filter === "region"){
+      this.transportsSelect = [];
       this.lignesSelect = [];
       this.stationsSelect = [];
       const regionSelected: string = event.find((element: SelectData) => element.selected === true)?.name;
       this.region = regionSelected;
+      this.databaseService.getTransportsOfRegion(regionSelected).subscribe((res: string[]) => {
+        res.forEach((element: string) => {
+          this.transportsSelect.push({
+            id: element,
+            name: element,
+            selected: false
+          });
+        });
+        this.transportsSelect = [...this.transportsSelect];
+      });
+      
+    }
+    else if(filter === "transport"){
+      this.lignesSelect = [];
+      this.stationsSelect = [];
+      const regionSelected: string = this.regionSelect.find((element: SelectData) => element.selected === true)?.name;
+      const transportSelected: string = event.find((element: SelectData) => element.selected === true)?.name;
 
-      this.databaseService.getLignesOfRegion(regionSelected).subscribe((res: string[]) => {
+      this.databaseService.getLignesOfRegionByTransport(regionSelected,transportSelected).subscribe((res: string[]) => {
         res.forEach((element: string) => {
           this.lignesSelect.push({
             id: element,
@@ -197,76 +214,35 @@ export class FilterPageComponent {
   };
 
 //////////////////////////////////////////////  Sort  //////////////////////////////////////////////
-  private allRestaurants: Restaurant[] = [];
-  private filteredPlace: Restaurant[] = [];
   protected category: string = "";
   protected tested: boolean = true;
   protected openOnly: boolean = false;
   protected region: string = "";
+  protected transport: string = "";
   protected lignes: string[] = [];
   protected stations: SelectData[] = [];
   sort(){
-    this.filteredPlace = [];
     this.markers = [];
-    let placesId: string[] = [];
-    let getIds: Subject<boolean> = new Subject();
     if(this.lignes.length > 0 && this.stations.length === 0){
-      let counter: number = 0;
       this.lignes.forEach((element: string) => {
-        this.databaseService.getPlacesIdByLigne(element).subscribe((res: string[]) => {
-          counter++;
-          placesId.push(...res);
-          if(counter === this.lignes.length){
-            placesId = this.placesService.removeDuplicate(placesId);
-            getIds.next(true);
-          }
-        });
-      });
-      getIds.subscribe(() => {
-        placesId.forEach((id: string) => {
-          const place: Restaurant = this.allRestaurants.find((element: Restaurant) => element.id === id);
-          this.filteredPlace.push(place);
-        });
-        this.filteredPlace = this.filteredPlace.filter((element: Restaurant) => element.tested === this.tested);  
-        this.filteredPlace.forEach((element: Restaurant) => {
-          this.markers.push({
-            lat: element.lat,
-            lng: element.lng
+        this.databaseService.getPlacesByLigneAndUser(element,localStorage.getItem('id')).subscribe((places: Place[]) => {
+          places.forEach((place: Place) => {
+            this.markers.push({
+                  lat: place.lat,
+                  lng: place.lng
+            });
           });
         });
       });
     } else if(this.stations.length > 0){
-      let counter: number = 0;
       this.stations.forEach((element: SelectData) => {
-        this.databaseService.getPlacesIdByStation(element.originalData).subscribe((res: string[]) => {
-          counter++;
-          placesId.push(...res);
-          if(counter === this.lignes.length){
-            placesId = this.placesService.removeDuplicate(placesId);
-            getIds.next(true);
-          }
-        });
-      });
-      getIds.subscribe(() => {
-        placesId.forEach((id: string) => {
-          const place: Restaurant = this.allRestaurants.find((element: Restaurant) => element.id === id);
-          this.filteredPlace.push(place);
-        });
-        this.filteredPlace = this.filteredPlace.filter((element: Restaurant) => element.tested === this.tested);  
-        this.filteredPlace.forEach((element: Restaurant) => {
-          this.markers.push({
-            lat: element.lat,
-            lng: element.lng
+        this.databaseService.getPlacesByStationAndUser(element.originalData,localStorage.getItem('id')).subscribe((places: Place[]) => {
+          places.forEach((place: Place) => {
+            this.markers.push({
+                  lat: place.lat,
+                  lng: place.lng
+            });
           });
-        });
-      });
-    } else{
-      this.filteredPlace = this.allRestaurants.slice();
-      this.filteredPlace = this.filteredPlace.filter((element: Restaurant) => element.tested === this.tested); 
-      this.filteredPlace.forEach((element: Restaurant) => {
-        this.markers.push({
-          lat: element.lat,
-          lng: element.lng
         });
       });
     }
@@ -275,13 +251,6 @@ export class FilterPageComponent {
 //////////////////////////////////////////////  Navigate  //////////////////////////////////////////////
 
   ngOnInit(){
-    this.databaseService.getPlaceOfUser(localStorage.getItem('id')).subscribe((res: string[]) => {
-      res.forEach((element: string) => {
-        this.databaseService.getRestaurantById(element).subscribe((restaurant: Restaurant) => {
-          this.allRestaurants.push(restaurant);
-        });
-      });
-    });
     this.initOptions();
   }
   ngOnDestroy(){
