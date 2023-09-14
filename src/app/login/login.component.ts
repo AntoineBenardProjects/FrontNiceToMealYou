@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { User } from '../model/user';
 import { AuthService } from '../services/auth.service';
 import { DatabaseService } from '../services/database.service';
-import { MessageComponent } from '../message/message.component';
 import { Message } from '../model/message';
 import { ButtonInfos } from '../shared/model/designs';
 import { trigger, state, style, transition, animate } from '@angular/animations';

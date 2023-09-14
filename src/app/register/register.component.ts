@@ -4,7 +4,7 @@ import { DatabaseService } from '../services/database.service';
 import { ButtonInfos, InputInfos, SelectData, SelectInfos } from '../shared/model/designs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
-import { Station } from '../model/transports';
+import { Ligne, Station } from '../model/transports';
 import { Data } from 'src/data';
 import { TypePicture } from '../model/typePicture';
 import { Subject } from 'rxjs';
@@ -286,11 +286,11 @@ export class RegisterComponent {
       this.ligneSelect = [];
       this.stationSelect = [];
       let transport = event.find((element: SelectData) => element.selected === true)?.name;
-      this.dataService.getLignesOfRegionByTransport(this.region,transport).subscribe((res: string[]) => {
-        res.forEach((ligne: string) => {
+      this.dataService.getLignesOfRegionByTransport(this.region,transport).subscribe((res: Ligne[]) => {
+        res.forEach((ligne: Ligne) => {
           this.ligneSelect.push({
-            id: ligne,
-            name: ligne,
+            id: ligne.id,
+            name: ligne.name,
             selected: false
           });
         });
@@ -298,7 +298,7 @@ export class RegisterComponent {
       });
     } else if(params === 'lig'){
       this.stationSelect = [];
-      let ligne = event.find((element: SelectData) => element.selected === true)?.name;
+      const ligne = event.find((element: SelectData) => element.selected === true)?.id;
       this.dataService.getStationsOfLigne(ligne).subscribe((res: Station[]) => {
         res.forEach((station: Station) => {
           const find: SelectData = this.stations.find((element: SelectData) => station.id === element.id);
@@ -323,7 +323,7 @@ export class RegisterComponent {
         this.stations.push(filter[0]);
         let counter: number = 0;
         this.stations.forEach((element: SelectData) => {
-          this.dataService.getLignesOfStation(element.id).subscribe((res: string[]) => {
+          this.dataService.getLignesOfStation(element.id).subscribe((res: Ligne[]) => {
             element.originalData = res;
             counter++;
             if(counter === this.stations.length - 1)  this.stations = this.stations.slice();

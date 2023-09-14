@@ -7,9 +7,8 @@ import { DatabaseService } from '../services/database.service';
 import { Data } from 'src/data';
 import { TypePicture } from '../model/typePicture';
 import { Station } from '../model/transports';
-import { Place, Restaurant } from '../model/places';
+import { Place } from '../model/places';
 import { PlacesService } from '../services/places.service';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 
 @Component({
   selector: 'app-filter-page',
@@ -20,8 +19,7 @@ export class FilterPageComponent {
 
   constructor(private elementRef: ElementRef,
     private themeService: ThemeService, 
-    private databaseService: DatabaseService,
-    private placesService: PlacesService){
+    private databaseService: DatabaseService){
     this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
       this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
       this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
@@ -32,10 +30,7 @@ export class FilterPageComponent {
   }
   private themeSubscriber: Subscription = new Subscription();
 
-//////////////////////////////////////////////  Background Page  //////////////////////////////////////////////
-  protected backgroundColor: string = 'var(--white)'
-
-//////////////////////////////////////////////  Bottombar  //////////////////////////////////////////////
+//////////////////////////////////////////////  Transportbar  //////////////////////////////////////////////
   protected openTransportbar: boolean = true;
   protected iconTransportbar: string = "x";
   toggleBottombar(){
@@ -43,12 +38,12 @@ export class FilterPageComponent {
       this.openTransportbar ? this.iconTransportbar = "x" : this.iconTransportbar = ">";
     }
 
-//////////////////////////////////////////////  Sidebar  //////////////////////////////////////////////
-  protected openSidebar: boolean = true;
-  protected iconSidebar: string = "x";
+//////////////////////////////////////////////  Categorybar  //////////////////////////////////////////////
+  protected openCategorybar: boolean = true;
+  protected iconCategorybar: string = "x";
   toggleSidebar(){
-      this.openSidebar = !this.openSidebar;
-      this.openSidebar ? this.iconSidebar = "x" : this.iconSidebar = "<";
+      this.openCategorybar = !this.openCategorybar;
+      this.openCategorybar ? this.iconCategorybar = "x" : this.iconCategorybar = "<";
   }
   protected selectInfos: SelectInfos = {
     backgroundColor: 'transparent',
@@ -81,7 +76,6 @@ export class FilterPageComponent {
   protected lignesSelect: SelectData[] = [];
   protected stationsSelect: SelectData[] = [];
   protected transportsSelect: SelectData[] = [];
-
   protected typesSelect: SelectData[] = [];
 
   initOptions(){
@@ -114,6 +108,7 @@ export class FilterPageComponent {
           this.typesSelect.push(selectValue);
         }
       });
+      
       this.sort();
     }
     else if(filter === "region"){
@@ -140,7 +135,7 @@ export class FilterPageComponent {
       const regionSelected: string = this.regionSelect.find((element: SelectData) => element.selected === true)?.name;
       const transportSelected: string = event.find((element: SelectData) => element.selected === true)?.name;
 
-      this.databaseService.getLignesOfRegionByTransport(regionSelected,transportSelected).subscribe((res: string[]) => {
+      this.databaseService.getLignesOfRegionByTransport(regionSelected,transportSelected).subscribe((res: any[]) => {
         res.forEach((element: string) => {
           this.lignesSelect.push({
             id: element,
@@ -221,6 +216,7 @@ export class FilterPageComponent {
   protected transport: string = "";
   protected lignes: string[] = [];
   protected stations: SelectData[] = [];
+  private markersToFilter: MarkersInfos[] = [];
   sort(){
     this.markers = [];
     if(this.lignes.length > 0 && this.stations.length === 0){
@@ -245,6 +241,8 @@ export class FilterPageComponent {
           });
         });
       });
+    } else if(this.region !== '' && this.transport === ''){
+      // this.databaseService.getPlacesByRegionAndUser
     }
   }
 
@@ -256,4 +254,13 @@ export class FilterPageComponent {
   ngOnDestroy(){
     this.themeSubscriber.unsubscribe();
   }
+}
+
+interface MarkersInfos{
+  lat: number,
+  lng: number,
+  cat: string,
+  type: string,
+  tested: boolean,
+  open: boolean
 }

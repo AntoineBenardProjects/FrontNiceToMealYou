@@ -14,7 +14,6 @@ import { UserPageComponent } from './user-page.component';
 import { UserPageRoutingModule } from './user-page-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-import { NavbarModule } from '../navbar/navbar.module';
 
 
 @NgModule({
@@ -36,7 +35,6 @@ import { NavbarModule } from '../navbar/navbar.module';
     ShowHorairesModule,
     FormsModule,
     ReactiveFormsModule,
-    NavbarModule,
     FormsModule,
     CardModule,
   ]

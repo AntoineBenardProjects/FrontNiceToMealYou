@@ -1,4 +1,4 @@
-<div class="body" [ngStyle]="{'background' : backgroundColor}">
+<div class="body">
     <div class="topbarContainer">
         <div class="navbar">
             <div class="container">
@@ -7,14 +7,23 @@
             </div>
         </div>
       </div>
-    <div class="infosFilterBar" [ngStyle]="{'left' : openSidebar ? '0' : '-15%'}">
-        <div class="fireSideBarOpenState center" (click)="toggleSidebar()" [ngStyle]="{'top' : openSidebar ? '0' : '5vh', 'right' : openSidebar ? '0' : '-5vw', 'background' : openSidebar ? 'transparent' : 'var(--mainColor)'}">
-            <span class="arrow" [ngStyle]="{'transform' : openSidebar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconSidebar}}</span>    
+    <div class="infosFilterBar" [ngStyle]="{'left' : openCategorybar ? '0' : '-15%'}">
+        <div class="fireSideBarOpenState center" (click)="toggleSidebar()" [ngStyle]="{'top' : openCategorybar ? '0' : '5vh', 'right' : openCategorybar ? '0' : '-5vw', 'background' : openCategorybar ? 'transparent' : 'var(--mainColor)'}">
+            <span class="arrow" [ngStyle]="{'transform' : openCategorybar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconCategorybar}}</span>    
         </div>
         <round-select class="selectOpen" (selectionChange)="filter($event,'category')" [infos]="selectInfos" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie"></round-select>
         <round-select class="selectClosed" (selectionChange)="filter($event,'type')" [infos]="selectInfos" [data]="typesSelect" text="Type" [ngStyle]="{'height' : typesSelect.length > 1 ? 'fit-content' : '0','padding-top' : typesSelect.length > 1 ? '10vh' : '0','opacity' : typesSelect.length > 1 ? '1' : '0'}"></round-select>
-        <checkbox [value]="tested" (checked)="filter($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
-        <!-- <checkbox text="Ouvert uniquement" [value]="openOnly" (checked)="filter($event,'openOnly')" [styleInfos]="checkboxInfos"></checkbox> -->
+        <div class="checkboxes">
+            <div class="checkbox">
+                <p>Testé</p>
+                <checkbox [value]="tested" (checked)="filter($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
+            </div>
+            <div class="checkbox">
+                <p>Ouverts</p>
+                <checkbox [value]="openOnly" (checked)="filter($event,'openOnly')" [styleInfos]="checkboxInfos"></checkbox>
+            </div>
+        </div>
+        
 
     </div>
     <div class="transportFilterBar" [ngStyle]="{'right' : openTransportbar ? '0' : '-15%'}">
@@ -26,7 +35,7 @@
         <round-select class="selectClosed" (selectionChange)="filter($event,'ligne')" [infos]="selectInfos" [data]="lignesSelect" text="Ligne" [ngStyle]="{'height' : lignesSelect.length > 0 ? 'fit-content' : '0','padding-top' : lignesSelect.length > 0 ? '10vh' : '0','opacity' : lignesSelect.length > 0 ? '1' : '0'}"></round-select>
         <round-select class="selectClosed" (selectionChange)="filter($event,'station')" [infos]="selectInfos" [data]="stationsSelect" text="Station" [ngStyle]="{'height' : stationsSelect.length > 0 ? 'fit-content' : '0','padding-top' : stationsSelect.length > 0 ? '10vh' : '0','opacity' : stationsSelect.length > 0 ? '1' : '0'}"></round-select>
     </div>
-    <div class="map" [ngStyle]="{'justify-content' : (this.openSidebar && !this.openTransportbar) ? 'flex-end' : 'flex-start'}">
+    <div class="map" [ngStyle]="{'justify-content' : (this.openCategorybar && !this.openTransportbar) ? 'flex-end' : 'flex-start'}">
         <google-map
         [height]="mapHeight"
         [width]="mapWidth"

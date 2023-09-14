@@ -72,15 +72,15 @@ export class UserPageComponent {
       } else {
         console.log('File is valid');
       }
-      this.data.setImage(user).subscribe((res:Message) => {
-        if(!res.error){
-          this.img = event.img;
-          localStorage.setItem("img", event.img);
-          this.data.setImage(user).subscribe((token: any) => {
-            this.place.setImageChange();
-          });
-        }
-      });
+      // this.data.setImage(user).subscribe((res:Message) => {
+      //   if(!res.error){
+      //     this.img = event.img;
+      //     localStorage.setItem("img", event.img);
+      //     this.data.setImage(user).subscribe((token: any) => {
+      //       this.place.setImageChange();
+      //     });
+      //   }
+      // });
     }
   }
 
@@ -103,10 +103,10 @@ export class UserPageComponent {
       login: this.loginForm.value.newLogin,
       img: this.img
     }
-    this.data.setLogin(user).subscribe(() => {
-      localStorage.setItem("login",user.login);
-      this.login = user.login;
-    });
+    // this.data.setLogin(user).subscribe(() => {
+    //   localStorage.setItem("login",user.login);
+    //   this.login = user.login;
+    // });
   }
 
   setPassword(){
@@ -120,7 +120,7 @@ export class UserPageComponent {
     this.data.checkPassword(user).subscribe((res: Message) => {
       if(!res.error) {
         user.password = this.passwordForm.value.newPassword;
-        this.data.setPassword(user);
+        // this.data.setPassword(user);
       }
       else{
         this.bottomSheet.open(MessageComponent, {data: res.message});

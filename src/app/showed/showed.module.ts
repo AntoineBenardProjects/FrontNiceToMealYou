@@ -12,7 +12,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
 import { CardModule } from '../card/card.module';
-import { NavbarModule } from '../navbar/navbar.module';
 import { GraphBarModule } from '../graph-bar/graph-bar.module';
 import { ProgressBarModule } from '../shared/design/progress-bar/progress-bar.module';
 import { SelectsModule } from '../shared/design/selects/selects.module';
@@ -33,7 +32,6 @@ import { SelectsModule } from '../shared/design/selects/selects.module';
     MatListModule,
     MatTooltipModule,
     ShowHorairesModule,
-    NavbarModule,
     GraphBarModule,
     ProgressBarModule,
     SelectsModule,

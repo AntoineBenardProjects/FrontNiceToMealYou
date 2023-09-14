@@ -49,7 +49,7 @@
                     <h1>{{station.name}}</h1>
                     <div class="images">
                         <ng-container>
-                            <img *ngFor="let ligne of station.originalData" [src]="'../../assets/images-lignes/IDF/' + ligne + '.png'">
+                            <img *ngFor="let ligne of station.originalData" [src]="'../../assets/images-lignes/'+ligne.reg+'/' + ligne.name + '.png'">
                         </ng-container>
                     </div>
                     
