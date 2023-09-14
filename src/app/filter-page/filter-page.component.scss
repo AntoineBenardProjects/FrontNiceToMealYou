@@ -41,10 +41,24 @@
         width: 70%;
         transition: .5s;
     }
-    .selectOpen,checkbox{
+    .selectOpen,.checkboxes{
         padding-top: 10vh;
         width: 70%;
         transition: .5s;
+    }
+    .checkboxes{
+        display: flex;
+        justify-content: space-between;
+    }
+    .checkbox{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        height: 8vh;
+        p{
+            font-size: 16px;
+        }
     }
 }
 .transportFilterBar{

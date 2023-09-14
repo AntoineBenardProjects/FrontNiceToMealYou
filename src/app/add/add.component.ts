@@ -13,7 +13,7 @@ import { AutocompleteInfos, ButtonInfos, CheckboxInfos, InputInfos, SelectData, 
 import { TypePicture } from '../model/typePicture';
 import { faCheck, faXmark, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { PlacesService } from '../services/places.service';
-import { Station, StationOfPlace } from '../model/transports';
+import { Ligne, Station, StationOfPlace } from '../model/transports';
 import { HttpClient } from '@angular/common/http';
 import { PlaceOfUser } from '../model/user';
 
@@ -341,12 +341,8 @@ export class AddComponent {
       }
     });
     this.stations = [];
-    this.databaseService.getStationOfPlaceById(this.placeInfo.id).subscribe((res: StationOfPlace[]) => {
-      res.forEach((element: StationOfPlace) => {
-        this.databaseService.getStationById(element.id_station).subscribe((station: Station) => {
-          this.stations.push(station);
-        });
-      });
+    this.databaseService.getStationOfPlace(this.placeInfo.id).subscribe((station: Station[]) => {
+      this.stations = station;
     });
     this.databaseService.getHorairesOfPlace(id, localStorage.getItem("id")).subscribe((res: Horaires[]) => {
       if(res.length > 0){
@@ -615,20 +611,17 @@ export class AddComponent {
           this.databaseService.getStationOfPlaceByCoords({
             lat: results[0].geometry.location.lat(),
             lng: results[0].geometry.location.lng()
-          },results[0].address_components[4].short_name).subscribe((res: Station[]) => {
-            this.stations = [];
-            res.forEach((element:Station) => {
-              switch(element.reg){
-                case  "Île de France":
-                  this.stations.push({
-                    reg: element.reg,
-                    lignes: element.lignes,
-                    transport: element.transport,
-                    name: element.name,
-                    id: ''
-                  });
-                break;
-              }
+          }).subscribe((res: Station[]) => {
+            this.stations = res;
+            this.stations.forEach((element:Station) => {
+              console.log(element);
+              element.lignes = [];
+              this.databaseService.getLignesOfStation(element.id).subscribe((lignes: Ligne[]) => {
+                lignes.forEach((ligne: Ligne) => {
+                  element.lignes.push(ligne.name)
+                });
+                element.reg = lignes[0].reg;
+              });
             });
           });
           this.placeInfo.lat = results[0].geometry.location.lat();
@@ -891,7 +884,6 @@ export class AddComponent {
             });
           } 
           this.databaseService.getHorairesOfPlace(this.placeInfo.id, 'google').subscribe((hor: Horaires[]) => {
-            console.log(hor);
             if(hor.length === 0){
               this.googleHoraires.forEach((element: Horaires) => {
                 element.id_place = this.placeInfo.id;
@@ -915,9 +907,7 @@ export class AddComponent {
           }); 
           this.stations.forEach((element: Station) => {
             const name: string = element.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-            this.databaseService.getIdOfStationByRegAndName(name,element.reg).subscribe((res: string) => {
-              this.databaseService.addStationOfPlace(this.placeInfo.id, res);
-            });
+            this.databaseService.addStationOfPlace(this.placeInfo.id, element.id);
           });
           if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
             this.horaires.forEach((element: Horaires) => {
@@ -942,9 +932,9 @@ export class AddComponent {
         } else {
           this.databaseService.updateCommentRestaurants(this.comment);
         }
-        // setTimeout(() => {
-        //   this.router.navigate([sessionStorage.getItem("lastPage")]);
-        // }, 3000);
+        setTimeout(() => {
+          this.router.navigate([sessionStorage.getItem("lastPage")]);
+        }, 3000);
       });
     } else{
       this.errorMessage = "Le formulaire n'est pas complet";

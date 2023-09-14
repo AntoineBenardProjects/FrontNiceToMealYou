@@ -9,7 +9,7 @@ import { Pictures } from '../model/pictures';
 import { PlacesService } from './places.service';
 import { Place, Restaurant } from '../model/places';
 import { PlaceOfUser, User } from '../model/user';
-import { Coords, Station, StationOfPlace } from '../model/transports';
+import { Coords, Ligne, Station, StationOfPlace } from '../model/transports';
 
 @Injectable({
   providedIn: 'root'
@@ -46,39 +46,29 @@ export class DatabaseService {
     };
   }
 
-  private placesUrl: string = "/places";
-  getAllPlaces(){
-    let promise: Subject<any> = new Subject();
+
+  ////////////////////////////////////////  Place ////////////////////////////////////////
+  private placeUrl = "/place";
+  getPlaceOfUserByCategory(category: string, id_user: string): Subject<Place[]>{
+    let promise: Subject<Place[]> = new Subject();
     this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.placesUrl,this.httpOptions).subscribe((res:any) => {
+    const params = {
+      id_user: id_user,
+      category: category
+    }
+    this.httpClient.get(this.serverUrl + this.placeUrl + "/category/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         promise.next(res);
       }
       else{
-        promise.next({error: true, message: res.message});
         console.log(res.error);
       }
     });
     return promise;
   }
-
-
   
   ////////////////////////////////////////  Restaurants ////////////////////////////////////////
   private restaurantUrl = "/restaurant";
-  getRestaurantById(id: string){
-    let promise: Subject<Restaurant> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.restaurantUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        promise.next(res);
-      }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
-  }
   getAllRestaurants(){
     let promise: Subject<Restaurant[]> = new Subject();
     this.setAuthorizationHeader();
@@ -113,7 +103,6 @@ export class DatabaseService {
       address: address
     });
     this.httpClient.get(this.serverUrl + this.restaurantUrl + "/verify/" + encodeURIComponent(params),this.httpOptions).subscribe((res:any) => {
-      // console.log(res);
       if(res.error == null){
         promise.next(res[0]);
       }
@@ -145,17 +134,6 @@ export class DatabaseService {
         console.log(res.error);
       }
     });
-    return toReturn;
-  }
-  deleteRestaurant(id: string){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.delete<Restaurant>(this.serverUrl + this.restaurantUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }    });
     return toReturn;
   }
 
@@ -201,17 +179,6 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  deleteComment(id: string){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.delete<Comment>(this.serverUrl + this.commentUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }    });
-    return toReturn;
-  }
 
   ////////////////////////////////////////  Horaires ////////////////////////////////////////
   private horairesUrl = "/horaires";
@@ -255,21 +222,11 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  deleteHoraires(id: string){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.delete<Horaires>(this.serverUrl + this.horairesUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }    });
-    return toReturn;
-  }
 
 
   ////////////////////////////////////////  Pictures ////////////////////////////////////////
   private picUrl = "/pictures";
+  //
   getPicturesOfPlaceByUser(idPlace: string, idUser: string){
     let promise: Subject<Pictures[]> = new Subject();
     this.setAuthorizationHeader();
@@ -282,17 +239,6 @@ export class DatabaseService {
       if(res.error == null){
         promise.next(res);
       }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
-  }
-  getAllPictures(){
-    let promise: Subject<Pictures[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.picUrl,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) promise.next(res);
       else{
         console.log(res.error);
       }
@@ -396,7 +342,6 @@ export class DatabaseService {
   }
   signup(user: User){
     let toReturn: Subject<Message> = new Subject();
-    // this.setAuthorizationHeader();
     user.id = this.setId();
     this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/signup",user,this.httpOptions).subscribe((res:any) => {
       console.log(res)
@@ -408,97 +353,12 @@ export class DatabaseService {
 
     return toReturn;
   }
-  setPassword(user: User){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/password",user,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
-  }
-  setLogin(user: User){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/login",user,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
-  }
-  getImage(id: string){
-    let toReturn: Subject<string> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.connectionUrl + "/image/"+id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res.img);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
-  }
-  setImage(user: User){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/image",user,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
-  }
-  updateUser(user: User){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.patch<User>(this.serverUrl + this.connectionUrl + "/" + user.id,user,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
-  }
-  deleteUser(id: string){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.delete<User>(this.serverUrl + this.connectionUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }    });
-    return toReturn;
-  }
   verifyPlaceOfUser(placeOfUser: PlaceOfUser){
     let promise: Subject<boolean | Message> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.connectionUrl + "/verify/place/" + encodeURIComponent(JSON.stringify(placeOfUser)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         res > 0 ? promise.next(true) : promise.next(false);
-      }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
-  }
-  getPlaceOfUser(id: string){
-    let promise: Subject<string[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.connectionUrl + "/place/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        promise.next(res);
       }
       else{
         console.log(res.error);
@@ -519,27 +379,10 @@ export class DatabaseService {
 
   ////////////////////////////////////////  Station ////////////////////////////////////////
   private stationUrl: string = "/station";
-  getStationById(id: string){
-    let toReturn: Subject<Station | Message> = new Subject();
+  getStationOfPlaceByCoords(location: Coords){
+    let toReturn: Subject<Station[] | Message> = new Subject();
     this.setAuthorizationHeader();
-    this.httpClient.get<Station>(this.serverUrl + this.stationUrl + "/station/id/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
-  }
-  getStationOfPlaceByCoords(location: Coords,region: string){
-    let toReturn: Subject<any> = new Subject();
-    this.setAuthorizationHeader();
-    const coords: string = JSON.stringify({
-      location: location,
-      region: region
-    });
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/coords/" + encodeURIComponent(coords),this.httpOptions).subscribe((res:any) => {
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/coords/" + encodeURIComponent(JSON.stringify(location)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         toReturn.next(res);
       }
@@ -550,7 +393,7 @@ export class DatabaseService {
     return toReturn;
   }
   getLignesOfStation(id: string){
-    let toReturn: Subject<any> = new Subject();
+    let toReturn: Subject<Ligne[]> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationUrl + "/ligne/station/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
@@ -562,8 +405,9 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  getStationOfPlaceById(id: string){
-    let toReturn: Subject<StationOfPlace[] | Message> = new Subject();
+  /////////////////////////////////////////////////////////////////////
+  getStationOfPlace(id: string){
+    let toReturn: Subject<Station[] | Message> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationUrl + "/id/" + id,this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
@@ -602,26 +446,13 @@ export class DatabaseService {
     return toReturn;
   }
   getLignesOfRegionByTransport(region: string, transport: string){
-    let toReturn: Subject<string[]> = new Subject();
+    let toReturn: Subject<Ligne[]> = new Subject();
     this.setAuthorizationHeader();
     const body: any = {
       region: region,
       transport: transport
     }
-    this.httpClient.post(this.serverUrl + this.stationUrl + "/ligne/transport",body,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
-  }
-  getLignesOfRegion(region: string){
-    let toReturn: Subject<string[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/ligne/region/" + region,this.httpOptions).subscribe((res:any) => {
+    this.httpClient.get<string[]>(this.serverUrl + this.stationUrl + "/ligne/transport/" + encodeURIComponent(JSON.stringify(body)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         toReturn.next(res);
       }
@@ -635,6 +466,40 @@ export class DatabaseService {
     let toReturn: Subject<Station[]> = new Subject();
     this.setAuthorizationHeader();
     this.httpClient.get(this.serverUrl + this.stationUrl + "/station/ligne/" + ligne,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
+  getPlacesOfUserByRegion(region: string, id_user: string){
+    let toReturn: Subject<Place[] | Message> = new Subject();
+    const params = {
+      region: region,
+      id_user: id_user
+    }
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/user/reg/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
+  getPlacesOfUserByTransportAndRegion(transport: string, id_user: string){
+    let toReturn: Subject<Place[] | Message> = new Subject();
+    const params = {
+      transport: transport,
+      id_user: id_user
+    }
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/user/transport/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         toReturn.next(res);
       }
@@ -661,19 +526,6 @@ export class DatabaseService {
     });
     return toReturn;
   }
-  getPlacesIdByStation(station: Station){
-    let toReturn: Subject<string[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/station/" + encodeURIComponent(JSON.stringify(station)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
-  }
   getPlacesByStationAndUser(station: Station, id_user: string){
     let toReturn: Subject<Place[] | Message> = new Subject();
     const params = {
@@ -681,7 +533,7 @@ export class DatabaseService {
       id_user: id_user
     }
     this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/station/user/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
+    this.httpClient.get(this.serverUrl + this.stationUrl + "/user/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
       if(res.error == null){
         toReturn.next(res);
       }
@@ -702,20 +554,6 @@ export class DatabaseService {
         toReturn.next({error: false, message: "La station a été ajoutée."});
       }
       else  toReturn.next({error: true, message: "La station n'a pas pu être ajoutée."});
-    });
-    return toReturn;
-  }
-  getIdOfStationByRegAndName(name: string, reg: string){
-    let toReturn: Subject<string | Message> = new Subject();
-    let params = JSON.stringify({
-      name: name,
-      reg: reg
-    });
-    this.httpClient.get<Station>(this.serverUrl + this.stationUrl + "/RegAndName/" + encodeURIComponent(params),this.httpOptions).subscribe((res: any) => {
-      if(res != null){
-        toReturn.next(res.id);
-      }
-      else  toReturn.next({error: true, message: "L'id n'a pas pu être trouvé"});
     });
     return toReturn;
   }

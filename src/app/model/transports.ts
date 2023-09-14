@@ -1,8 +1,15 @@
 export interface Station{
-    reg: string,
-    lignes: string[],
+    reg?: string,
+    lignes?: string[],
     name: string,
-    transport: string,
+    transport?: string,
+    id: string
+}
+
+export interface Ligne{
+    reg?: string,
+    name: string,
+    transport?: string,
     id: string
 }
 

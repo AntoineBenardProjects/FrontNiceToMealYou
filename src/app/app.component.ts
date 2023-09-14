@@ -80,16 +80,16 @@ export class AppComponent {
       localStorage.setItem("id",credentials.id);
       localStorage.setItem("login",credentials.login);
 
-      this.dataService.getImage(credentials.id).subscribe((img: string) =>{
-        localStorage.setItem("img",img);
-        this.user = {
-          id: credentials.id,
-          img: img,
-          login: credentials.login,
-          password: "",
-          role: credentials.role
-        }
-      });
+      // this.dataService.getImage(credentials.id).subscribe((img: string) =>{
+      //   localStorage.setItem("img",img);
+      //   this.user = {
+      //     id: credentials.id,
+      //     img: img,
+      //     login: credentials.login,
+      //     password: "",
+      //     role: credentials.role
+      //   }
+      // });
     });
 
   }
