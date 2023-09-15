@@ -234,9 +234,8 @@ export class RegisterComponent {
     if(params === 'Login'){
       this.userInfos.login = event.target.value;
       if(this.userInfos.login.length > 2){
-        this.dataService.getValidName(this.userInfos.login).subscribe((res: number) => {
-          if(res < 1) this.validName = true;
-          else  this.validName = false;
+        this.dataService.getValidName(this.userInfos.login).subscribe((res: boolean) => {
+          this.validName = res;
         });
       } else{
         this.validName = false;

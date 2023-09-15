@@ -13,7 +13,7 @@ import { AutocompleteInfos, ButtonInfos, CheckboxInfos, InputInfos, SelectData, 
 import { TypePicture } from '../model/typePicture';
 import { faCheck, faXmark, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { PlacesService } from '../services/places.service';
-import { Ligne, Station, StationOfPlace } from '../model/transports';
+import { Ligne, Station } from '../model/transports';
 import { HttpClient } from '@angular/common/http';
 import { PlaceOfUser } from '../model/user';
 
@@ -343,6 +343,27 @@ export class AddComponent {
     this.stations = [];
     this.databaseService.getStationOfPlace(this.placeInfo.id).subscribe((station: Station[]) => {
       this.stations = station;
+      let counter: number = 0;
+      this.stations.forEach((element:Station) => {
+        element.lignes = [];
+        this.databaseService.getLignesOfStation(element.id).subscribe((lignes: Ligne[]) => {
+          counter++;
+          lignes.sort((a: Ligne, b: Ligne) => {
+            if(a.name < b.name) return -1;
+              return 1;
+          });
+          lignes.forEach((ligne: Ligne) => {
+            element.lignes.push(ligne.name)
+          });
+          element.reg = lignes[0].reg;
+          if(counter === this.stations.length){
+            this.stations.sort((a:Station, b:Station) => {
+              if(a.name < b.name) return -1;
+              return 1;
+            });
+          }
+        });
+      });
     });
     this.databaseService.getHorairesOfPlace(id, localStorage.getItem("id")).subscribe((res: Horaires[]) => {
       if(res.length > 0){
@@ -613,14 +634,25 @@ export class AddComponent {
             lng: results[0].geometry.location.lng()
           }).subscribe((res: Station[]) => {
             this.stations = res;
+            let counter: number = 0;
             this.stations.forEach((element:Station) => {
-              console.log(element);
               element.lignes = [];
               this.databaseService.getLignesOfStation(element.id).subscribe((lignes: Ligne[]) => {
+                counter++;
+                lignes.sort((a: Ligne, b: Ligne) => {
+                  if(a.name < b.name) return -1;
+                    return 1;
+                });
                 lignes.forEach((ligne: Ligne) => {
                   element.lignes.push(ligne.name)
                 });
                 element.reg = lignes[0].reg;
+                if(counter === this.stations.length){
+                  this.stations.sort((a:Station, b:Station) => {
+                    if(a.name < b.name) return -1;
+                    return 1;
+                  });
+                }
               });
             });
           });

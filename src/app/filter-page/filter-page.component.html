@@ -8,11 +8,11 @@
         </div>
       </div>
     <div class="infosFilterBar" [ngStyle]="{'left' : openCategorybar ? '0' : '-15%'}">
-        <div class="fireSideBarOpenState center" (click)="toggleSidebar()" [ngStyle]="{'top' : openCategorybar ? '0' : '5vh', 'right' : openCategorybar ? '0' : '-5vw', 'background' : openCategorybar ? 'transparent' : 'var(--mainColor)'}">
+        <div class="fireSideBarOpenState center" (click)="toggleSidebar()" [ngStyle]="{'top' : openCategorybar ? '0' : '5vh', 'right' : openCategorybar ? '0' : '-5vw', 'background' : openCategorybar ? 'transparent' : 'linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1))','box-shadow' : openTransportbar ? 'none' : '0 0 .5em 0 var(--black)'}">
             <span class="arrow" [ngStyle]="{'transform' : openCategorybar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconCategorybar}}</span>    
         </div>
         <round-select class="selectOpen" (selectionChange)="filter($event,'category')" [infos]="selectInfos" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'type')" [infos]="selectInfos" [data]="typesSelect" text="Type" [ngStyle]="{'height' : typesSelect.length > 1 ? 'fit-content' : '0','padding-top' : typesSelect.length > 1 ? '10vh' : '0','opacity' : typesSelect.length > 1 ? '1' : '0'}"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'type')" [infos]="selectInfos" [data]="typesSelect" text="Type" [ngStyle]="{'height' : typesSelect.length > 1 ? 'fit-content' : '0','padding-top' : typesSelect.length > 1 ? '8vh' : '0','opacity' : typesSelect.length > 1 ? '1' : '0'}"></round-select>
         <div class="checkboxes">
             <div class="checkbox">
                 <p>Testé</p>
@@ -27,13 +27,13 @@
 
     </div>
     <div class="transportFilterBar" [ngStyle]="{'right' : openTransportbar ? '0' : '-15%'}">
-        <div class="fireBottomBarOpenState center" (click)="toggleBottombar()" [ngStyle]="{'top' : openTransportbar ? '0' : '5vh', 'left' : openTransportbar ? '0' : '-5vw', 'background' : openTransportbar ? 'transparent' : 'var(--secondColor)'}">
+        <div class="fireBottomBarOpenState center" (click)="toggleBottombar()" [ngStyle]="{'top' : openTransportbar ? '0' : '5vh', 'left' : openTransportbar ? '0' : '-5vw', 'background' : openTransportbar ? 'transparent' : 'linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1))', 'box-shadow' : openTransportbar ? 'none' : '0 0 .5em 0 var(--black)'}">
             <span class="arrow" [ngStyle]="{'transform' : openTransportbar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconTransportbar}}</span>    
         </div>
         <round-select *ngIf="regionSelect.length > 0" class="selectOpen" (selectionChange)="filter($event,'region')" [selectAll]="false" [multiselect]="false" [infos]="selectInfos" [data]="regionSelect" text="Région"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'transport')" [infos]="selectInfos" [data]="transportsSelect" text="Ligne" [ngStyle]="{'height' : transportsSelect.length > 0 ? 'fit-content' : '0','padding-top' : transportsSelect.length > 0 ? '10vh' : '0','opacity' : transportsSelect.length > 0 ? '1' : '0'}"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'ligne')" [infos]="selectInfos" [data]="lignesSelect" text="Ligne" [ngStyle]="{'height' : lignesSelect.length > 0 ? 'fit-content' : '0','padding-top' : lignesSelect.length > 0 ? '10vh' : '0','opacity' : lignesSelect.length > 0 ? '1' : '0'}"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'station')" [infos]="selectInfos" [data]="stationsSelect" text="Station" [ngStyle]="{'height' : stationsSelect.length > 0 ? 'fit-content' : '0','padding-top' : stationsSelect.length > 0 ? '10vh' : '0','opacity' : stationsSelect.length > 0 ? '1' : '0'}"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'transport')" [infos]="selectInfos" [data]="transportsSelect" text="Transport" [ngStyle]="{'height' : transportsSelect.length > 0 ? 'fit-content' : '0','padding-top' : transportsSelect.length > 0 ? '8vh' : '0','opacity' : transportsSelect.length > 0 ? '1' : '0'}"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'ligne')" [infos]="selectInfos" [data]="lignesSelect" text="Ligne" [ngStyle]="{'height' : lignesSelect.length > 0 ? 'fit-content' : '0','padding-top' : lignesSelect.length > 0 ? '8vh' : '0','opacity' : lignesSelect.length > 0 ? '1' : '0'}"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'station')" [infos]="selectInfos" [data]="stationsSelect" text="Station" [ngStyle]="{'height' : stationsSelect.length > 0 ? 'fit-content' : '0','padding-top' : stationsSelect.length > 0 ? '8vh' : '0','opacity' : stationsSelect.length > 0 ? '1' : '0'}"></round-select>
     </div>
     <div class="map" [ngStyle]="{'justify-content' : (this.openCategorybar && !this.openTransportbar) ? 'flex-end' : 'flex-start'}">
         <google-map
