@@ -308,21 +308,6 @@ export class HomeComponent {
 
   }
 
-  // getGeoLocation(address: string): void{
-  //   let geocoder = new google.maps.Geocoder();
-  //   geocoder.geocode({
-  //     'address': address
-  //   }, (results, status) => {
-  //       if (status == google.maps.GeocoderStatus.OK) {
-  //         console.log(results)
-  //         const coords: google.maps.LatLngLiteral = results[0].geometry.location.toJSON();
-  //         this.markerPositions.push(coords);
-  //       } else {
-  //         console.log('Error: ', results, ' & Status: ', status);
-  //       }
-  //   });
-  // }
-
   nearbyCallback(results, status): void {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       results.forEach((element) => {

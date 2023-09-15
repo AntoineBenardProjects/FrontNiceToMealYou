@@ -81,9 +81,7 @@ export class PlacesService {
   getImageChange(): Observable<boolean>{
     return this.triggerImage.asObservable();
   }
-  setImageChange(){
-    this.triggerImage.next(true);
-  }
+
 
   removeDuplicate(obj: any[] ){
     obj = obj.filter((value, index, self) =>

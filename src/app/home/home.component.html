@@ -10,15 +10,15 @@
             <div class="topbar">
                 <p class="link" (click)="navigate('about')">Pourquoi NiceToMealYou</p>
                 <p class="link">Bonnes adresses</p>
-                <p class="link">Mon compte</p>
+                <p class="link" (click)="navigate('user')">Mon compte</p>
             </div>
         </div>
         <h1 id="topLogo" class="logo" [@topLogo]="triggerLogoAnimation" 
         [ngStyle]="{'left.vw': logoPosition}">NiceTo</h1>
         <h1 id="bottomLogo" class="logo" [@bottomLogo]="triggerLogoAnimation"
         [ngStyle]="{'right.vw': logoPosition}">MealYou</h1>
-        <h3 class="slogan" [@slogan]="triggerLogoAnimation">N'oubliez plus les bonnes adresses.</h3>
     </div>
+
 
 
     <div class="types">

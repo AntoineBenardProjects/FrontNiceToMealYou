@@ -49,6 +49,19 @@ export class DatabaseService {
 
   ////////////////////////////////////////  Place ////////////////////////////////////////
   private placeUrl = "/place";
+  getPlacesOfUser(id_user: string){
+    let toReturn: Subject<Place[] | Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + this.connectionUrl + "/place/" + id_user,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        toReturn.next(res);
+      }
+      else {
+        console.log(res);
+      }
+    });
+    return toReturn;
+  }
   getPlaceOfUserByCategory(category: string, id_user: string): Subject<Place[]>{
     let promise: Subject<Place[]> = new Subject();
     this.setAuthorizationHeader();
@@ -66,6 +79,7 @@ export class DatabaseService {
     });
     return promise;
   }
+  
   
   ////////////////////////////////////////  Restaurants ////////////////////////////////////////
   private restaurantUrl = "/restaurant";
@@ -292,11 +306,11 @@ export class DatabaseService {
     return toReturn.asObservable();
   }
   getValidName(name: string){
-    let toReturn: Subject<Message | number> = new Subject();
-
+    let toReturn: Subject<Message | boolean> = new Subject();
+    if(name === '') name = "-";
     this.httpClient.get(this.serverUrl + this.connectionUrl +"/used/"+name,this.httpOptions).subscribe((res: any) => {
       if(res.error !== true){
-        toReturn.next(res);
+        res === '0' ? toReturn.next(true) : toReturn.next(false);
       } else{
         toReturn.next({
           error: true,
@@ -375,6 +389,77 @@ export class DatabaseService {
       else  toReturn.next({error: true, message: "le lieu n'a pas pu être ajouté."});
     });
     return toReturn;
+  }
+  setImage(idUser: string,img: string){
+    let toReturn: Subject<Message | string> = new Subject();
+    this.setAuthorizationHeader();
+    let params = {
+      id: idUser,
+      img: img
+    }
+    this.httpClient.patch(this.serverUrl + this.connectionUrl +"/img", params,this.httpOptions).subscribe((res: any) => {
+      if(res.error !== true){
+        console.log(res);
+        toReturn.next({
+          error: false,
+          message: ""
+        });
+      } else{
+        toReturn.next({
+          error: true,
+          message: res.message
+        });
+      }
+    });
+
+    return toReturn.asObservable();
+  }
+  setLogin(idUser: string,login: string){
+    let toReturn: Subject<Message | string> = new Subject();
+    this.setAuthorizationHeader();
+    let params = {
+      id: idUser,
+      login: login
+    }
+    this.httpClient.patch(this.serverUrl + this.connectionUrl +"/login", params,this.httpOptions).subscribe((res: any) => {
+      if(res.error !== true){
+        console.log(res);
+        toReturn.next({
+          error: false,
+          message: ""
+        });
+      } else{
+        toReturn.next({
+          error: true,
+          message: res.message
+        });
+      }
+    });
+
+    return toReturn.asObservable();
+  }
+  setPassword(idUser: string,password: string){
+    let toReturn: Subject<Message | string> = new Subject();
+    this.setAuthorizationHeader();
+    let params = {
+      id: idUser,
+      password: password
+    }
+    this.httpClient.patch(this.serverUrl + this.connectionUrl +"/password", params,this.httpOptions).subscribe((res: any) => {
+      if(res.error !== true){
+        toReturn.next({
+          error: false,
+          message: ""
+        });
+      } else{
+        toReturn.next({
+          error: true,
+          message: res.message
+        });
+      }
+    });
+
+    return toReturn.asObservable();
   }
 
   ////////////////////////////////////////  Station ////////////////////////////////////////

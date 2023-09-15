@@ -1,77 +1,27 @@
-<body>
-    <div class="imgAndLogin">
-      <div class="half">
-        <h1 class="title">{{login}}</h1>
-        <form [formGroup]="loginForm" class="form">
-          <mat-form-field hideRequiredMarker="true">
-            <input matInput formControlName="oldLogin" required autocomplete="disabled">
-            <mat-placeholder [ngStyle]="{'color': (loginForm.get('oldLogin')?.errors != null && loginForm.get('oldLogin')?.errors['invalidLogin'] != null) ? 'red' : '#FCFFFC'}">Ancien login *</mat-placeholder>
-          </mat-form-field>
-          <mat-form-field hideRequiredMarker="true">
-              <input matInput formControlName="newLogin" required>
-              <mat-placeholder [ngStyle]="{'color': (loginForm.get('newLogin')?.errors != null && loginForm.get('newLogin')?.errors['invalidLogin'] != null) ? 'red' : '#FCFFFC'}">Nouveau login *</mat-placeholder>
-          </mat-form-field>
-          <button mat-button (click)="setLogin()" [disabled]="!loginForm.valid">
-            Modifier
-          </button>
-        </form>
+<div class="body" [ngStyle]="{'background': backgroundColor}">
+  <div class="title">
+    <h1>{{login}}</h1>
+    <div class="picture center" [ngStyle]="{'background' : img.length > 0 ? 'url('+img+')' : 'var(--mainColor)'}">
+      <fa-icon id="noPicture" [icon]="userIcon" *ngIf="img.length === 0"></fa-icon>
+      <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="getFile($event)"></upload-button>
+      <fa-icon class="center" id="remove" [icon]="crossIcon" *ngIf="img.length > 0" (click)="removeImg()"></fa-icon>
+    </div>
+  </div>
+  <div class="first">
+    <div class="general">
+      <div class="login">
+        <app-input [value]="userForm.newLogin" class="number" text="Nouveau login" [styleInfo]="loginChecked ? validInput : invalidInput" (input)="setValue($event,'login')"></app-input>
+        <round-button id="mainLink" text="Modifier login" [styleInfos]="loginChecked ? validButton : invalidButton" (click)="setLogin()"></round-button>         
       </div>
-      <div class="half">
-        <div id="img" *ngIf="img != null && img != 'null'" [ngStyle]="{'background' :'url('+img+')'}">
-        </div>
-        <div *ngIf="img == null || img === 'null'" id="img">
-          <mat-icon>image</mat-icon>
-        </div>
-        <form [formGroup]="passwordForm" class="form">
-          <mat-form-field hideRequiredMarker="true">
-            <input matInput formControlName="oldPassword" required autocomplete="disabled" type="password">
-            <mat-placeholder [ngStyle]="{'color': (passwordForm.get('oldPassword')?.errors != null) ? 'red' : '#FCFFFC'}">Ancien mot de passe *</mat-placeholder>
-          </mat-form-field>
-          <mat-form-field hideRequiredMarker="true">
-              <input matInput formControlName="newPassword"  type="password">
-              <mat-placeholder [ngStyle]="{'color': (passwordForm.get('newPassword')?.errors != null) ? 'red' : '#FCFFFC'}">Nouveau mot de passe *</mat-placeholder>
-          </mat-form-field>
-          <mat-form-field hideRequiredMarker="true">
-            <input matInput formControlName="retypeNewpassword" required type="password">
-            <mat-placeholder [ngStyle]="{'color': (passwordForm.get('retypeNewpassword')?.errors != null && passwordForm.get('retypeNewpassword')?.errors['notSamePassword'] != null) ? 'red' : '#FCFFFC'}">Retape le nouveau mot de passe *</mat-placeholder>
-          </mat-form-field>
-          <button mat-button (click)="setPassword()" [disabled]="!passwordForm.valid">
-            Modifier
-          </button>
-        </form>
+      <div class="password">
+        <app-input [value]="userForm.password" type="password" class="number" text="Ancien mot de passe" [styleInfo]="normalInput" (input)="setValue($event,'password')"></app-input>
+        <app-input [value]="userForm.newPassword" type="password" class="number" text="Nouveau mot de passe" [styleInfo]="userForm.newPassword.length > 3 ? validInput : invalidInput" (input)="setValue($event,'newPassword')"></app-input>
+        <round-button id="mainLink" text="Modifier mot de passe" [styleInfos]="passwordChecked ? validButton : invalidButton" (click)="setPassword()"></round-button>           
       </div>
     </div>
-    <div class="likedStations">
-        <div class="selectStation">
-            <div class="select">
-              <div class="searchBar">
-                <input matInput class="bar" [(ngModel)]="searchTerm" type="text" placeholder="Rechercher une station" autocomplete="disabled" />
-                <button>
-                  <mat-icon>search</mat-icon>
-                </button>
-              </div>
-  
-              <div style="display: flex; flex-direction: column; height: 100%; align-items: center; width: 100%;">
-              </div>
-              
-            </div>
-            
-  
-            <div class="stations">
-              <p class="selectedStation">Mes stations</p>
-              <div [ngStyle]="{'justify-content' : selected.length === 0 ? 'center' : 'flex-start'}" style="display: flex; flex-direction: column; height: 100%; align-items: center; width: 100%;">
-                <div class="content" (click)="select(element)" *ngFor="let element of selected">
-                  <p>{{element}}</p>
-                </div>
-                <h1 *ngIf="selected.length === 0">Pas de stations préférées</h1>
-              </div>
-            </div>
-          </div>
-    </div>
+  </div>
+</div>
 
-    <div class="placesLiked">
-        <img src="../../assets/like.jpg">
-        <div class="places">
-        </div>
-    </div>
-</body>
+<div class="error" [ngStyle]="{'height' : showError ? '10vh' : '0','background' : !error ? 'var(--thirdColor)' : 'var(--secondColor)'}">
+  <p>{{errorMessage}}</p>
+</div>

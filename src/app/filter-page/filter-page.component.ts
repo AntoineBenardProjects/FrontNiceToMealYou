@@ -6,9 +6,10 @@ import { CheckboxInfos, SelectData, SelectInfos } from '../shared/model/designs'
 import { DatabaseService } from '../services/database.service';
 import { Data } from 'src/data';
 import { TypePicture } from '../model/typePicture';
-import { Station } from '../model/transports';
+import { Ligne, Station } from '../model/transports';
 import { Place } from '../model/places';
 import { PlacesService } from '../services/places.service';
+import { Horaires } from '../model/horaires';
 
 @Component({
   selector: 'app-filter-page',
@@ -19,6 +20,7 @@ export class FilterPageComponent {
 
   constructor(private elementRef: ElementRef,
     private themeService: ThemeService, 
+    private placesService: PlacesService,
     private databaseService: DatabaseService){
     this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
       this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
@@ -96,6 +98,7 @@ export class FilterPageComponent {
   filter(event: any, filter: string){
     if(filter === "category"){
       this.typesSelect = [];
+      this.type = "";
       const categorySelected: string = event.find((element: SelectData) => element.selected === true)?.name;
       this.category = categorySelected;
 
@@ -109,6 +112,11 @@ export class FilterPageComponent {
         }
       });
       
+      this.sort();
+    }
+    else if(filter === "type"){
+      const typeSelected: string = event.find((element: SelectData) => element.selected === true)?.name;
+      this.type = typeSelected;    
       this.sort();
     }
     else if(filter === "region"){
@@ -135,11 +143,11 @@ export class FilterPageComponent {
       const regionSelected: string = this.regionSelect.find((element: SelectData) => element.selected === true)?.name;
       const transportSelected: string = event.find((element: SelectData) => element.selected === true)?.name;
 
-      this.databaseService.getLignesOfRegionByTransport(regionSelected,transportSelected).subscribe((res: any[]) => {
-        res.forEach((element: string) => {
+      this.databaseService.getLignesOfRegionByTransport(regionSelected,transportSelected).subscribe((res: Ligne[]) => {
+        res.forEach((element: Ligne) => {
           this.lignesSelect.push({
-            id: element,
-            name: element,
+            id: element.id,
+            name: element.name,
             selected: false
           });
         });
@@ -151,7 +159,7 @@ export class FilterPageComponent {
       this.lignes = [];
       const lignesSelected: SelectData[] = event.filter((element: SelectData) => element.selected === true);
       lignesSelected.forEach((element: SelectData) => {
-        this.lignes.push(element.name);
+        this.lignes.push(element.id);
       });
       let counter = 0;
       this.lignes.forEach((ligne: string) => {
@@ -209,40 +217,82 @@ export class FilterPageComponent {
   };
 
 //////////////////////////////////////////////  Sort  //////////////////////////////////////////////
-  protected category: string = "";
-  protected tested: boolean = true;
+  private category: string = "";
+  private type: string = "";
+  protected tested: boolean = false;
   protected openOnly: boolean = false;
   protected region: string = "";
   protected transport: string = "";
   protected lignes: string[] = [];
   protected stations: SelectData[] = [];
-  private markersToFilter: MarkersInfos[] = [];
+  private placeToKeep: Place[] = [];
   sort(){
     this.markers = [];
+    let stationSorter: Subject<boolean> = new Subject();
+    this.sortByGeo(stationSorter);
+    stationSorter.subscribe(() => {
+      this.sortByInfos();
+    });
+  }
+
+  sortByInfos(){
+    let triggerFilter: Subject<boolean> = new Subject();
+    triggerFilter.subscribe(() => {
+      this.placeToKeep.forEach((place: Place) => {
+        this.markers.push({
+          lat: place.lat,
+          lng: place.lng
+        });
+      });
+    });
+    if(this.category !== ''){
+      this.placeToKeep.filter((place: Place) => place.category === this.category);
+      if(this.type !== ''){
+        this.placeToKeep.filter((place: Place) => place.type === this.type);
+      }
+    }
+    if(!this.tested && !this.openOnly){
+      triggerFilter.next(true);
+    }
+    if(this.tested){
+      this.placeToKeep.filter((place: Place) => place.tested);
+      if(!this.openOnly) triggerFilter.next(true);
+    }
+    if(this.openOnly){
+      let counter = 0;
+      this.placeToKeep.filter((place: Place) => {
+        this.databaseService.getHorairesOfPlace(place.id,localStorage.getItem('id')).subscribe((res: Horaires[]) => {
+          counter ++;
+          let toKeep: boolean = false;
+          if(this.placesService.isOpened(res))  toKeep = true;
+          if(counter === this.placeToKeep.length) triggerFilter.next(true);
+          return toKeep;
+        });
+      });
+    }
+    
+  }
+
+  sortByGeo(stationSorter: Subject<boolean>){
     if(this.lignes.length > 0 && this.stations.length === 0){
       this.lignes.forEach((element: string) => {
         this.databaseService.getPlacesByLigneAndUser(element,localStorage.getItem('id')).subscribe((places: Place[]) => {
-          places.forEach((place: Place) => {
-            this.markers.push({
-                  lat: place.lat,
-                  lng: place.lng
-            });
-          });
+          this.placeToKeep = places;
+          stationSorter.next(true);
         });
       });
     } else if(this.stations.length > 0){
       this.stations.forEach((element: SelectData) => {
         this.databaseService.getPlacesByStationAndUser(element.originalData,localStorage.getItem('id')).subscribe((places: Place[]) => {
-          places.forEach((place: Place) => {
-            this.markers.push({
-                  lat: place.lat,
-                  lng: place.lng
-            });
-          });
+          this.placeToKeep = places;
+          stationSorter.next(true);
         });
       });
-    } else if(this.region !== '' && this.transport === ''){
-      // this.databaseService.getPlacesByRegionAndUser
+    } else{
+      this.databaseService.getPlacesOfUser(localStorage.getItem("id")).subscribe((places: Place[]) => {
+        this.placeToKeep = places;
+        stationSorter.next(true);
+      });
     }
   }
 
@@ -250,6 +300,7 @@ export class FilterPageComponent {
 
   ngOnInit(){
     this.initOptions();
+    this.sort();
   }
   ngOnDestroy(){
     this.themeSubscriber.unsubscribe();

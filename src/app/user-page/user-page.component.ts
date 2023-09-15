@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { CardParams } from '../model/cardParams';
-import { CircleNoteParams } from '../model/circle-notes-params';
 import { DatabaseService } from '../services/database.service';
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Message } from '../model/message';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { MessageComponent } from '../message/message.component';
 import { PlacesService } from '../services/places.service';
 import { User } from '../model/user';
+import { InputInfos, SelectInfos, ButtonInfos } from '../shared/model/designs';
+import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import { faUser, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -18,69 +17,138 @@ import { User } from '../model/user';
 export class UserPageComponent {
 
   constructor(private data: DatabaseService,
-    private _formBuilder: UntypedFormBuilder, 
-    private bottomSheet: MatBottomSheet,
     private place: PlacesService
     ){}
 
-  loginForm: UntypedFormGroup = new UntypedFormGroup({});
-  passwordForm: UntypedFormGroup = new UntypedFormGroup({});
-
-  public id: string = localStorage.getItem("id");
-  public img: string = localStorage.getItem("img");
-  public login: string = localStorage.getItem("login");
-  public cardParams: CardParams[] = [];
-  public circleNoteParams: CircleNoteParams;
-  public selected: string[] = [];
-  public searchTerm: string = "";
-
-
-  ngOnInit(){
-    this.loginForm = this._formBuilder.group({
-      oldLogin : ['', [this.validateOldLogin.bind(this)]],
-      newLogin: ['']
-    });
-    this.passwordForm = this._formBuilder.group({
-      oldPassword : [''],
-      newPassword: [''],
-      retypeNewpassword: ['', [this.validateRetypePassword.bind(this)]]
-    });
+  private id: string = localStorage.getItem("id");
+  protected img: string = localStorage.getItem("img");
+  protected login: string = localStorage.getItem("login");
+  private selected: string[] = [];
+  protected userForm: UserForm = {
+    login: "",
+    newLogin: "",
+    password: "",
+    newPassword: ""
   }
 
-  validateOldLogin(control: AbstractControl){
-    if (control.value.length > 0 && control.value !==  this.login) {
-      return { invalidLogin: true };
+  protected backgroundColor: string = 'var(--white)';
+  protected normalInput: InputInfos = {
+    color: "var(--black)",
+    placeholderColor: "var(--black)",
+    placeholderColorActive: "var(--black)",
+    backgroundColor: "var(--white)",
+    borderColor: "var(--black)",
+    borderColorActive: "var(--black)",
+    hoverBackgroundColor: "var(--black)",
+    hoverTextColor: "var(--white)",
+    hoverBorderColor: "var(--black)",
+  }
+  protected validInput: InputInfos = {
+    color: "var(--black)",
+    placeholderColor: "var(--black)",
+    placeholderColorActive: "var(--thirdColor)",
+    backgroundColor: "var(--white)",
+    borderColor: "var(--thirdColor)",
+    borderColorActive: "var(--thirdColor)",
+    hoverBackgroundColor: "var(--thirdColor)",
+    hoverTextColor: "var(--white)",
+    hoverBorderColor: "var(--thirdColor)",
+  }
+  protected invalidInput: InputInfos = {
+    color: "var(--black)",
+    placeholderColor: "var(--black)",
+    placeholderColorActive: "var(--secondColor)",
+    backgroundColor: "var(--white)",
+    borderColor: "var(--secondColor)",
+    borderColorActive: "var(--secondColor)",
+    hoverBackgroundColor: "var(--secondColor)",
+    hoverTextColor: "var(--white)",
+    hoverBorderColor: "var(--secondColor)",
+  }
+  protected validSelectInfos: SelectInfos = {
+    backgroundColor: 'var(--white)',
+    textColor: 'var(--black)',
+    optionTextColor: 'var(--white)',
+    optionBackgroundColor: 'var(--black)',
+    hoverBackgroundColor: 'var(--thirdColor)',
+    hoverTextColor: 'var(--white)',
+    borderColor: 'var(--thirdColor)',
+    width: 10,
+    topHoverBackgroundColor: "var(--thirdColor)",
+    topHoverColor: "var(--white)",
+    topHoverBorderColor: "var(--thirdColor)"
+  }
+  protected invalidSelectInfos: SelectInfos = {
+    backgroundColor: 'var(--white)',
+    textColor: 'var(--black)',
+    optionTextColor: 'var(--white)',
+    optionBackgroundColor: 'var(--black)',
+    hoverBackgroundColor: 'var(--secondColor)',
+    hoverTextColor: 'var(--white)',
+    borderColor: 'var(--secondColor)',
+    width: 10,
+    topHoverBackgroundColor: "var(--secondColor)",
+    topHoverColor: "var(--white)",
+    topHoverBorderColor: "var(--secondColor)"
+  }
+  protected validButton: ButtonInfos = {
+    color: 'var(--white)',
+    colorActive: 'var(--thirdColor)',
+    backgroundColor: 'var(--thirdColor)',
+    backgroundColorActive: 'var(--white)',
+    fontWeight: 1000
+  }
+  protected invalidButton: ButtonInfos = {
+    color: 'var(--white)',
+    colorActive: 'var(--secondColor)',
+    backgroundColor: 'var(--secondColor)',
+    backgroundColorActive: 'var(--white)',
+    fontWeight: 1000
+  }
+  protected uploadButtonInfos: ButtonInfos = {
+    color: 'var(--white)',
+    backgroundColor: 'var(--black)'
+  }
+  protected userIcon: IconDefinition = faUser;
+  protected crossIcon: IconDefinition = faXmark;
+  protected errorMessage: string = "";
+  protected showError: boolean = false;
+  protected error: boolean = false;
+
+  ngOnInit(){}
+
+  setValue(event: any, params: string){
+    if(params === 'login'){
+      this.userForm.newLogin = event.target.value;
+      this.checkLogin();
     }
-    return null;
+    else if(params === 'password'){
+      this.userForm.password = event.target.value;
+      this.checkPassword();
+    }
+    else if(params === 'newPassword'){
+      this.userForm.newPassword = event.target.value;
+      this.checkPassword();
+    }
   }
 
-  getFile(event: any){
-    if(event != null){
-      const user: User = {
-        id: this.id,
-        img: event.img,
-        password: "",
-        role: "",
-        login: ""
+  removeImg(){
+    this.data.setImage(this.id, "").subscribe((res:Message) => {
+      if(!res.error){
+        this.img = "";
+        localStorage.setItem("img", "");
       }
-      const file = event.infos;
-      console.log(event.infos)
-      if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-        console.error('File should be a png or a jpeg');
-      } else if (file.size > 2e+6) {
-        console.error('File is too large. Over 2MB');
-      } else {
-        console.log('File is valid');
-      }
-      // this.data.setImage(user).subscribe((res:Message) => {
-      //   if(!res.error){
-      //     this.img = event.img;
-      //     localStorage.setItem("img", event.img);
-      //     this.data.setImage(user).subscribe((token: any) => {
-      //       this.place.setImageChange();
-      //     });
-      //   }
-      // });
+    });
+  }
+
+  getFile(event: string){
+    if(event.length != null){
+      this.data.setImage(this.id, event).subscribe((res:Message) => {
+        if(!res.error){
+          this.img = event;
+          localStorage.setItem("img", event);
+        }
+      });
     }
   }
 
@@ -88,47 +156,99 @@ export class UserPageComponent {
     console.log(e);
   }
 
-  validateRetypePassword(control: AbstractControl){
-    if(control.value !== this.passwordForm.value.newPassword){
-      return { notSamePassword: true };
+  protected passwordChecked: boolean = false;
+  checkPassword(){
+    const user: User = {
+      id: this.id,
+      password: this.userForm.password,
+      login: this.login,
+      role: '',
+      img: ""
     }
-    return null;
+    let checkPassword: Subject<boolean> = new Subject();
+
+    checkPassword.subscribe((check: boolean) => {
+      if(check){
+        if(this.userForm.newPassword.length > 3)  this.passwordChecked = true;
+        else{
+          this.passwordChecked = false;
+          this.errorMessage = "Mot de passe trop court";
+        }
+      } else{
+        this.passwordChecked = false;
+        this.errorMessage = "Veuillez donner l'ancien mot de passe";
+      }
+    });
+    this.data.checkPassword(user).subscribe((res: Message) => {
+      if(!res.error){
+        checkPassword.next(true);
+      } else{
+        checkPassword.next(false);
+      }
+    });
+  }
+
+  protected loginChecked: boolean = false;
+  checkLogin(){
+    let checkLogin: Subject<boolean> = new Subject();
+    checkLogin.subscribe((check: boolean) => {
+      console.log(check);
+      if(check){
+        if(this.userForm.newLogin.length > 2)  this.loginChecked = true;
+        else{
+          this.loginChecked = false;
+        }
+      } else{
+        this.loginChecked = false;
+      }
+    });
+    this.data.getValidName(this.userForm.newLogin).subscribe((res: boolean) => {
+      checkLogin.next(res);
+    });
   }
 
   setLogin(){
-    const user: User = {
-      id: this.id,
-      role: localStorage.getItem("role"),
-      password: "",
-      login: this.loginForm.value.newLogin,
-      img: this.img
+    if(this.loginChecked){
+      this.data.setLogin(this.id,this.userForm.login).subscribe(() => {
+        localStorage.setItem("login",this.userForm.login);
+        this.login = this.userForm.login;
+      });
+      this.error = false;
+      this.errorMessage = "Login modifié";
+      this.showError = true;
+      setTimeout(() => {
+        this.showError = false;
+      }, 3000);
+    } else{
+      this.userForm.newLogin.length > 2 ? this.errorMessage = "Ce login est déjà pris" : this.errorMessage = "Le login doit faire plus de 2 caractères";
+      this.error = true;
+        this.showError = true;
+        setTimeout(() => {
+          this.showError = false;
+        }, 3000);
     }
-    // this.data.setLogin(user).subscribe(() => {
-    //   localStorage.setItem("login",user.login);
-    //   this.login = user.login;
-    // });
+    
   }
 
   setPassword(){
-    const user: User = {
-      id: this.id,
-      role: localStorage.getItem("role"),
-      password: this.passwordForm.value.oldPassword,
-      login: this.login,
-      img: this.img
+    if(this.passwordChecked){
+      this.data.setPassword(this.id,this.userForm.newPassword);
+      this.error = false;
+      this.errorMessage = "Mot de passe modifié";
+      this.showError = true;
+      setTimeout(() => {
+        this.showError = false;
+      }, 3000);
+    } else{
+      if(this.userForm.newPassword.length > 3){
+        this.userForm.password.length === 0 ? this.errorMessage = "Veuillez donner l'ancien mot de passe" : this.errorMessage = "Le mot de passe est incorrect";
+      } else this.errorMessage = "Le mot de passe doit faire plus de 3 caractères";
+      this.error = true;
+      this.showError = true;
+      setTimeout(() => {
+        this.showError = false;
+      }, 3000);
     }
-    this.data.checkPassword(user).subscribe((res: Message) => {
-      if(!res.error) {
-        user.password = this.passwordForm.value.newPassword;
-        // this.data.setPassword(user);
-      }
-      else{
-        this.bottomSheet.open(MessageComponent, {data: res.message});
-        setTimeout(() => {
-          this.bottomSheet.dismiss();
-        }, 1500)
-      }
-    });
   }
 
   select(element: any){
@@ -139,4 +259,11 @@ export class UserPageComponent {
     if(indexToSuppress != null) this.selected.splice(indexToSuppress,1);
     else  this.selected.push(element);
   }
+}
+
+interface UserForm{
+  login: string,
+  newLogin: string,
+  password: string,
+  newPassword: string
 }

@@ -12,6 +12,7 @@
     top: 0;
     height: 100%;
     width: 15%;
+    -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
     background: linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1));
     box-shadow: 0 0 .5em 0 var(--black);
@@ -26,7 +27,6 @@
         z-index: 100;
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
-        background: var(--black);
         color: var(--black);
         transition: .5s;
         font-size: 25px;
@@ -68,6 +68,7 @@
     top: 0;
     height: 100%;
     width: 15%;
+    -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
     background: linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1));
     box-shadow: 0 0 .5em 0 var(--black);
@@ -83,8 +84,7 @@
         z-index: 100;
         border-top-left-radius: 5px;
         border-bottom-left-radius: 5px;
-        background: var(--black);
-        color: var(--white);
+        color: var(--black);
         transition: .5s;
         font-size: 25px;
         span{
@@ -99,7 +99,7 @@
         transition: .5s;
     }
     .selectOpen,checkbox{
-        padding-top: 10vh;
+        padding-top: 8vh;
         width: 70%;
         transition: .5s;
     }
