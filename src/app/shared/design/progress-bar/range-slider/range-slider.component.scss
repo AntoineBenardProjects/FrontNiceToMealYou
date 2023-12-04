@@ -1,0 +1,92 @@
+.range{
+    width: var(--length);
+    height: 0;
+    #right{
+        top: 15px;
+    }
+    #left{
+        bottom: 15px;
+    }
+    .values{
+        position: relative;
+        height: 0;
+    }
+    .sliderValue{
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        color: var(--white);
+        line-height: 55px;
+        transform: translateX(-50%);
+        z-index: 2;
+        pointer-events: none;
+        transition: opacity .2s;
+        &:after{
+            position: absolute;
+            content: "";
+            height: 100%;
+            width: 100%;
+            background: var(--activeColor);
+            transform: rotate(45deg);
+            border: var(--borderWidthDialog) solid var(--borderColor);
+            border-radius: 50%;
+            z-index: -1;
+        }
+    }
+    .field{
+        position: relative;
+        height: 100%;
+        #min{
+            transform: rotate(180deg);
+        }
+        input{
+            position: absolute;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            height: 3px;
+            width: 100%;
+            background: transparent;
+            border-radius: 5px;
+            outline: none;
+            border: none;
+            z-index: 10;
+            pointer-events: none;
+            left: 0;
+            &::-webkit-slider-thumb{
+                pointer-events:  all;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                height: var(--size);
+                width: var(--size);
+                background: var(--activeColor);
+                border-radius: 50%;
+                cursor: pointer;
+                z-index: 10;
+                border: var(--borderWidth) solid var(--borderColor);
+            }
+        }
+        .unselected{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            height: 3px;
+            border-radius: 5px;
+            background: var(--unactiveColor);
+        }
+        .selected{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            height: 3px;
+            border-radius: 5px;
+            background: var(--activeColor);
+            z-index: 2;
+        }
+    }
+}

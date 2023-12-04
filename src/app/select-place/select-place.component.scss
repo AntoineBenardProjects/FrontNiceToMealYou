@@ -1,0 +1,48 @@
+.body{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    .background{
+        position: absolute;
+        background: var(--black);
+        opacity: .7;
+        width: 100%;
+        height: 100%;
+    }
+    .selectContainer{
+        background: var(--white);
+        border-radius: 5px;
+        width: 75%;
+        height: 75%;
+        z-index: 2;
+        position: relative;
+        .close{
+            position: absolute;
+            top: 5%;
+            right: 3%;
+            width: auto !important;
+        }
+        .title{
+            position: absolute;
+            top: 18%;
+            display: flex;
+            width: 100%;
+            h1{
+                margin: 0;
+                font-size: 50px;
+                text-transform: uppercase;  
+                color: var(--black);  
+            }
+            h1:nth-child(even){
+                margin: 0 12px;
+                color: transparent;
+                -webkit-text-stroke: 2px var(--black);
+            }
+        }
+        .validate{
+            position: absolute;
+            width: 30vw !important;
+            bottom: 20%;
+        }
+    }
+}

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '../model/user';
+import { User } from '../shared/model/table/user';
 import { AuthService } from '../services/auth.service';
 import { DatabaseService } from '../services/database.service';
-import { Message } from '../model/message';
-import { ButtonInfos } from '../shared/model/designs';
+import { Message } from '../shared/model/params/message';
+import { ButtonInfos, InputInfos } from '../shared/model/designs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
+import { connexionButtonColorLoginComponent, signupButtonColorLoginComponent } from '../shared/model/design/buttonsDesign';
+import { inputInfosLoginComonent } from '../shared/model/design/inputsDesign';
 
 @Component({
   selector: 'app-login',
@@ -34,49 +36,38 @@ export class LoginComponent implements OnInit {
     private dataService: DatabaseService, 
     private router: Router,
     private auth: AuthService) { }
+//////////////////////////////////////////////  Variables  //////////////////////////////////////////////
+/*  Style Infos  */
+  protected signupButtonColor: ButtonInfos = signupButtonColorLoginComponent;
+  protected connexionButtonColor: ButtonInfos = connexionButtonColorLoginComponent;
+  protected inputInfos: InputInfos = inputInfosLoginComonent;
+/*  Algo  */
+  protected userInfos: User = {
+    id: "",
+    login: "",
+    password: "",
+    role: "User",
+    img: ""
+  };
+  protected validName: boolean = false;
+  protected validPassword: boolean = false;
+  protected message: string = "";
+  protected showMessage: string="hidden";
+  protected valid: boolean = false;
 
-    protected signupButtonColor: ButtonInfos = {
-      color: 'var(--white)',
-      borderColor: 'var(--white)',
-      borderColorActive: 'var(--white)',
-      colorActive: 'var(--black)',
-      backgroundColorActive: 'var(--white)'
-    }
-    protected connexionButtonColor: ButtonInfos = {
-      color: 'var(--black)',
-      borderColor: 'var(--black)',
-      borderColorActive: 'var(--black)',
-      colorActive: 'var(--white)',
-      backgroundColorActive: 'var(--black)'
-    }
-    protected userInfos: User = {
-      id: "",
-      login: "",
-      password: "",
-      role: "User",
-      img: ""
-    };
-    protected validName: boolean = false;
-    protected validPassword: boolean = false;
-    protected message: string = "";
-    protected showMessage: string="hidden";
-    protected valid: boolean = false;
   ngOnInit(): void {
     setTimeout(() => {
       this.auth.isAuthenticated();
     },1);
   }
-
-  setValue(event: any, params: string){
+  protected setValue(event: any, params: string): void{
     if(params === 'Login')  this.userInfos.login = event.target.value;
     else if(params === 'Password')  this.userInfos.password = event.target.value;
   }
-
-  navigateToRegister(){
+  protected navigateToRegister(): void{
     this.router.navigate(['/register']);
   }
-
-  connexion(){
+  protected connexion(): void{
     const userInfo: User = {
       id: "",
       login: this.userInfos.login,
@@ -84,9 +75,16 @@ export class LoginComponent implements OnInit {
       role:"",
       img: ""
     }
-    this.dataService.login(userInfo).subscribe((navigate: Message) => {
+    this.dataService.login(userInfo).subscribe((navigate: any) => {
       if(!navigate.error){
-        this.router.navigate(['/home']);
+        localStorage.setItem("role",navigate.params.role);
+        localStorage.setItem("id",navigate.params.id);
+        localStorage.setItem("login",navigate.params.login);
+        localStorage.setItem("token",navigate.token);
+        this.dataService.getImage(navigate.params.id).subscribe((img: string) =>{
+          localStorage.setItem("img",img);
+          this.router.navigate(['/home']);
+        });
       }
       else{
         this.message = navigate.message;

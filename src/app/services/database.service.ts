@@ -2,14 +2,15 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { Message } from '../model/message';
-import { Comment, RestaurantsGrades } from '../model/comment';
-import { Horaires } from '../model/horaires';
-import { Pictures } from '../model/pictures';
+import { Message } from '../shared/model/params/message';
+import { Comment } from '../shared/model/table/comment';
+import { Horaires } from '../shared/model/table/horaires';
+import { Pictures } from '../shared/model/table/pictures';
 import { PlacesService } from './places.service';
-import { Place, Restaurant } from '../model/places';
-import { PlaceOfUser, User } from '../model/user';
-import { Coords, Ligne, Station, StationOfPlace } from '../model/transports';
+import { City, Place } from '../shared/model/table/places';
+import { Follow, PlaceOfUser, User } from '../shared/model/table/user';
+import { Coords, Ligne, Station } from '../shared/model/table/transports';
+import { Type, TypeOfPlace } from '../shared/model/table/type';
 
 @Injectable({
   providedIn: 'root'
@@ -40,308 +41,278 @@ export class DatabaseService {
   }
 
   setAuthorizationHeader(){
-    this.header.Authorization = localStorage.getItem("token");
+    localStorage.getItem("token") != null ? this.header.Authorization = localStorage.getItem("token") : this.header.Authorization = "";
     this.httpOptions  = {
       headers: new HttpHeaders(this.header)
     };
   }
 
+  private get(url: string): any{
+    let promise: Subject<any> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.get(this.serverUrl + url,this.httpOptions).subscribe((res:any) => {
+      if(res.error == null){
+        promise.next(res);
+      }
+      else{
+        promise.next({error: res.error, message: res.message});
+      }
+    })
+    return promise;
+  }
+  private add(url: string, params: any): Subject<Message>{
+    let toReturn: Subject<Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.post(this.serverUrl + url,params,this.httpOptions).subscribe((res: any) => {
+      toReturn.next({error: res.error, message: res.message});
+    });
+    return toReturn;
+  }
+  private update(url: string, params: any): Subject<any>{
+    let toReturn: Subject<Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.patch(this.serverUrl + url,params,this.httpOptions).subscribe((res:any) => {
+      if(res.error != null) toReturn.next({error: res.error, message: res.message});
+      else  toReturn.next(res);
+    });
+    return toReturn;
+  }
+  private delete(url: string): Subject<Message>{
+    let toReturn: Subject<Message> = new Subject();
+    this.setAuthorizationHeader();
+    this.httpClient.delete(this.serverUrl + url,this.httpOptions).subscribe((res:any) => {
+      toReturn.next({error: res.error, message: res.message});
+    });
+    return toReturn;
+  }
+
 
   ////////////////////////////////////////  Place ////////////////////////////////////////
   private placeUrl = "/place";
-  getPlacesOfUser(id_user: string){
-    let toReturn: Subject<Place[] | Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.connectionUrl + "/place/" + id_user,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+  private restaurantUrl = "/restaurant";
+  private barUrl = "/bar";
+  private loisirUrl = "/loisir";
+  private magasinUrl = "/magasin";
+  private serviceUrl = "/service";
+  private cityUrl = "/city";
+  private commentUrl = "/comment";
+  private picUrl = "/pictures";
+  private horairesUrl = "/horaires";
+  private connectionUrl = "/auth"
+  private typeUrl = "/type";
+  private stationUrl: string = "/station";
+  private databaseUrl: string = "/database";
+  private followUrl: string = "/follow";
+
+  getAllPlacesByCategory(category: string){
+    let url: string = "";
+    switch(category){
+      case 'Restaurant':
+        url = this.restaurantUrl;
+      break;
+      case 'Bar':
+        url = this.barUrl;
+      break;
+      case 'Loisir':
+        url = this.loisirUrl;
+      break;
+      case 'Service':
+        url = this.serviceUrl;
+      break;
+      case 'Magasin':
+        url = this.magasinUrl;
+      break;
+      case 'Autre':
+        url = "/other";
+      break;
+      case '':
+        url = this.placeUrl + "/visible";
+      break;
+    }
+    return this.get(url);
   }
-  getPlaceOfUserByCategory(category: string, id_user: string): Subject<Place[]>{
-    let promise: Subject<Place[]> = new Subject();
-    this.setAuthorizationHeader();
+  getAllVisiblePlaces(){
+    let url: string = this.placeUrl + "/visible";
+    return this.get(url);
+  }
+  getPlacesOfUser(id_user: string){
+    const url: string = this.connectionUrl + "/place/" + id_user;
+    return this.get(url);
+  }
+  getStatsOfType(type: Type){
+    const params = {
+      id: type.id,
+      category: type.category
+    }
+    const url: string = this.placeUrl + "/stats/type/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
+  }
+  verifyExistingPlace(place: Place){
+    const params = {
+      name: place.name,
+      address: place.address,
+      category: place.category
+    };
+    const url: string = this.placeUrl + "/verify/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
+  }
+  getPlaceInfos(id_place: string,id_user: string){
     const params = {
       id_user: id_user,
-      category: category
+      id_place: id_place
     }
-    this.httpClient.get(this.serverUrl + this.placeUrl + "/category/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        promise.next(res);
-      }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
+    const url: string = this.placeUrl + "/infos/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
   }
-  
-  
-  ////////////////////////////////////////  Restaurants ////////////////////////////////////////
-  private restaurantUrl = "/restaurant";
-  getAllRestaurants(){
-    let promise: Subject<Restaurant[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.restaurantUrl,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        promise.next(res);
-      }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
+  addPlaceByCategory(place: Place){
+    let url: string = "";
+    switch(place.category){
+      case 'Restaurant':
+        url = this.restaurantUrl;
+      break;
+      case 'Bar':
+        url = this.barUrl;
+      break;
+      case 'Loisir':
+        url = this.loisirUrl;
+      break;
+      case 'Service':
+        url = this.serviceUrl;
+      break;
+      case 'Magasin':
+        url = this.magasinUrl;
+      break;
+      case 'Autre':
+        url = this.placeUrl;
+      break;
+    }
+    return this.add(url,place);
   }
-  getPlaceDetails(id:string){
-    let promise: Subject<any> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.restaurantUrl + "/details/"+id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        promise.next(res);
-      }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
+  updatePlaceByCategory(place: Place){
+    let url: string = "";
+    switch(place.category){
+      case 'Restaurant':
+        url = this.restaurantUrl;
+      break;
+      case 'Bar':
+        url = this.barUrl;
+      break;
+      case 'Loisir':
+        url = this.loisirUrl;
+      break;
+      case 'Service':
+        url = this.serviceUrl;
+      break;
+      case 'Magasin':
+        url = this.magasinUrl;
+      break;
+      case 'Autre':
+        url = this.placeUrl;
+      break;
+    }
+    return this.update(url,place);
   }
-  verifyExistingRestaurant(name: string, address: string){
-    let promise: Subject<Message | Restaurant> = new Subject();
-    this.setAuthorizationHeader();
-    const params = JSON.stringify({
-      name: name,
-      address: address
-    });
-    this.httpClient.get(this.serverUrl + this.restaurantUrl + "/verify/" + encodeURIComponent(params),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        promise.next(res[0]);
-      }
-      else{
-        promise.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return promise;
+  getPlacesSuggestionsOfUser(id: string){
+    const url: string = this.placeUrl + "/suggestion/place/" + id;
+    return this.get(url);
   }
-  addRestaurant(restaurant: Restaurant){
-    let toReturn: Subject<Message> = new Subject();
-    restaurant.id = this.setId();
-    this.httpClient.post<Restaurant>(this.serverUrl + this.restaurantUrl,restaurant,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Le restaurant à été ajouté."});
-      }
-      else  toReturn.next({error: true, message: "Le restaurant n'a pas pu être ajouté."});
-    });
-    return toReturn;
+  ////////////////////////////////////////  City  ////////////////////////////////////////
+  getAllCities(){
+    return this.get(this.cityUrl);
   }
-  updateRestaurant(restaurant: Restaurant){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.patch<Restaurant>(this.serverUrl + this.restaurantUrl,restaurant,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
+  getCityById(id: string){
+    const url: string = "";
+    return this.get(this.cityUrl + "/id/" + id);
   }
-
-  ////////////////////////////////////////  Comment ////////////////////////////////////////
-  private commentUrl = "/comment";
-  getCommentOfPlaceByUser(idPlace: string, idUser: string, category?: string){
-    let promise: Subject<Message | Comment> = new Subject();
-    this.setAuthorizationHeader();
-    const params = JSON.stringify({
-      id_place: idPlace,
-      id_user: idUser,
-      category: category
-    });
-    this.httpClient.get(this.serverUrl + this.commentUrl + "/" + encodeURIComponent(params),this.httpOptions).subscribe((res:any) => {
-      // console.log(res);
-      if(res.error == null){
-        promise.next(res[0]);
-      }
-      else{
-        promise.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return promise;
+  getCityIdByProperties(city: City){
+    const url: string = this.cityUrl + "/properties/" + encodeURIComponent(JSON.stringify(city));
+    return this.get(url);
   }
-  addCommentRestaurants(comment: RestaurantsGrades){
-    let toReturn: Subject<Message> = new Subject();
-    this.httpClient.post<RestaurantsGrades>(this.serverUrl + this.commentUrl + "/restaurants",comment,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Les notes ont été ajoutées."});
-      }
-      else  toReturn.next({error: true, message: "Les notes n'ont pas pu être ajoutées."});
-    });
-    return toReturn;
+  addCity(city: City){
+    return this.add(this.cityUrl, city);
   }
-  updateCommentRestaurants(comment: RestaurantsGrades){
-    let toReturn: Subject<Message> = new Subject();
-    this.httpClient.patch<RestaurantsGrades>(this.serverUrl + this.commentUrl + "/restaurants",comment,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Les notes ont été modifées."});
-      }
-      else  toReturn.next({error: true, message: "Les notes n'ont pas pu être modifées."});
-    });
-    return toReturn;
+  updateCity(city: City){
+    return this.update(this.cityUrl,city);
   }
-
-  ////////////////////////////////////////  Horaires ////////////////////////////////////////
-  private horairesUrl = "/horaires";
+  getCommentsOfUser(idUser: string){
+    const url: string = this.commentUrl + "/all/" + idUser;
+    return this.get(url);
+  }
+  addComment(comment: Comment, category: string){
+    let url: string = "";
+    if(category === 'Restaurant') url = this.commentUrl + this.restaurantUrl;
+    else  url = this.commentUrl + '/common';
+    return this.add(url,comment);
+  }
+  updateComment(comment: Comment,category: string){
+    let url: string = this.commentUrl;
+    switch(category){
+      case "Restaurant":
+        url += this.restaurantUrl;
+      break;
+      default:
+        url += "/common";
+      break;
+    }
+    return this.update(url,comment);
+  }
+  filterByComment(rating: Comment,ids: string[]){
+    const params = {
+      rating: rating,
+      ids: ids,
+      id_user: localStorage.getItem("id")
+    }
+    const url: string = this.commentUrl + "/filter/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
+  }
   getHorairesOfPlace(id: string, id_user: string){
-    let promise: Subject<Message | Horaires[]> = new Subject();
-    this.setAuthorizationHeader();
-    let params = JSON.stringify({
+    const params = JSON.stringify({
       idPlace: id,
       idUser: id_user
     });
-    this.httpClient.get(this.serverUrl + this.horairesUrl + "/" + encodeURIComponent(params),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        promise.next(res);
-      }
-      else{
-        promise.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return promise;
+    const url: string = this.horairesUrl + "/" + encodeURIComponent(params);
+    return this.get(url);
   }
   addHoraires(horaires: Horaires){
-    let toReturn: Subject<Message> = new Subject();
-    this.httpClient.post<Horaires>(this.serverUrl + this.horairesUrl,horaires,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Les horaires ont été ajoutés."});
-      }
-      else  toReturn.next({error: true, message: "Les horaires n'ont pas pu être ajoutés."});
-    });
-    return toReturn;
+    return this.add(this.horairesUrl, horaires);
   }
   updateHoraires(horaires: Horaires){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.patch<Horaires>(this.serverUrl + this.horairesUrl,horaires,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }
-    });
-    return toReturn;
+    return this.update(this.horairesUrl,horaires);
   }
 
 
   ////////////////////////////////////////  Pictures ////////////////////////////////////////
-  private picUrl = "/pictures";
-  //
-  getPicturesOfPlaceByUser(idPlace: string, idUser: string){
-    let promise: Subject<Pictures[]> = new Subject();
-    this.setAuthorizationHeader();
-    const params: string = JSON.stringify({
-      idPlace: idPlace,
-      idUser: idUser
-    })
-    this.httpClient.get(this.serverUrl + this.picUrl + "/" + encodeURIComponent(params),this.httpOptions).subscribe((res:any) => {
-      // console.log(res);
-      if(res.error == null){
-        promise.next(res);
-      }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
-  }
   addPicture(pictures: Pictures){
-    let toReturn: Subject<Message> = new Subject();
     pictures.id = this.setId();
-    this.httpClient.post<Pictures>(this.serverUrl + this.picUrl,pictures,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Les horaires ont été ajoutés."});
-      }
-      else  toReturn.next({error: true, message: "Les horaires n'ont pas pu être ajoutés."});
-    });
-    return toReturn;
+    return this.add(this.picUrl,pictures);
   }
   deletePicture(id: string){
-    let toReturn: Subject<Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.delete<Pictures>(this.serverUrl + this.picUrl + "/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null) toReturn.next({error: false, message: res.message});
-      else {
-        toReturn.next({error: true, message: res.message});
-        console.log(res.error);
-      }    });
-    return toReturn;
+    const url: string = this.picUrl + "/" + id;
+    return this.delete(url);
   }
-
-  ////////////////////////////////////////  Connexion/User ////////////////////////////////////////
-  private connectionUrl = "/auth"
-
+  getAllUsers(){
+    return this.get(this.connectionUrl);
+  }
+  getAllUsersLogin(){
+    const url: string = this.connectionUrl + "/names";
+    return this.get(url);
+  }
+  getUserInfo(id: string){
+    const url: string = this.connectionUrl + "/infos/" + id;
+    return this.get(url);
+  }
   checkPassword(userInfo: User){
-    let toReturn: Subject<Message> = new Subject();
     let params: string = JSON.stringify(userInfo);
-
-    this.httpClient.get(this.serverUrl + this.connectionUrl +"/login"+'?user='+encodeURIComponent(params),this.httpOptions).subscribe((res: any) => {
-      if(res.error !== true){
-        toReturn.next({
-          error: false,
-          message: ""
-        });
-      } else{
-        toReturn.next({
-          error: true,
-          message: res.message
-        });
-      }
-    });
-
-    return toReturn.asObservable();
+    const url: string = this.connectionUrl +"/login"+'?user='+encodeURIComponent(params);
+    return this.get(url);
   }
   getValidName(name: string){
-    let toReturn: Subject<Message | boolean> = new Subject();
-    if(name === '') name = "-";
-    this.httpClient.get(this.serverUrl + this.connectionUrl +"/used/"+name,this.httpOptions).subscribe((res: any) => {
-      if(res.error !== true){
-        res === '0' ? toReturn.next(true) : toReturn.next(false);
-      } else{
-        toReturn.next({
-          error: true,
-          message: res.message
-        });
-      }
-    });
-
-    return toReturn.asObservable();
+    const url: string = this.connectionUrl +"/used/"+name;
+    return this.get(url);
   }
   login(userInfo: User){
-    let toReturn: Subject<Message> = new Subject();
-
-    let params: string = JSON.stringify(userInfo);
-
-    this.httpClient.get(this.serverUrl + this.connectionUrl +"/login"+'?user='+encodeURIComponent(params),this.httpOptions).subscribe((res: any) => {
-      if(res.error !== true){
-        localStorage.setItem("token", res.token);
-        toReturn.next({
-          error: false,
-          message: ""
-        });
-      } else{
-        toReturn.next({
-          error: true,
-          message: res.message
-        });
-      }
-    });
-
-    return toReturn.asObservable();
+    const url: string = this.connectionUrl +"/login"+'?user='+encodeURIComponent(JSON.stringify(userInfo));
+    return this.get(url);
   }
   loginByToken(token: string){
     let log: Subject<User> = new Subject();
@@ -351,295 +322,287 @@ export class DatabaseService {
     this.httpClient.post(this.serverUrl + this.connectionUrl + "/token", objectToken,this.httpOptions).subscribe((res: any) => {
       log.next(res);
     });
-
     return log;
   }
   signup(user: User){
-    let toReturn: Subject<Message> = new Subject();
-    user.id = this.setId();
-    this.httpClient.post<User>(this.serverUrl + this.connectionUrl + "/signup",user,this.httpOptions).subscribe((res:any) => {
-      console.log(res)
-      if(res.error == null){
-        toReturn.next({error: false, message: "L'utilisateur à été ajouté."});
-      }
-      else  toReturn.next({error: true, message: "L'utilisateur n'a pas pu être ajouté."});
-    });
-
-    return toReturn;
+    const url: string = this.connectionUrl + "/signup";
+    return this.add(url,user);
   }
   verifyPlaceOfUser(placeOfUser: PlaceOfUser){
-    let promise: Subject<boolean | Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.connectionUrl + "/verify/place/" + encodeURIComponent(JSON.stringify(placeOfUser)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        res > 0 ? promise.next(true) : promise.next(false);
-      }
-      else{
-        console.log(res.error);
-      }
-    });
-    return promise;
+    const url: string = this.connectionUrl + "/verify/place/" + encodeURIComponent(JSON.stringify(placeOfUser));
+    return this.get(url);
   }
   addPlaceOfUser(place: PlaceOfUser){
-    let toReturn: Subject<Message> = new Subject();
-    this.httpClient.post<PlaceOfUser>(this.serverUrl + this.connectionUrl + "/place",place,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "Le lieu a été ajouté."});
-      }
-      else  toReturn.next({error: true, message: "le lieu n'a pas pu être ajouté."});
+    const url: string = this.connectionUrl + "/place";
+    return this.add(url,place);
+  }
+  getImage(idUser: string){
+    let toReturn: Subject<string> = new Subject();
+    const url: string = this.connectionUrl +"/image/"+idUser;
+    this.get(url).subscribe((img: any) => {
+      toReturn.next(img.img)
     });
     return toReturn;
   }
   setImage(idUser: string,img: string){
-    let toReturn: Subject<Message | string> = new Subject();
-    this.setAuthorizationHeader();
-    let params = {
+    const params = {
       id: idUser,
       img: img
     }
-    this.httpClient.patch(this.serverUrl + this.connectionUrl +"/img", params,this.httpOptions).subscribe((res: any) => {
-      if(res.error !== true){
-        console.log(res);
-        toReturn.next({
-          error: false,
-          message: ""
-        });
-      } else{
-        toReturn.next({
-          error: true,
-          message: res.message
-        });
-      }
-    });
-
-    return toReturn.asObservable();
+    const url: string = this.connectionUrl +"/img";
+    return this.update(url,params);
   }
   setLogin(idUser: string,login: string){
-    let toReturn: Subject<Message | string> = new Subject();
-    this.setAuthorizationHeader();
-    let params = {
+    const params = {
       id: idUser,
       login: login
-    }
-    this.httpClient.patch(this.serverUrl + this.connectionUrl +"/login", params,this.httpOptions).subscribe((res: any) => {
-      if(res.error !== true){
-        console.log(res);
-        toReturn.next({
-          error: false,
-          message: ""
-        });
-      } else{
-        toReturn.next({
-          error: true,
-          message: res.message
-        });
-      }
-    });
-
-    return toReturn.asObservable();
+    };
+    const url: string = this.connectionUrl +"/login";
+    return this.update(url,params);
   }
   setPassword(idUser: string,password: string){
-    let toReturn: Subject<Message | string> = new Subject();
-    this.setAuthorizationHeader();
-    let params = {
+    const params = {
       id: idUser,
       password: password
     }
-    this.httpClient.patch(this.serverUrl + this.connectionUrl +"/password", params,this.httpOptions).subscribe((res: any) => {
-      if(res.error !== true){
-        toReturn.next({
-          error: false,
-          message: ""
-        });
-      } else{
-        toReturn.next({
-          error: true,
-          message: res.message
-        });
-      }
-    });
-
-    return toReturn.asObservable();
+    const url: string = this.connectionUrl +"/password";
+    return this.update(url,params);
+  }
+  getStatistics(idUser: string){
+    const url: string = this.connectionUrl +"/statistics/"+idUser;
+    return this.get(url);
+  }
+  addUsers(users: User[]){
+    const url: string = this.connectionUrl + "/multiple";
+    return this.add(url,users);
+  }
+  updateUsers(users: User[]){
+    const url: string = this.connectionUrl + "/multiple";
+    return this.update(url,users);
+  }
+  deleteUsers(ids: string[]){
+    const url: string = this.connectionUrl + "/multiple/" +encodeURIComponent(JSON.stringify(ids));
+    return this.delete(url);
   }
 
   ////////////////////////////////////////  Station ////////////////////////////////////////
-  private stationUrl: string = "/station";
+  //
   getStationOfPlaceByCoords(location: Coords){
-    let toReturn: Subject<Station[] | Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/coords/" + encodeURIComponent(JSON.stringify(location)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/coords/" + encodeURIComponent(JSON.stringify(location));
+    return this.get(url);
   }
+  //
   getLignesOfStation(id: string){
-    let toReturn: Subject<Ligne[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/ligne/station/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/ligne/station/" + id;
+    return this.get(url);
   }
-  /////////////////////////////////////////////////////////////////////
   getStationOfPlace(id: string){
-    let toReturn: Subject<Station[] | Message> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/id/" + id,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/id/" + id;
+    return this.get(url);
+  }
+  getStationsOfUser(id: string){
+    const url: string = this.stationUrl + "/favorite/" + id;
+    return this.get(url);
   }
   getAllRegion(){
-    let toReturn: Subject<string[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + "/region",this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = "/region";
+    return this.get(url);
   }
   getTransportsOfRegion(region: string){
-    let toReturn: Subject<string[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/transport/" + region,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/transport/" + region;
+    return this.get(url);
+  }
+  getLignesOfRegion(region: string){
+    const url: string = this.stationUrl + "/ligne/region/" + region;
+    return this.get(url);
   }
   getLignesOfRegionByTransport(region: string, transport: string){
-    let toReturn: Subject<Ligne[]> = new Subject();
-    this.setAuthorizationHeader();
     const body: any = {
       region: region,
       transport: transport
-    }
-    this.httpClient.get<string[]>(this.serverUrl + this.stationUrl + "/ligne/transport/" + encodeURIComponent(JSON.stringify(body)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    };
+    const url: string = this.stationUrl + "/ligne/transport/" + encodeURIComponent(JSON.stringify(body));
+    return this.get(url);
   }
   getStationsOfLigne(ligne: string){
-    let toReturn: Subject<Station[]> = new Subject();
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/station/ligne/" + ligne,this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/station/ligne/" + ligne;
+    return this.get(url);
   }
-  getPlacesOfUserByRegion(region: string, id_user: string){
-    let toReturn: Subject<Place[] | Message> = new Subject();
+  getPlacesByRegionAndUser(reg:string,id_user: string){
     const params = {
-      region: region,
+      region:reg,
       id_user: id_user
     }
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/user/reg/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/place/region/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
   }
-  getPlacesOfUserByTransportAndRegion(transport: string, id_user: string){
-    let toReturn: Subject<Place[] | Message> = new Subject();
+  getPlacesByTransportOfRegionAndUser(reg:string,transport:string,id_user: string){
     const params = {
       transport: transport,
+      region:reg,
       id_user: id_user
     }
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/user/transport/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/place/transport/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
   }
   getPlacesByLigneAndUser(ligne: string,id_user: string){
-    let toReturn: Subject<Place[]> = new Subject();
-    this.setAuthorizationHeader();
     const params = {
       ligne: ligne,
       id_user: id_user
     }
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/ligne/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/ligne/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
   }
   getPlacesByStationAndUser(station: Station, id_user: string){
-    let toReturn: Subject<Place[] | Message> = new Subject();
     const params = {
       station: station,
       id_user: id_user
     }
-    this.setAuthorizationHeader();
-    this.httpClient.get(this.serverUrl + this.stationUrl + "/user/" + encodeURIComponent(JSON.stringify(params)),this.httpOptions).subscribe((res:any) => {
-      if(res.error == null){
-        toReturn.next(res);
-      }
-      else {
-        console.log(res);
-      }
-    });
-    return toReturn;
+    const url: string = this.stationUrl + "/user/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
   }
-  addStationOfPlace(id_place: string, id_station){
-    let toReturn: Subject<Message> = new Subject();
-    let params = {
+  getStatisticsOfStation(id: string){
+    const url: string = this.stationUrl +"/statistics/"+id;
+    return this.get(url);
+  }
+  addStationOfPlace(id_place: string, id_station: string){
+    const url: string = this.stationUrl + "/near";
+    const params = {
       id_place: id_place,
       id_station: id_station
     };
-    this.httpClient.post<Station>(this.serverUrl + this.stationUrl + "/near", params,this.httpOptions).subscribe(res => {
-      if(res != null){
-        toReturn.next({error: false, message: "La station a été ajoutée."});
-      }
-      else  toReturn.next({error: true, message: "La station n'a pas pu être ajoutée."});
-    });
-    return toReturn;
+    return this.add(url,params);
   }
+  addStationOfUser(id_user: string, id_station: string){
+    const params = {
+      id_user: id_user,
+      id_station: id_station
+    }
+    const url: string = this.stationUrl + "/user/";
+    return this.add(url, params);
+  }
+  deleteStationOfUser(id_user: string, id_station: string){
+    const params = {
+      id_user: id_user,
+      id_station: id_station
+    }
+    const url: string = this.stationUrl + "/user/"+encodeURIComponent(JSON.stringify(params));
+    return this.delete(url);
+  }
+  addLignes(lignes: Ligne[]){
+    return this.add("/ligne",lignes);
+  }
+  updateLignes(lignes: Ligne[]){
+    return this.update("/ligne",lignes);
+  }
+  deleteLignes(ids: string[]){
+    const url: string = "/ligne/" +encodeURIComponent(JSON.stringify(ids));
+    return this.delete(url);
+  }
+  addStations(stations: Station[]){
+    return this.add(this.stationUrl,stations);
+  }
+  updateStations(stations: Ligne[]){
+    return this.update(this.stationUrl,stations);
+  }
+  deleteStations(ids: string[]){
+    const url: string = this.stationUrl+ "/" +encodeURIComponent(JSON.stringify(ids));
+    return this.delete(url);
+  }
+  //
+  getAllTypes(){
+    return this.get(this.typeUrl);
+  }
+  getTypeIdByCategoryAndName(category: string,name: string){
+    const params = {
+      category: category,
+      name: name
+    }
+    const url: string = this.typeUrl + "/id/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
+  }
+  getTypeByCategory(category: string){
+    const url: string = this.typeUrl + "/category/" + category;
+    return this.get(url);
+  }
+  //
+  getTypesOfPlace(id: string){
+    const url: string = this.typeUrl + "/place/" + id;
+    return this.get(url);
+  }
+  getTypesOfUser(id: string){
+    const url: string = this.typeUrl + "/user/" + id;
+    return this.get(url);
+  }
+  verifyPlaceTypes(id_types: string[], id_place: string){
+    const params = {
+      ids_type: id_types,
+      id_place: id_place
+    }
+    const url: string = this.typeUrl + "/places/" + encodeURIComponent(JSON.stringify(params));
+    return this.get(url);
+  }
+  addTypes(types: Type[]){
+    return this.add(this.typeUrl,types);
+  }
+  addTypeOfPlace(typeOfPlace: TypeOfPlace){
+    const url: string = this.typeUrl + "/place";
+    return this.add(url,typeOfPlace);
+  }
+  addTypeOfUser(id_user: string,id_type: string){
+    const url: string = this.typeUrl + "/user";
+    const params = {
+      id_type: id_type,
+      id_user: id_user
+    }
+    return this.add(url, params);
+  }
+  updateTypes(types: Type[]){
+    return this.update("/type",types);
+  }
+  deleteTypes(ids: string[]){
+    const url: string ="/type/" +encodeURIComponent(JSON.stringify(ids));
+    return this.delete(url);
+  }
+  deleteTypeOfUser(id_user: string, id_type: string){
+    const params = {
+      id_type: id_type,
+      id_user: id_user
+    }
+    const url: string = this.typeUrl + "/user/"+encodeURIComponent(JSON.stringify(params));
+    return this.delete(url);
+  }
+////////////////////////////////////////  Follow ////////////////////////////////////////
+  getRelationBetweenUsers(follow: Follow){
+    const url: string = this.followUrl + "/" + encodeURIComponent(JSON.stringify(follow));
+    return this.get(url);
+  }
+  getRequestsOfRelation(id: string){
+    const url: string = this.followUrl + "/request/" + id;
+    return this.get(url);
+  }
+  getFriends(follow: Follow){
+    const url: string = this.followUrl + "/friends/" + encodeURIComponent(JSON.stringify(follow));
+    return this.get(url);
+  }
+  getCommonFriends(follow: Follow){
+    const url: string = this.followUrl + "/common/" + encodeURIComponent(JSON.stringify(follow));
+    return this.get(url);
+  }
+  addFollower(follow: Follow){
+    return this.add(this.followUrl,follow);
+  }
+  updateFollower(follow: Follow){
+    return this.update(this.followUrl,follow);
+  }
+////////////////////////////////////////  Database ////////////////////////////////////////
+  setStationsNearPlace(){
+    const url: string = this.databaseUrl + "/station_near_place"
+    return this.add(url,null);
+  }
+  cleanTypeOfPlace(){
+    const url: string = this.databaseUrl + "/type_of_place"
+    return this.add(url,null);
+  }
+  
 }

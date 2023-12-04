@@ -31,6 +31,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/leaflet/dist/leaflet.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "src/styles.scss"
             ]
@@ -59,7 +60,8 @@
             },
             "development": {
               "buildOptimizer": true,
-              "optimization": { "scripts": true, "fonts": { "inline": true }, "styles": { "minify": true, "inlineCritical": false } },              "vendorChunk": true,
+              "optimization": false,              
+              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -99,7 +101,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/aos/dist/aos.css"
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": []
           }

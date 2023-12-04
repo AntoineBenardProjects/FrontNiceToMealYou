@@ -1,0 +1,35 @@
+<div class="container" [ngStyle]="{'height.px' : infos.height, 'width.vw' : infos.width,'border-color' : color}" *ngIf="lignes.length > 0 && stats != null">
+    <div class="name center" [ngStyle]="{'background':'url('+imgSrc+')'}">
+        <div class="background" [ngStyle]="{'background': gradient}"></div>
+        <h2>{{infos.station.name}}</h2>
+        <round-button id="close" class="center" [icon]="closeIcon" [styleInfos]="whiteButtonInfos" (click)="close()"></round-button> 
+    </div>
+    <div class="body">
+        <div class="icons">
+            <ng-container *ngFor="let stat of stats.categoriesStats">
+                <div class="iconContainer center" *ngIf="stat.count > 0">
+                    <round-button [text]="stat.count.toString()" [styleInfos]="statsButton"></round-button> 
+                    <fa-icon [icon]="getIconFromCategory(stat.category)"></fa-icon> 
+                </div>
+            </ng-container>
+            
+        </div>
+        <div class="stats">
+            <ng-container *ngFor="let stat of stats.categoriesStats">
+                <div class="stat" *ngIf="stat.open > 0">
+                    <round-button [text]="stat.open.toString()" [styleInfos]="getButtonInfos(stat.open)"></round-button> 
+                    <p *ngIf="stat.open > 1">{{stat.category}}s ouverts</p>
+                    <p *ngIf="stat.open < 2">{{stat.category}} ouvert</p>
+                </div>
+            </ng-container>
+        </div>
+        
+        
+        <div class="linesContainer">
+            <div class="lines center" *ngFor="let ligne of lignes">
+                <round-button [text]="ligne.name" [styleInfos]="ligne.buttonInfos" *ngIf="ligne.buttonInfos != null"></round-button> 
+            </div>
+        </div>
+        
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="body center">
+    <div class="background"></div>
+    <div class="selectContainer center">
+        <round-button class="close" [styleInfos]='crossButtonInfos' [icon]="crossIcon" (click)="onClose(false)"></round-button>
+        <div class="title center">
+            <h1>Sélectionnez </h1>
+            <h1> un </h1>
+            <h1> lieu</h1>
+        </div>
+        <app-input (input)="setValue($event)" (selectAutocomplete)="add($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompletePlaces" [value]="placeSearch" text="Recherchez un lieu" [styleInfo]="searchInputInfos"></app-input>
+        <round-button *ngIf="selectedPlace !== ''" class="validate" [styleInfos]='validButtonInfos' text="Ajouter" (click)="onClose(true)"></round-button>
+    </div>
+</div>

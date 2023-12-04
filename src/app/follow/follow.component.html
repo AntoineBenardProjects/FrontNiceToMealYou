@@ -1,0 +1,43 @@
+<div class="navigate">
+    <img [src]="logoImageSrc" routerLink="/home">
+
+    <div class="nav">
+      <p (click)="navigate('/filter')">Ma carte</p>
+      <p (click)="navigate('/user')">Mon compte</p>  
+    </div>
+  </div>
+<div class="body">
+    <div class="background"></div>
+    <app-input (input)="setValue($event)" (selectAutocomplete)="searchUser($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteLogins" [value]="searchLogin" text="Recherchez un utilisateur" [styleInfo]="searchInputInfos"></app-input>
+    <div class="resultSearch center" [ngStyle]="{'height.vh' : searchedCardParams != null ? '30' : '0'}">
+        <user-card *ngIf="searchedCardParams != null" [infos]="searchedCardParams"></user-card>
+    </div>
+    <div class="request center" id="request" *ngIf="requestCardsParams.length > 0" [ngStyle]="{'display': requestCardsParams.length > 1 ? 'grid' : 'flex'}">
+        <div class="subtitles" [ngStyle]="{'right.vw': titlePosition}">
+            <h1 class="subtitle">Demande</h1>
+            <h1 class="subtitle">Demande</h1>
+            <h1 class="subtitle">Demande</h1>  
+            <h1 class="subtitle">Demande</h1>
+            <h1 class="subtitle">Demande</h1>
+            <h1 class="subtitle">Demande</h1> 
+            <h1 class="subtitle">Demande</h1>
+            <h1 class="subtitle">Demande</h1>
+            <h1 class="subtitle">Demande</h1> 
+          </div>
+        <user-card (acceptRelation)="modifyRelation($event)" (addRelation)="modifyRelation($event)" *ngFor="let params of requestCardsParams" [infos]="params"></user-card>
+    </div>
+    <div class="suggestion" id="suggestion">
+        <div class="subtitles" [ngStyle]="{'right.vw': titlePosition}">
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1>  
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1> 
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1> 
+          </div>
+        <user-card *ngFor="let params of suggestedCardsParams" [infos]="params"></user-card>
+    </div>
+</div>

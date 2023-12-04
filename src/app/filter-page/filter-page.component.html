@@ -1,53 +1,80 @@
 <div class="body">
-    <div class="topbarContainer">
-        <div class="navbar">
-            <div class="container">
-                <img id="logo" src="../../assets/logo/black_logo.png" routerLink="/home">
-                <img id="add" src="../../assets/common/add_marker.png" routerLink="/add">
-            </div>
+    <div class="links center" *ngIf="device === 'computer'">
+        <div class="container">
+            <round-button class="bottomText" [icon]="addIcon" [styleInfos]="toolbarButtonsInfos" routerLink="/add" data-text="Créer un nouveau lieu"></round-button> 
+            <round-button class="bottomText" data-text="Accueil" [icon]="homeIcon" [styleInfos]="toolbarButtonsInfos" routerLink="/home"></round-button> 
         </div>
-      </div>
-    <div class="infosFilterBar" [ngStyle]="{'left' : openCategorybar ? '0' : '-15%'}">
-        <div class="fireSideBarOpenState center" (click)="toggleSidebar()" [ngStyle]="{'top' : openCategorybar ? '0' : '5vh', 'right' : openCategorybar ? '0' : '-5vw', 'background' : openCategorybar ? 'transparent' : 'linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1))','box-shadow' : openTransportbar ? 'none' : '0 0 .5em 0 var(--black)'}">
-            <span class="arrow" [ngStyle]="{'transform' : openCategorybar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconCategorybar}}</span>    
-        </div>
-        <round-select class="selectOpen" (selectionChange)="filter($event,'category')" [infos]="selectInfos" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'type')" [infos]="selectInfos" [data]="typesSelect" text="Type" [ngStyle]="{'height' : typesSelect.length > 1 ? 'fit-content' : '0','padding-top' : typesSelect.length > 1 ? '8vh' : '0','opacity' : typesSelect.length > 1 ? '1' : '0'}"></round-select>
-        <div class="checkboxes">
-            <div class="checkbox">
-                <p>Testé</p>
-                <checkbox [value]="tested" (checked)="filter($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
-            </div>
-            <div class="checkbox">
-                <p>Ouverts</p>
-                <checkbox [value]="openOnly" (checked)="filter($event,'openOnly')" [styleInfos]="checkboxInfos"></checkbox>
-            </div>
-        </div>
-        
-
-    </div>
-    <div class="transportFilterBar" [ngStyle]="{'right' : openTransportbar ? '0' : '-15%'}">
-        <div class="fireBottomBarOpenState center" (click)="toggleBottombar()" [ngStyle]="{'top' : openTransportbar ? '0' : '5vh', 'left' : openTransportbar ? '0' : '-5vw', 'background' : openTransportbar ? 'transparent' : 'linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1))', 'box-shadow' : openTransportbar ? 'none' : '0 0 .5em 0 var(--black)'}">
-            <span class="arrow" [ngStyle]="{'transform' : openTransportbar ? 'rotate(0deg)' : 'rotate(180deg)'}">{{iconTransportbar}}</span>    
-        </div>
-        <round-select *ngIf="regionSelect.length > 0" class="selectOpen" (selectionChange)="filter($event,'region')" [selectAll]="false" [multiselect]="false" [infos]="selectInfos" [data]="regionSelect" text="Région"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'transport')" [infos]="selectInfos" [data]="transportsSelect" text="Transport" [ngStyle]="{'height' : transportsSelect.length > 0 ? 'fit-content' : '0','padding-top' : transportsSelect.length > 0 ? '8vh' : '0','opacity' : transportsSelect.length > 0 ? '1' : '0'}"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'ligne')" [infos]="selectInfos" [data]="lignesSelect" text="Ligne" [ngStyle]="{'height' : lignesSelect.length > 0 ? 'fit-content' : '0','padding-top' : lignesSelect.length > 0 ? '8vh' : '0','opacity' : lignesSelect.length > 0 ? '1' : '0'}"></round-select>
-        <round-select class="selectClosed" (selectionChange)="filter($event,'station')" [infos]="selectInfos" [data]="stationsSelect" text="Station" [ngStyle]="{'height' : stationsSelect.length > 0 ? 'fit-content' : '0','padding-top' : stationsSelect.length > 0 ? '8vh' : '0','opacity' : stationsSelect.length > 0 ? '1' : '0'}"></round-select>
-    </div>
-    <div class="map" [ngStyle]="{'justify-content' : (this.openCategorybar && !this.openTransportbar) ? 'flex-end' : 'flex-start'}">
-        <google-map
-        [height]="mapHeight"
-        [width]="mapWidth"
-        [zoom]="mapZoom"
-        [center]="mapCenter"
-        [options]="mapOptions"
-      >
-      <map-marker *ngFor="let marker of markers"
-        [position]="marker"
-        [options]="markerOptions"
-      ></map-marker>
-      </google-map>
     </div>
 
+    <user-card *ngIf="otherUserCardParams != null" [infos]="otherUserCardParams"></user-card>
+
+    <div class="infosFilterBar"  [ngClass]="openCategorybar ? 'openBar' : 'closeBar'">
+        <div class="fireSideBarOpenState center">
+            <round-button [icon]="closeIcon" [styleInfos]="toolbarButtonsInfos" (click)="toggleSidebar(false)"></round-button> 
+        </div>
+        <app-input (input)="searchName($event)" (selectAutocomplete)="filter($event,'name')" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteNames" [value]="nameSearch" text="Recherchez un lieu" [styleInfo]="searchInputInfos"></app-input>
+        <app-input (input)="searchCity($event)" (selectAutocomplete)="filter($event,'city')" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteCities" [value]="citySearch" text="Recherchez une ville" [styleInfo]="searchInputInfos"></app-input>
+        <round-select class="selectOpen" (selectionChange)="filter($event,'category')" [infos]="selectInfosCategory" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'type')" [infos]="selectInfosCategory" [data]="typesSelect" text="Type" [ngStyle]="{'height' : typesSelect.length > 1 ? 'fit-content' : '0','padding-top' : typesSelect.length > 1 ? '8vh' : '0','opacity' : typesSelect.length > 1 ? '1' : '0'}"></round-select>
+        <div class="checkbox">
+            <p>Testé</p>
+            <checkbox [value]="tested" (checked)="filter($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
+        </div>
+        <div class="checkbox">
+            <p>Ouverts</p>
+            <checkbox [value]="openOnly" (checked)="filter($event,'openOnly')" [styleInfos]="checkboxInfos"></checkbox>
+        </div>
+        <div class="checkbox">
+            <p>Lien promotionnel</p>
+            <checkbox [value]="promotion" (checked)="filter($event,'promotion')" [styleInfos]="checkboxInfos"></checkbox>
+        </div>
+    </div>
+    <div class="transportFilterBar" [ngClass]="openTransportbar ? 'openBar' : 'closeBar'">
+        <div class="fireBottomBarOpenState center">
+            <round-button [icon]="closeIcon" [styleInfos]="toolbarButtonsInfos" (click)="toggleBottombar(false)"></round-button> 
+        </div>
+
+        <round-select *ngIf="regionSelect.length > 0" class="selectOpen" (selectionChange)="filter($event,'region')" [selectAll]="false" [multiselect]="false" [infos]="selectInfosTransport" [data]="regionSelect" text="Région"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'transport')" [infos]="selectInfosTransport" [data]="transportsSelect" text="Transport" [ngStyle]="{'height' : transportsSelect.length > 0 ? 'fit-content' : '0','padding-top' : transportsSelect.length > 0 ? '8vh' : '0','opacity' : transportsSelect.length > 0 ? '1' : '0'}"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'ligne')" [infos]="selectInfosTransport" [data]="lignesSelect" text="Ligne" [ngStyle]="{'height' : lignesSelect.length > 0 ? 'fit-content' : '0','padding-top' : lignesSelect.length > 0 ? '8vh' : '0','opacity' : lignesSelect.length > 0 ? '1' : '0'}"></round-select>
+        <round-select class="selectClosed" (selectionChange)="filter($event,'station')" [infos]="selectInfosTransport" [data]="stationsSelect" text="Station" [ngStyle]="{'height' : stationsSelect.length > 0 ? 'fit-content' : '0','padding-top' : stationsSelect.length > 0 ? '8vh' : '0','opacity' : stationsSelect.length > 0 ? '1' : '0'}"></round-select>
+    </div>
+    <div class="infosFilterBar" [ngClass]="openGradebar ? 'openBar' : 'closeBar'">
+        <div class="fireSideBarOpenState center">
+            <round-button [icon]="closeIcon" [styleInfos]="toolbarButtonsInfos" (click)="toggleGradebar(false)"></round-button> 
+        </div>
+        <round-select class="selectOpen" (selectionChange)="filter($event,'category')" [infos]="selectInfosCategory" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie"></round-select>
+        <div class="range" *ngIf="ratings.price_range != null">
+            <p>Prix</p>
+            <range-slider [infos]="priceSliderInfos" (values)="filter($event,'price')"></range-slider>
+        </div>
+        <div class="range" *ngIf="ratings.quality_price_range != null">
+            <p>Rapport qualité/prix</p>
+            <range-slider [infos]="gradeSliderInfos" (values)="filter($event,'quality_price')"></range-slider>
+        </div>
+        <div class="range" *ngIf="ratings.quantity_range != null">
+            <p>Quantité</p>
+            <range-slider [infos]="gradeSliderInfos" (values)="filter($event,'quantity')"></range-slider>
+        </div>
+        <div class="range" *ngIf="ratings.service_range != null">
+            <p>Service</p>
+            <range-slider [infos]="gradeSliderInfos" (values)="filter($event,'service')"></range-slider>
+        </div>
+    </div>
+    <div id="map"></div>
+    <div class="placeCard center">
+        <place-card [infos]="placeCards" (onClose)="closeCard()"></place-card>
+    </div>
+    <div class="toolbar center">
+        <div class="container">
+            <round-button [icon]="newIcon" [styleInfos]="homeButtonsInfos" data-text="Ajouter un lieu" (click)="selectPlace(true)"></round-button>     
+            <round-button [icon]="transportIcon" [styleInfos]="toolbarButtonsInfos" (click)="toggleBottombar(true)" data-text="Trier par transports"></round-button> 
+            <round-button [icon]="categoryIcon" [styleInfos]="toolbarButtonsInfos" (click)="toggleSidebar(true)" data-text="Trier par informations"></round-button> 
+            <round-button [icon]="ratingIcon" [styleInfos]="toolbarButtonsInfos" (click)="toggleGradebar(true)" data-text="Trier par note"></round-button> 
+            <round-button *ngIf="device === 'mobile'" [icon]="addIcon" [styleInfos]="toolbarButtonsInfos" routerLink="/add" data-text="Créer un nouveau lieu"></round-button> 
+            <round-button *ngIf="device === 'mobile'" data-text="Accueil" [icon]="homeIcon" [styleInfos]="toolbarButtonsInfos" routerLink="/home"></round-button> 
+        </div>
+    </div>
+
+    <select-place *ngIf="showSelectPlace" (close)="selectPlace(false)"></select-place>
 </div>

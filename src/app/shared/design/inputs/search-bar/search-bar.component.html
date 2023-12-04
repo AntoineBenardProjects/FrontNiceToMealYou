@@ -1,6 +1,12 @@
 <div class="container">
-    <input type="text" [placeholder]="text" [(ngModel)]="searchTerm">
+    <input type="text" [placeholder]="text" [(ngModel)]="searchTerm" autocomplete="disable">
     <div class="buttonContainer">
         <button (click)="onClickMethod()">Rechercher</button>
     </div>
+    <!-- <div *ngIf="autocomplete.length > 0" class="autocomplete" [ngStyle]="{'height' : autocompleteOpened ? autocompleteSize : '0', 'overflow' : filteredValues.length > 4 && autocompleteOpened ? 'auto' : 'hidden' }">
+        <div (click)="sendAutocomplete(value)" class="cell" *ngFor="let value of filteredValues" [ngStyle]="{'background': value.selected ? backgroundColorAutoActive : backgroundColorAuto}">
+            <p [ngStyle]="{'color': value.selected ? textColorAutoActive : textColorAuto}">{{value.name}}</p>
+            <p [ngStyle]="{'color': value.selected ? textColorAutoActive : textColorAuto}" id="address">{{value.subtitle}}</p>
+        </div>
+    </div> -->
 </div>

@@ -6,6 +6,8 @@ import { UserPageRoutingModule } from './user-page-routing.module';
 import { InputsModule } from '../shared/design/inputs/inputs.module';
 import { SelectsModule } from '../shared/design/selects/selects.module';
 import { ButtonsModule } from '../shared/design/buttons/buttons.module';
+import { CardModule } from '../cards/card.module';
+import { LoadingModule } from '../loading/loading.module';
 
 
 @NgModule({
@@ -18,6 +20,8 @@ import { ButtonsModule } from '../shared/design/buttons/buttons.module';
     FontAwesomeModule,
     InputsModule,
     SelectsModule,
+    LoadingModule,
+    CardModule,
     ButtonsModule
   ]
 })

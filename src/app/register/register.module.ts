@@ -7,6 +7,8 @@ import { ButtonsModule } from '../shared/design/buttons/buttons.module';
 import { InputsModule } from '../shared/design/inputs/inputs.module';
 import { MessageModule } from '../message/message.module';
 import { SelectsModule } from '../shared/design/selects/selects.module';
+import { CardModule } from '../cards/card.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import { SelectsModule } from '../shared/design/selects/selects.module';
   imports: [
     BrowserModule,
     RegisterRoutingModule,
+    FontAwesomeModule,
     ButtonsModule,
+    CardModule,
     InputsModule,
     SelectsModule,
     FormsModule,

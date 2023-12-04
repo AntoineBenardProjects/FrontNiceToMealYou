@@ -4,7 +4,7 @@
         <div class="titles">
             <div class="title" [@titleGeneral]="titleGeneralAnimation">
                 <h1 id="fill">Informations</h1>
-                <h1 id="stroke" style="margin-left: 15px;">Générales</h1>    
+                <h1 id="stroke">Générales</h1>    
             </div>
 
             <div class="title" [@titleRegion]="titleRegionAnimation">
@@ -23,21 +23,20 @@
     </div>
 
     <div class="general" [@general]="generalAnimation">
-        <form class="form" (ngSubmit)="create()">
+        <form class="form">
             <div class="infos center">
                 <app-input [styleInfo]="validName ? validInput : invalidInput" text="Login *" (input)="setValue($event,'Login')"></app-input>
                 <app-input [styleInfo]="validPassword ? validInput : invalidInput" type="password" text="Mot de passe *" (input)="setValue($event,'Password')"></app-input>
             </div>
-            <div class="picture" [ngStyle]="{'background-image': 'url('+userInfos.img+')', 'border-style' : userInfos.img === '' ? 'dashed' : 'solid'}">
-                <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="facadeImage($event)"></upload-button>
-                <div (click)="removeImg()" *ngIf="userInfos.img !== ''" class="delete center">
-                    <p>x</p>
-                </div>
+            <div class="picture center" [ngStyle]="{'background' : (userInfos.img != null && userInfos.img.length > 0) ? 'url('+userInfos.img+')' : 'var(--white)'}">
+                <fa-icon id="noPicture" [icon]="userIcon" *ngIf="(userInfos.img == null || userInfos.img.length === 0)"></fa-icon>
+                <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event)"></upload-button>
+                <round-button id="remove" [icon]="crossIcon" *ngIf="(userInfos.img != null && userInfos.img.length > 0)" [styleInfos]="crossButton" (click)="removeImg()"></round-button> 
             </div>
         </form>    
     </div>
     <div class="region" [@region]="regionAnimation">
-        <form class="selection" (ngSubmit)="create()">
+        <form class="selection">
             <div class="line">
                 <round-select [infos]="selectInfosRegion" [data]="regionSelect" [selectAll]="false" [multiselect]="false" text="Région" (selectionChange)="setPreferenceGeo($event,'reg')"></round-select>
                 <round-select [ngStyle]="{'height' : transportSelect.length >= 1 ? 'fit-content' : '0','padding-left' : transportSelect.length >= 1 ? '10vw' : '0','opacity' : transportSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="transportSelect" [selectAll]="false" [multiselect]="false" text="Transport" (selectionChange)="setPreferenceGeo($event,'trans')"></round-select>
@@ -45,29 +44,18 @@
                 <round-select [ngStyle]="{'height' : stationSelect.length >= 1 ? 'fit-content' : '0','padding-left' : stationSelect.length >= 1 ? '10vw' : '0','opacity' : stationSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="stationSelect" [selectAll]="true" [multiselect]="true" text="Stations" (selectionChange)="setPreferenceGeo($event,'stat')"></round-select>
             </div>
             <div class="line" id="list">
-                <div class="stationCard" id="type" *ngFor="let station of stations">
-                    <h1>{{station.name}}</h1>
-                    <div class="images">
-                        <ng-container>
-                            <img *ngFor="let ligne of station.originalData" [src]="'../../assets/images-lignes/'+ligne.reg+'/' + ligne.name + '.png'">
-                        </ng-container>
-                    </div>
-                    
-                </div>
+                <station-card *ngFor="let params of stationsCardInfos" [infos]="params" (onClose)="removeStation($event)"></station-card>
             </div>
         </form>    
     </div>
     <div class="taste" [@type]="typeAnimation">
-        <form class="selection" (ngSubmit)="create()">
+        <form class="selection">
             <div class="line">
                 <round-select [infos]="selectInfosType" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie" (selectionChange)="setPreferenceType($event,'cat')"></round-select>
                 <round-select [ngStyle]="{'height' : typeSelect.length >= 1 ? 'fit-content' : '0','padding-left' : typeSelect.length >= 1 ? '10vw' : '0','opacity' : typeSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosType" [data]="typeSelect" [selectAll]="false" [multiselect]="false" text="Type" (selectionChange)="setPreferenceType($event,'type')"></round-select>
             </div>
             <div class="line" id="list">
-                <div class="stationCard" *ngFor="let type of types">
-                    <h1>{{type.name}}</h1>
-                    <img [src]="'../../assets/images-types/' + type.originalData">
-                </div>
+                <type-card *ngFor="let params of typesCardInfos" [infos]="params"></type-card>
             </div>
         </form>  
     </div>
@@ -75,6 +63,10 @@
     <div class="navigation">
         <round-button [ngStyle]="{'opacity' : generalAnimation === 'show' ? '0' : '1'}" style="transition: 400ms;" [styleInfos]='buttonColor' text="Retour" (click)="previousStep()"></round-button>
         <round-button [styleInfos]='buttonColor' [text]="nextStepButtonMessage" (click)="nextStep()"></round-button>
+    </div>
+
+    <div class="bottomBar">
+
     </div>
 </div>
 

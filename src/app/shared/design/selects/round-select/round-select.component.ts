@@ -1,9 +1,6 @@
-import { Component, ElementRef, HostBinding, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, HostBinding, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { PlacesService } from 'src/app/services/places.service';
-import { ThemeService } from 'src/app/services/theme.service';
 import { SelectData, SelectInfos } from 'src/app/shared/model/designs';
-import { ColorPalette } from 'src/assets/style-infos/palettes';
 
 @Component({
   selector: 'round-select',
@@ -34,19 +31,8 @@ export class RoundSelectComponent {
     font: 16
   }
   protected dataTable: SelectData[] = [];
-  constructor(private elementRef: ElementRef,
-    private themeService: ThemeService,
-    private placesService: PlacesService){
-    this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
-      this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
-      this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
-      this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
-    });
-  }
-
-  private themeSubscriber: Subscription;
+  constructor(
+    private placesService: PlacesService){}
 
   @HostBinding('style.--backgroundColor') backgroundColor: string = '';
   @HostBinding('style.--color') textColor: string = '';
@@ -224,10 +210,6 @@ export class RoundSelectComponent {
     }
 
     this.dataTable = this.placesService.removeDuplicate(this.dataTable);
-  }
-
-  ngOnDestroy(){
-    this.themeSubscriber.unsubscribe();
   }
 
   selectFromData(){

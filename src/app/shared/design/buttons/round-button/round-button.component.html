@@ -1,4 +1,11 @@
-<button class="center" [ngStyle]="{'font-weight' : styleInfos.fontWeight, 'font-size' : fontSize}">
+<button class="center" *ngIf="icon == null" [ngStyle]="{'font-weight' : styleInfos.fontWeight, 'font-size' : fontSize}">
     {{text}}
 </button>
+
+<div class="iconButton center" [ngStyle]="{'height': styleInfos.heightIcon,'width': styleInfos.heightIcon }" *ngIf="icon != null">
+    <fa-icon [ngStyle]="{'font-size' : fontSize}" *ngIf="icon != null" [icon]="icon" class="center"></fa-icon>
+    <div id="hoverIcon"></div>
+</div>
+
+
 
