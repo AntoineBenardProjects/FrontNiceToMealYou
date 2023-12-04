@@ -1,80 +1,55 @@
-<div class="body" [ngStyle]="{'background' : backgroundColor}">
-    <div class="first">
-        <div class="topbarContainer">
+<div class="body" *ngIf="showSuggestion" [ngStyle]="{'background' : backgroundColor}">
+    <div class="first center">
+        <div class="topbarContainer" [ngStyle]="{'opacity': opacityNavbar, 'z-index': opacityNavbar === 0 ? '-1' : '1000'}">
             <div class="navbar">
                 <div class="container">
                     <img id="logo" [src]="logoImageSrc">
-                    <round-button id="mainLink" text="Mes lieux" [styleInfos]="buttonColor"></round-button>         
+                    <round-button id="mainLink" text="Ma carte" [styleInfos]="myPlacesButtonInfos" routerLink="/filter"></round-button>         
                 </div>
             </div>
             <div class="topbar">
-                <p class="link" (click)="navigate('about')">Pourquoi NiceToMealYou</p>
-                <p class="link">Bonnes adresses</p>
                 <p class="link" (click)="navigate('user')">Mon compte</p>
+                <p class="link" (click)="navigate('add')">Créer un lieu</p>
+                <p class="link" (click)="navigate('follow')">Relations</p>
+                <p class="link" (click)="navigate('admin')" *ngIf="isAdmin">Admin</p>
+                <p class="link" (click)="navigate('admin')" *ngIf="!isAdmin">Ton avis</p>
             </div>
         </div>
-        <h1 id="topLogo" class="logo" [@topLogo]="triggerLogoAnimation" 
-        [ngStyle]="{'left.vw': logoPosition}">NiceTo</h1>
-        <h1 id="bottomLogo" class="logo" [@bottomLogo]="triggerLogoAnimation"
-        [ngStyle]="{'right.vw': logoPosition}">MealYou</h1>
+        <h1 *ngFor="let style of styleTypes" [ngStyle]="{'opacity': style.opacity,'font-family': style.font,'left': style.left != null ? style.left+'vw' : 'auto','right': style.right != null ? style.right+'vw' : 'auto','top': style.top != null ? style.top+'vh' : 'auto','bottom': style.bottom != null ? style.bottom+'vh' : 'auto'}">{{style.text}}</h1>
+        <div class="types" [ngStyle]="{'scale': scaleTypes}"></div>
+        <link-card [ngStyle]="{'opacity': opacityCards[0], 'cursor': opacityCards[0] > 0 ? 'pointer' : 'default'}" src="../../assets//common/map.jpg" text="La carte" [styleInfos]="linkCardInfos"  (click)="navigate('filter',opacityCards[0])"></link-card>
+        <link-card [ngStyle]="{'opacity': opacityCards[1], 'cursor': opacityCards[1] > 0 ? 'pointer' : 'default'}" src="../../assets//common/add.jpg" text="Ajouter un lieu" [styleInfos]="linkCardInfos"   (click)="navigate('add',opacityCards[1])"></link-card>
+        <link-card [ngStyle]="{'opacity': opacityCards[2], 'cursor': opacityCards[2] > 0 ? 'pointer' : 'default'}" src="../../assets//common/help.jpg" text="Ajouter des gens" [styleInfos]="linkCardInfos" (click)="navigate('follow',opacityCards[2])"></link-card>    
+        <link-card [ngStyle]="{'opacity': opacityCards[3], 'cursor': opacityCards[3] > 0 ? 'pointer' : 'default'}" src="../../assets//common/profile.jpg" text="Mon compte" [styleInfos]="linkCardInfos" (click)="navigate('user',opacityCards[3])"></link-card>    
+        <link-card [ngStyle]="{'opacity': opacityCards[4], 'cursor': opacityCards[4] > 0 ? 'pointer' : 'default'}" src="../../assets//common/admin.jpg" text="Admin" [styleInfos]="linkCardInfos" (click)="navigate('admin',opacityCards[4])" *ngIf="isAdmin"></link-card>    
+        <h1 *ngFor="let style of styleFirst" [ngStyle]="{'opacity': style.opacity,'font-family': style.font,'color': style.color,'background-image': style.backgroundImage,'left': style.left != null ? style.left+'vw' : 'auto','right': style.right != null ? style.right+'vw' : 'auto','top': style.top != null ? style.top+'vh' : 'auto','bottom': style.bottom != null ? style.bottom+'vh' : 'auto'}">{{style.text}}</h1>
+        <div class="allSuggestions" id="suggestions" [ngStyle]="{'top.vh': topSuggestions, 'overflow-y': overflow}">
+            <div class="suggestions" [id]="suggestion.name_station" *ngFor="let suggestion of favoritesStations">
+                <h2 class="subtitle top" [ngStyle]="{'left.vw': suggestion.titlePosition,'opacity': suggestion.titleOpacity}">{{suggestion.name_station}}</h2>
+                <div class="infos">
+                    <div class="line center" *ngFor="let category of suggestion.categories" [ngStyle]="{'opacity': category.percent}">
+                        <h2 *ngIf="category.counter < 2">{{category.counter}} {{category.value}}</h2>
+                        <h2 *ngIf="category.counter > 1">{{category.counter}} {{category.value}}s</h2>
+                    </div>
+                </div>
+                <div class="cardsBody" [ngStyle]="{'opacity': suggestion.titleOpacity, 'pointer-events': suggestion.titleOpacity === 1 ? 'all' : 'none'}">
+                    <round-button [icon]="leftIcon" [styleInfos]="iconsCarouselInfos" (click)="moveCarousel('left',suggestion.name_station)"></round-button> 
+                    <div class="suggestion center">
+                        <div class="cards" [ngStyle]="{'transform': 'translateX('+suggestion.transform+'px)'}">
+                            <div class="card" *ngFor="let params of suggestion.cards">
+                                <place-card (add)="addPlace($event)" [infos]="params" (onClose)="closeCard(params.place.id)"></place-card>
+                            </div>
+                        </div>
+                    </div>
+                    <round-button [icon]="rightIcon" [styleInfos]="iconsCarouselInfos" (click)="moveCarousel('right',suggestion.name_station)"></round-button> 
+                </div>
+                <h2 class="subtitle bottom" [ngStyle]="{'right.vw': suggestion.titlePosition,'opacity': suggestion.titleOpacity}">{{suggestion.name_station}}</h2>
+            </div>
+        </div>
+        
+        
     </div>
-
-
-
-    <div class="types">
-        <div class="container">
-            <link-card src="../../assets//common/map.jpg" text="La carte" [styleInfos]="linkCardInfos"  (click)="navigate('filter', 'restaurants')"></link-card>
-            <link-card src="../../assets//common/restaurants.jpg" text="Ajouter un lieu" [styleInfos]="linkCardInfos"(click)="navigate('add')"></link-card>
-            <link-card src="../../assets//common/help.jpg" text="Donne nous tes bonnes idées" [styleInfos]="linkCardInfos"></link-card>    
-        </div>
-    </div>
-
-    <div class="presentation" id="about">
-        <div class="line">
-            <div class="icon">
-                <fa-icon [ngStyle]="{'top.%' : positionPresentationIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="presentationIcon"></fa-icon>
-                <div [ngStyle]="{'transform' : 'scale('+positionPresentationIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
-            </div>
-            <div class="infos">
-                <h3 class="title" [ngStyle]="{'opacity': positionPresentationIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Pourquoi NiceToMealYou ?</h3>
-                <p class="details" [ngStyle]="{'opacity': positionPresentationIcon.textOpacity ? '1' : '0', 'color': styleLine.textColor}">
-                    Le but de cet outil est de noter ses bonnes adresses afin, entre autres, de les visualiser sur une carte ou de les partager à vos amis. 
-                </p>
-            </div>
-        </div>
-        <div class="bars" id="firstBars">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        <div class="line" id="location">
-            <div class="icon">
-                <fa-icon [ngStyle]="{'top.%' : positionLocationIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="locationIcon"></fa-icon>
-                <div [ngStyle]="{'transform' : 'scale('+positionLocationIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
-            </div>
-            <div class="infos">
-                <h3 class="title" [ngStyle]="{'opacity': positionLocationIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Utilisez la carte</h3>
-                <p class="details" [ngStyle]="{'opacity': positionLocationIcon.textOpacity ? '1' : '0', 'color': styleLine.textColor}">
-                    Observer la carte avec toutes vos adresses afin de mieux choisir votre prochaine sortie.
-                </p>
-            </div>
-        </div>
-        <div class="bars" id="secondBars">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        <div class="line" id="filter">
-            <div class="icon">
-                <fa-icon [ngStyle]="{'top.%' : positionFilterIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="filterIcon"></fa-icon>
-                <div [ngStyle]="{'transform' : 'scale('+positionFilterIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
-            </div>
-            <div class="infos">
-                <h3 class="title" [ngStyle]="{'opacity': positionFilterIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Filtrez vos adresses</h3>
-                <p class="details" [ngStyle]="{'opacity': positionFilterIcon.textOpacity ? '1' : '0', 'color': styleLine.textColor}">
-                    Filtrez les adresses par villes, arrondissement, transports et pleins d'autres paramètres.
-                </p>
-            </div>
-        </div>
-    </div>
+    
 </div>
+
+<loading [percent]="loadingValue"></loading>

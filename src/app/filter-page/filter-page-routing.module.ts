@@ -6,6 +6,7 @@ import { FilterPageComponent } from './filter-page.component';
  
 const routes: Routes = [
     {   path: 'filter',   component: FilterPageComponent, canActivate: [AuthGuard]   },
+    {   path: 'filter/:id',   component: FilterPageComponent, canActivate: [AuthGuard]   },
 ];
  
 @NgModule({

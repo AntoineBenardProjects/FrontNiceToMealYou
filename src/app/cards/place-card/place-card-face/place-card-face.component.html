@@ -1,0 +1,151 @@
+<div class="container center" *ngIf="face === 'general'">
+    <div class="icons">                    
+        <round-button *ngIf="infos.stations.length > 0" data-text="Stations" [icon]="subwayIcon" [styleInfos]="whiteButtonInfos" (click)="swap('stations')"></round-button> 
+        <round-button *ngIf="comments.length > 0" data-text="Avis" [icon]="usersIcon" [styleInfos]="whiteButtonInfos" (click)="swap('category')"></round-button> 
+        <round-button data-text="Notes" [icon]="commentIcon" [styleInfos]="whiteButtonInfos" (click)="swap('comment')"></round-button> 
+        <round-button data-text="Modifier" *ngIf="infos.place.id_creator === idUser" [icon]="editIcon" [styleInfos]="whiteButtonInfos" (click)="navigate(infos.place.id)"></round-button> 
+        <round-button data-text="Supprimer" *ngIf="infos.place.id_creator === idUser && !infos.place.visible" [icon]="deleteIcon" [styleInfos]="whiteButtonInfos" (click)="suppress()"></round-button> 
+    </div>
+    <round-button [attr.data-text]="infos.place.category" id="category" [icon]="categoryIcon" [styleInfos]="categoryButtonInfos"></round-button> 
+    <round-button *ngIf="infos.user" id="close" class="center" [icon]="closeIcon" [styleInfos]="whiteButtonInfos" (click)="close()"></round-button> 
+    <round-button *ngIf="!infos.user" id="close" class="center" [icon]="addIcon" [styleInfos]="whiteButtonInfos" (click)="add()"></round-button> 
+    <h2 class="name center" [ngStyle]="{'background': background + ', url('+imgSrc+')' }">{{infos.place.name}}</h2>
+
+    <div class="horaires" *ngIf="infos.horaires.length > 0">
+        <div class="isOpen">
+            <p class="notOpen" *ngIf="!isOpen">Fermé</p>
+            <p class="Open" *ngIf="isOpen">Ouvert</p>
+            <p [ngClass]="isOpen ? 'Open' : 'notOpen'" (click)="changeHoraires()" [ngStyle]="{'transform' : displayHoraires ? 'rotate(-90deg)' : 'rotate(90deg)'}">&#x3e;</p>    
+        </div>
+    </div>
+    <div class="detailsHoraires" [ngStyle]="{'max-height.px' : heightHoraires}">
+        <div class="horairesContainer">
+            <ng-container *ngFor="let hor of horairesOfPlace; index as i;">
+                <div class="line" *ngIf="hor.horaires.ouverture !== ''">
+                    <div class="values" [ngStyle]="{'color': hasDay(hor.days) ? isOpen ? 'var(--thirdColor)' : 'var(--white)' : 'var(--white)'}">
+                        <p>{{hor.horaires.ouverture}} - {{hor.horaires.fermeture_midi}}</p>
+                        <p *ngIf="hor.horaires.ouverture_soir !== ''">{{hor.horaires.ouverture_soir}} - {{hor.horaires.fermeture}}</p>
+                    </div>
+                    <div class="days center" *ngIf="hor.days.length !== 7">
+                        <p *ngFor="let day of hor.days;" [ngStyle]="{'color': today === day ? isOpen ? 'var(--thirdColor)' : 'var(--white)' : 'var(--white)'}">{{day}}</p>
+                    </div>
+                    <div class="days center" *ngIf="hor.days.length === 7">
+                        <p [ngStyle]="{'color': isOpen ? 'var(--thirdColor)' : 'var(--secondColor)'}">Tous les jours</p>
+                    </div>
+                    
+                </div>
+                
+            </ng-container>
+        </div>
+        
+        
+    </div>
+    <div class="typesAndLinks" [ngStyle]="{'margin-top': infos.horaires.length > 0 ? '0': '20px'}">
+        <div class="typesContainer">
+            <div class="type" *ngFor="let type of infos.types">
+                <p>{{type.name}}</p>
+                <fa-icon class="center" [icon]="type.faIcon"></fa-icon>
+            </div>
+        </div>
+        <div class="links">
+            <a *ngIf="infos.place.link_menu != null && infos.place.link_menu !== ''" (click)="openInBrowser(infos.place.link_menu)">Menu</a>
+            <a *ngIf="infos.place.website != null && infos.place.website !== ''" (click)="openInBrowser(infos.place.website)">Site</a>
+            <p *ngIf="infos.place.phone != null && infos.place.phone !== ''">{{infos.place.phone}}</p>
+            <a *ngIf="infos.place.promotion != null && infos.place.promotion !== ''" (click)="openInBrowser(infos.place.promotion)">Promotion</a>
+        </div>
+    </div>
+</div>
+
+<div class="container" *ngIf="face === 'stations'">
+    <div class="icons">
+        <round-button data-text="Infos" [icon]="generalIcon" [styleInfos]="whiteButtonInfos" (click)="swap('general')"></round-button> 
+        <round-button *ngIf="comments.length > 0" data-text="Avis" [icon]="usersIcon" [styleInfos]="whiteButtonInfos" (click)="swap('category')"></round-button> 
+        <round-button data-text="Notes" [icon]="commentIcon" [styleInfos]="whiteButtonInfos" (click)="swap('comment')"></round-button> 
+        <round-button data-text="Modifier" *ngIf="infos.place.id_creator === idUser" [icon]="editIcon" [styleInfos]="whiteButtonInfos" (click)="navigate(infos.place.id)"></round-button> 
+        <round-button data-text="Supprimer" *ngIf="infos.place.id_creator === idUser && !infos.place.visible" [icon]="deleteIcon" [styleInfos]="whiteButtonInfos" (click)="suppress()"></round-button> 
+    </div>
+    <round-button [attr.data-text]="infos.place.category" id="category" [icon]="categoryIcon" [styleInfos]="categoryButtonInfos"></round-button> 
+    <round-button *ngIf="infos.user" id="close" class="center" [icon]="closeIcon" [styleInfos]="whiteButtonInfos" (click)="close()"></round-button> 
+    <round-button *ngIf="!infos.user" id="close" class="center" [icon]="addIcon" [styleInfos]="whiteButtonInfos" (click)="add()"></round-button> 
+    <h2 class="name center" [ngStyle]="{'background': background + ', url(../../../assets/common/metro.jpg)'}">Stations</h2>
+
+    <div class="stations">
+        <div class="station" *ngFor="let station of infos.stations">
+            <p>
+                {{station.name}}
+            </p>
+            <div class="lignes">
+                <round-button *ngFor="let ligne of station.lignes" [text]="ligne.name" [styleInfos]="blackButtonInfos"></round-button> 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container center" *ngIf="face === 'comment'">
+    <div class="icons">
+        <round-button data-text="Infos" [icon]="generalIcon" [styleInfos]="whiteButtonInfos" (click)="swap('general')"></round-button> 
+        <round-button *ngIf="comments.length > 0" data-text="Avis" [icon]="usersIcon" [styleInfos]="whiteButtonInfos" (click)="swap('category')"></round-button> 
+        <round-button *ngIf="infos.stations.length > 0" data-text="Stations" [icon]="subwayIcon" [styleInfos]="whiteButtonInfos" (click)="swap('stations')"></round-button> 
+        <round-button data-text="Modifier" *ngIf="infos.place.id_creator === idUser" [icon]="editIcon" [styleInfos]="whiteButtonInfos" (click)="navigate(infos.place.id)"></round-button> 
+        <round-button data-text="Supprimer" *ngIf="infos.place.id_creator === idUser && !infos.place.visible" [icon]="deleteIcon" [styleInfos]="whiteButtonInfos" (click)="suppress()"></round-button> 
+    </div>
+    <round-button [attr.data-text]="infos.place.category" id="category" [icon]="categoryIcon" [styleInfos]="categoryButtonInfos"></round-button> 
+    <round-button *ngIf="infos.user" id="close" class="center" [icon]="closeIcon" [styleInfos]="whiteButtonInfos" (click)="close()"></round-button> 
+    <round-button *ngIf="!infos.user" id="close" class="center" [icon]="addIcon" [styleInfos]="whiteButtonInfos" (click)="add()"></round-button> 
+    <h2 class="name center" [ngStyle]="{'background': background + ', url(../../../assets/common/rating.jpg)'}">Notes</h2>
+    <div class="tested">
+        <p>Testé</p>
+        <checkbox [value]="grades.tested" (checked)="setTested($event)" [styleInfos]="checkboxInfos"></checkbox>
+    </div>
+
+    <div class="grades" [ngStyle]="{'height.px': grades.tested ? '150' : '0'}" *ngIf="restaurantRoundProgressBars != null">
+        <div class="note price" id="qualityPrice">
+            <round-progress-bar [infos]="restaurantRoundProgressBars.quality_price" (noteChange)="changeNote($event,'Restaurant','quality_price')"></round-progress-bar>
+            <p>Qualité/Prix</p>
+        </div>
+        <div class="note price" id="quantity">
+            <round-progress-bar [infos]="restaurantRoundProgressBars.quantity" (noteChange)="changeNote($event,'Restaurant','quantity')"></round-progress-bar>
+            <p>Quantité</p>
+        </div>
+        <div class="note price" id="service">
+            <round-progress-bar [infos]="restaurantRoundProgressBars.service" (noteChange)="changeNote($event,'Restaurant','service')"></round-progress-bar>
+            <p>Service</p>
+        </div>
+        <div class="note price" id="price">
+            <h3 *ngIf="!infos.user && restaurantRoundProgressBars.price === 0">-€</h3>
+            <h3 *ngIf="!infos.user && restaurantRoundProgressBars.price !== 0">{{restaurantRoundProgressBars.price}}€</h3>
+            <div class="input" *ngIf="infos.user">
+                <input type="number" [value]="restaurantRoundProgressBars.price" (change)="changeNote($event,'Restaurant','price')">
+                <p>€</p>
+            </div>
+            <p>Prix</p>
+        </div>
+    </div>
+    <div class="grades" [ngStyle]="{'height.px': grades.tested ? '150' : '0'}" *ngIf="barRoundProgressBars != null">
+        <div class="note" id="quality">
+            <round-progress-bar [infos]="barRoundProgressBars.quality_price" (noteChange)="changeNote($event,'Bar','quality_price')"></round-progress-bar>
+            <p>Qualité</p>
+        </div>
+        <div class="price center" id="prix_pinte" *ngIf="barRoundProgressBars.prix_pinte != null">
+            <h3>{{barRoundProgressBars.prix_pinte}}€</h3>
+            <p>Pinte</p>
+        </div>
+        <div class="price center" id="prix_cocktail" *ngIf="barRoundProgressBars.prix_cocktail != null">
+            <h3>{{barRoundProgressBars.prix_cocktail}}€</h3>
+            <p>Cocktail</p>
+        </div>
+        <div class="price center" id="prix_coffee" *ngIf="barRoundProgressBars.prix_coffee != null">
+            <h3>{{barRoundProgressBars.prix_coffee}}€</h3>
+            <p>Café</p>
+        </div>
+    </div>
+    <div class="grades" [ngStyle]="{'height.px': grades.tested ? '150' : '0'}" *ngIf="commonRoundProgressBars != null">
+        <div class="note" id="quality">
+            <round-progress-bar [infos]="commonRoundProgressBars" (noteChange)="changeNote($event,'Other','quality_price')"></round-progress-bar>
+            <p>Qualité</p>
+        </div>
+    </div>
+    <div contenteditable class="comment" *ngIf="grades.tested">
+        {{comment}}
+    </div>
+</div>

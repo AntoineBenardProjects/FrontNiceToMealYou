@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
     <h1>C</h1>
     <h1>H</h1>
     <h1>A</h1>
@@ -9,5 +9,23 @@
     <h1>E</h1>
     <h1>N</h1>
     <h1>T</h1>
+</div> -->
+
+<div class="body center" [ngStyle]="{'transform': scale,'width.vw': size, 'height.vh': size}">
+    <div class="start center">
+        <h1 [ngStyle]="{'transform': transformStart}">NiceToMealYou</h1>
+    </div>
+    <div class="start center">
+        <h1 [ngStyle]="{'transform': transformStart}">NiceToMealYou</h1>
+    </div>
+    <div class="end center">
+        <h1 [ngStyle]="{'transform': transformEnd}">Presque</h1>
+    </div>
+    <div class="end center">
+        <h1 [ngStyle]="{'transform': transformEnd}">Presque</h1>
+    </div>
+    <div class="loaderContainer">
+        <div class="loader" [ngStyle]="{'width': width}"></div>
+    </div>
 </div>
 

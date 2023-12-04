@@ -3,6 +3,7 @@
     margin: auto;
 }
 .upload .round{
+    cursor: pointer;
     position: absolute;
     top: 0;
     left: 0;
@@ -12,10 +13,15 @@
     text-align: center;
     border-radius: 50%;
     overflow: hidden;
-    transform: scale(1);
     transition: all 400ms;
+    border: 2px solid var(--borderColor);
+    background: var(--backgroundColor);
     &:hover{
-        transform: scale(1.15);
+        i{color: var(--textColorHover)};
+        &::before{
+            width: 100%;
+        }
+        border-color: var(--borderColorActive);
     }
     i{
         display: flex;
@@ -27,8 +33,19 @@
         height: 100%;
         width: 100%;
         border-radius: 50%;
-        color: var(--color);
-        background: var(--backgroundColor);
+        color: var(--textColor);
+        z-index: 1;
+        transition: .4s;
+    }
+    &::before{
+        background: var(--backgroundColorActive);
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        transition: 0.4s;
     }
 }
 .upload .round input[type = "file"]{
@@ -39,32 +56,4 @@
     width: 32px;
     opacity: 0;
     z-index: 10;
-}
-input[type=file]::-webkit-file-upload-button{
-    cursor: pointer;
-};
-
-.btn-warning{
-    position: relative;
-    padding: 11px 16px;
-    font-size: 15px;
-    line-height: 1.5;
-    border-radius: 3px;
-    color: #FCFFFC;
-    background-color: #01110A;
-    border: 0;
-    transition: 400ms;
-    overflow: hidden;
-    transform: scale(1);
-    &:hover{
-        transform: scale(1.15);
-    }
-}
-.btn-warning input[type = "file"]{
-    cursor: pointer;
-    position: absolute;
-    left: 0%;
-    top: 0%;
-    transform: scale(3);
-    opacity: 0;
 }

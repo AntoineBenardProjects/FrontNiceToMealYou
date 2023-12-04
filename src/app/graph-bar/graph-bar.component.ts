@@ -9,20 +9,6 @@ import { ThemeService } from '../services/theme.service';
   styleUrls: ['./graph-bar.component.scss']
 })
 export class GraphBarComponent {
-  @Input()  quantity: number;
-  @Input()  quality: number;
-  @Input()  quality_price: number;
-  @Input()  note_deco: number;
-  @Input()  width: number = 50;
-  @Input()  height: number = 35;
-
-  colorQuantity: string = "white";
-  colorQuality: string = "white";
-  colorQualityPrice: string = "white";
-  colorDeco: string = "white";
-
-
-  private themeSubscriber: Subscription = new Subscription();
   constructor(
     private elementRef: ElementRef,
     private themeService: ThemeService
@@ -36,19 +22,29 @@ export class GraphBarComponent {
 
     });
   }
+//////////////////////////////////////////////  Variables  //////////////////////////////////////////////
+/*  Metadata  */
+  @Input()  quantity: number;
+  @Input()  quality_price: number;
+  @Input()  note_deco: number;
+  @Input()  width: number = 50;
+  @Input()  height: number = 35;
+/*  Css  */
+  protected colorQuantity: string = "white";
+  protected colorQuality: string = "white";
+  protected colorQualityPrice: string = "white";
+  protected colorDeco: string = "white";
+  private themeSubscriber: Subscription = new Subscription();
 
-  ngOnInit(){
+  private ngOnInit(): void{
     this.colorQuantity = this.setColors(this.quantity);
-    this.colorQuality = this.setColors(this.quality);
     this.colorQualityPrice = this.setColors(this.quality_price);
     this.colorDeco = this.setColors(this.note_deco);
   }
-
-  ngOnDestroy(){
+  private ngOnDestroy(): void{
     this.themeSubscriber.unsubscribe();
   }
-
-  setColors(note): string{
+  private setColors(note): string{
     let color: string = "";
     if(note > 7.5) color = "#60993E";
     else if(note >= 4 && note <= 7.5) color = "var(--mainColor)"; 

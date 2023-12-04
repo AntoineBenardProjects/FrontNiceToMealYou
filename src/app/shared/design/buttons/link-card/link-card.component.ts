@@ -27,9 +27,12 @@ export class LinkCardComponent {
     });
   }
 
-  @HostBinding('style.--textColor') textColorCssVariable = 'var(--mainColor)';
+  @HostBinding('style.--textColor') textColorCssVariable = 'var(--black)';
   @HostBinding('style.--selectedBorderColor') selectedBorderColorCssVariable = 'var(--secondColor)';
   @HostBinding('style.--borderColor') borderColorCssVariable = 'var(--secondColor)';
+  @HostBinding('style.--colorActive') colorActive = 'var(--mainColor)';
+  @HostBinding('style.--textColorActive') textColorActive = 'var(--mainColor)';
+  @HostBinding('style.--backgroundImage') backgroundImage = 'var(--black)';
 
   private themeSubscriber: Subscription = new Subscription();
 
@@ -38,6 +41,9 @@ export class LinkCardComponent {
       this.textColorCssVariable = this.styleInfos.color;
       this.borderColorCssVariable = this.styleInfos.borderColor;
       this.selectedBorderColorCssVariable = this.styleInfos.selectedBorderColor;
+      this.colorActive = this.styleInfos.colorActive;
+      this.textColorActive = this.styleInfos.textColorActive;
+      this.backgroundImage = "linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('"+this.src+"')";
     }
   }
 
@@ -46,6 +52,8 @@ export class LinkCardComponent {
       this.textColorCssVariable = this.styleInfos.color;
       this.borderColorCssVariable = this.styleInfos.borderColor;
       this.selectedBorderColorCssVariable = this.styleInfos.selectedBorderColor;
+      this.colorActive = this.styleInfos.colorActive;
+      this.textColorActive = this.styleInfos.textColorActive;
     }
   }
 

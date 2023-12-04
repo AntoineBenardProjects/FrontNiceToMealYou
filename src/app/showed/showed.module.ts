@@ -11,7 +11,7 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ShowHorairesModule } from '../show-horaires/show-horaires.module';
-import { CardModule } from '../card/card.module';
+import { CardModule } from '../cards/card.module';
 import { GraphBarModule } from '../graph-bar/graph-bar.module';
 import { ProgressBarModule } from '../shared/design/progress-bar/progress-bar.module';
 import { SelectsModule } from '../shared/design/selects/selects.module';

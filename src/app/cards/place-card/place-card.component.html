@@ -1,0 +1,14 @@
+<div [ngStyle]="{'height.px' : height, 'width.px' : width, 'overflow' : overflow, 'transition': transition, 'transform': front ? 'rotateY(0)' : 'rotateY(.5turn)'}" class="glassCard" *ngIf="typeOfCard === 'glass' && infos != null">
+    <div class="frontContainer" id="card" [ngStyle]="{'border' : '2px solid' + backgroundColor}">
+        <div [id]="frontId" class="front">
+            <place-card-face (addPlace)="addPlace()" (changeHeight)="calculHeight($event)" [infos]="infos" [face]="toShowFront" (onClose)="close()" (newFace)="swap($event)"></place-card-face>
+        </div>
+        <div class="background"></div>
+    </div>
+    
+
+    <div [id]="backId" class="back" [ngStyle]="{'border' : '2px solid' + backgroundColor}">
+        <place-card-face (addPlace)="addPlace()" (changeHeight)="calculHeight($event)" [infos]="infos" [face]="toShowBack" (onClose)="close()" (newFace)="swap($event)"></place-card-face>
+    </div>
+    
+</div>

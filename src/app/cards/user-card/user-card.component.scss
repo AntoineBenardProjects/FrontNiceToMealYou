@@ -1,0 +1,97 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--mainColor);
+    border-radius: 5px;
+    color: var(--black);
+    .top{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 90%;
+        margin-top: 20px;
+        .infos{
+            display: flex;
+            align-items: center;
+            .texts{
+                flex-direction: column;
+                p{
+                    cursor: pointer;
+                }
+            }
+        }
+        h3{
+            margin-bottom: 0;
+            line-height: 35px;
+            font-size: 35px;
+            font-weight: 600;
+        }
+    }
+    .picture{
+        background-repeat: no-repeat !important;
+        background-position: center center !important;
+        background-size: cover !important;    
+    }
+    fa-icon{
+        background: var(--black);
+        color: var(--white);
+        font-size: 35px;
+    }
+    fa-icon,.picture{
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+    }
+    .body{
+        width: 90%;
+        height: calc(100% - 80px);
+        align-items: center;
+        .icon{
+            round-button{
+                position: relative;
+                height: 30px;
+                width: 30px !important;
+                &:hover{
+                    &::before{
+                        width: 70px;
+                        padding: 5px 0;
+                    }
+                }
+                &::before{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                    width: 0;
+                    position: absolute;
+                    left: -20px;
+                    padding: 0;
+                    bottom: -35px;
+                    content: attr(data-text);
+                    color: var(--textColor);
+                    background: var(--backgroundColor);
+                    transition: .2s;
+                    border-radius: 5px;
+                }
+            }
+            flex-direction: column;
+            margin: 0 calc(90% / 20);
+            h1{
+                margin-bottom: 0;
+            }
+        }
+        .icon:first-child{
+            margin-left: 0;
+        }
+        .icon:last-child{
+            margin-right: 0;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .container{
+        width: 80vw;
+    }
+}

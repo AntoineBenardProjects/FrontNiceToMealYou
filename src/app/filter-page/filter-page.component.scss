@@ -5,33 +5,53 @@
     width: 100vw;
     height: 100vh;
 }
+user-card{
+    position: absolute;
+    right: 3vw;
+    bottom: 10vh;
+    z-index: 1001;
+}
 .infosFilterBar{
     display: flex;
     align-items: center;
     flex-direction: column;
     top: 0;
-    height: 100%;
+    height: 95%;
+    padding-top: 5vh;
     width: 15%;
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
-    background: linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1));
+    background: var(--white);
     box-shadow: 0 0 .5em 0 var(--black);
     position: absolute;
     transition: .5s;
-    z-index: 10;
+    z-index: 1001;
+    .range{
+        display: flex;
+        flex-direction: column;
+        padding: 5vh 0;
+        p{
+            font-size: 18px;
+            margin-bottom: 35px !important;
+        }
+    }
     .fireSideBarOpenState{
         position: absolute;
         cursor: pointer;
-        height: 5vh;
-        width: 5vw;
+        height: 50px;
+        width: 50px;
         z-index: 100;
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-        color: var(--black);
-        transition: .5s;
-        font-size: 25px;
-        span{
-            transition: .5s;
+        font-size: 16px;
+        transform: scale(1);
+        top: 0;
+        right: 0;
+        transition: .2s;
+        fa-icon{
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--black);
+            color: var(--white);
         }
     }
     .selectClosed{
@@ -42,7 +62,7 @@
         transition: .5s;
     }
     .selectOpen,.checkboxes{
-        padding-top: 10vh;
+        padding-top: 5vh;
         width: 70%;
         transition: .5s;
     }
@@ -52,13 +72,18 @@
     }
     .checkbox{
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
         align-items: center;
-        height: 8vh;
+        width: 70%;
+        padding-top: 5vh;
+        checkbox{
+            margin-left: 10px;
+        }
         p{
             font-size: 16px;
         }
+    }
+    range-slider{
+        width: 15vw;
     }
 }
 .transportFilterBar{
@@ -66,29 +91,35 @@
     flex-direction: column;
     align-items: center;
     top: 0;
-    height: 100%;
+    height: 95%;
+    padding-top: 5vh;
     width: 15%;
     -webkit-backdrop-filter: blur(3px);
     backdrop-filter: blur(3px);
-    background: linear-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1));
+    background: var(--white);
     box-shadow: 0 0 .5em 0 var(--black);
+    color: var(--white);
     position: absolute;
     transition: .5s;
-    right: 0;
-    z-index: 10;
+    left: 0;
+    z-index: 1001;
     .fireBottomBarOpenState{
         position: absolute;
         cursor: pointer;
-        height: 5vh;
-        width: 5vw;
+        height: 50px;
+        width: 50px;
         z-index: 100;
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-        color: var(--black);
-        transition: .5s;
-        font-size: 25px;
-        span{
-            transition: .5s;
+        font-size: 16px;
+        transform: scale(1);
+        top: 0;
+        right: 0;
+        transition: .2s;
+        fa-icon{
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--black);
         }
     }
     .selectClosed{
@@ -99,63 +130,139 @@
         transition: .5s;
     }
     .selectOpen,checkbox{
-        padding-top: 8vh;
+        padding-top: 5vh;
         width: 70%;
         transition: .5s;
     }
 }
-.map{
-    display: flex;
-    width: 100vw;
-}
-.topbarContainer{
-    position: absolute;
-    height: 100px;
-    width: 60%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.openBar{
     left: 0;
-    right: 0;
-    margin: auto;
-    top: 0;
-    z-index: 100;
-    .navbar{
-        position: fixed;
-        height: 100px;
-        width: 60vw;
-        left: 0;
-        right: 0;
-        margin: auto;
-        top: 0;
-        .container{
-            position: relative;
-            height: 100%;
-            #logo{
-                position: absolute;
-                top: 0;
-                width: 100px;
-                transition: all 400ms;
-                z-index: 100;
-            }
-            #add{
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                margin: auto;
-                right: 0;
-                z-index: 100;
-                width: 3vw;
-            }
-            img{
-                transition: .5s;
-                cursor: pointer;
-                transform: scale(1);
-                &:hover{
-                    transform: scale(1.15);
-                }
-            }
+    width: 20vw;
+}
+.closeBar{
+    left: -20vw;
+    width: 0;
+    overflow: hidden;
+}
+#map {
+    height: 100%;
+    width: 100%;
+    .label span{
+        background: #fff !important;
+        border: 1px solid #666 !important;
+    }
+}
+
+
+.toolbar,.links{
+    position: absolute;
+    width: 100%;
+    .container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1%;
+        border-radius: 50px;
+        background: linear-gradient(rgba(255,255,255,0.3),rgba(255,255,255,0.3));
+        backdrop-filter: blur(5px);  
+        transition: .4s;
+        height: 50px;
+        z-index: 1000;
+        box-shadow: 0 0 .5em 0 var(--black);
+    }
+}
+.toolbar{
+    bottom: 3%;
+    .container{
+        width: 19%;
+    }
+}
+.links{
+    top: 3%;
+    .container{
+        width: 12%;
+    }
+}
+.bottomText{
+    &::before{
+        bottom: -60px !important;
+        top: auto;
+    }
+} 
+round-button{
+    width: auto !important;
+    position: relative; 
+    &:hover{
+        &::before{
+            width: 200px;
+            color: var(--black);
+            transition: width 0.4s, color linear .4s .2s;
         }
     }
-    
+    &::before{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        content: attr(data-text);
+        color: transparent;
+        border-radius: 50px;
+        background: linear-gradient(rgba(255,255,255,0.8),rgba(255,255,255,0.8));
+        backdrop-filter: blur(10px);  
+        top: -60px;
+        left: -75px;
+        width: 0;
+        height: 30px;
+        font-size: 16px;
+        font-weight: 800;
+        border-radius: 5px;
+        transition: width .2s, color 10ms;
+        overflow: hidden;
+        text-align: center;
+    }
+}
+round-select{
+    width: 80% !important;
+}
+app-input{
+    padding-top: 5vh;
+    width: 80%;
+}
+.placeCard{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    right: 10vw; 
+    z-index: 1000;
+}
+
+
+#search{
+    position: absolute;
+    top: 20vh;
+    left: 30vw;
+    z-index: 1000;
+    width: 20vw;
+}
+
+select-place{
+    position: absolute;
+    z-index: 1002;
+}
+
+@media screen and (max-width: 600px) {
+    .toolbar{
+        .container{
+            width: 90%;
+        }
+    } 
+    .openBar{
+        width: 100vw;
+    }
+    .infosFilterBar{
+        range-slider{
+            width: 75vw;
+        }
+    }
 }

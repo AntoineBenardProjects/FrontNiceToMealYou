@@ -1,0 +1,20 @@
+<div class="container" [ngStyle]="{'height.vh': infos.height, 'width.vw': infos.width}" *ngIf="data != null">
+    <div class="top">
+        <div class="infos" [ngStyle]="{'justify-content': infos.accessToCard ? 'flex-start': 'center','width': infos.accessToCard ? 'fit-content': '100%'}">
+            <div class="picture" *ngIf="data.img !== ''" [ngStyle]="{'background': 'url('+data.img+')'}"></div>
+            <fa-icon *ngIf="data.img === ''" class="center" [icon]="userIcon"></fa-icon>
+            <div class="texts center" [ngStyle]="{'margin-left': infos.accessToCard ? '20px !important': '0'}">
+                <h3 [ngStyle]="{'width': infos.accessToCard ? '100%': '50%'}">{{data.login}}</h3>  
+                <p [ngStyle]="{'width': infos.accessToCard ? '100%': '50%'}" *ngIf="relation === 'Aucun lien'" (click)="add()">Ajouter</p>  
+                <p [ngStyle]="{'width': infos.accessToCard ? '100%': '50%'}" *ngIf="relation !== 'Aucun lien'" (click)="accept()">{{relation}}</p>   
+            </div>
+        </div>
+        <round-button *ngIf="infos.accessToCard" text="Carte" [styleInfos]="addButtonInfos" (click)="openMap()"></round-button>  
+    </div>
+    <div class="body center">
+        <div class="icon center" *ngFor="let category of categoriesIcon">
+            <h1>{{category.counter}}</h1>
+            <round-button [attr.data-text]="category.category" [icon]="category.icon" [styleInfos]="categoryButtonInfos"></round-button> 
+        </div>
+    </div>
+</div>

@@ -1,27 +1,154 @@
-<div class="body" [ngStyle]="{'background': backgroundColor}">
-  <div class="title">
-    <h1>{{login}}</h1>
-    <div class="picture center" [ngStyle]="{'background' : img.length > 0 ? 'url('+img+')' : 'var(--mainColor)'}">
-      <fa-icon id="noPicture" [icon]="userIcon" *ngIf="img.length === 0"></fa-icon>
-      <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="getFile($event)"></upload-button>
-      <fa-icon class="center" id="remove" [icon]="crossIcon" *ngIf="img.length > 0" (click)="removeImg()"></fa-icon>
-    </div>
-  </div>
-  <div class="first">
-    <div class="general">
-      <div class="login">
-        <app-input [value]="userForm.newLogin" class="number" text="Nouveau login" [styleInfo]="loginChecked ? validInput : invalidInput" (input)="setValue($event,'login')"></app-input>
-        <round-button id="mainLink" text="Modifier login" [styleInfos]="loginChecked ? validButton : invalidButton" (click)="setLogin()"></round-button>         
-      </div>
-      <div class="password">
-        <app-input [value]="userForm.password" type="password" class="number" text="Ancien mot de passe" [styleInfo]="normalInput" (input)="setValue($event,'password')"></app-input>
-        <app-input [value]="userForm.newPassword" type="password" class="number" text="Nouveau mot de passe" [styleInfo]="userForm.newPassword.length > 3 ? validInput : invalidInput" (input)="setValue($event,'newPassword')"></app-input>
-        <round-button id="mainLink" text="Modifier mot de passe" [styleInfos]="passwordChecked ? validButton : invalidButton" (click)="setPassword()"></round-button>           
-      </div>
-    </div>
-  </div>
-</div>
+<div class="body" [ngStyle]="{'position': showPage ? 'relative' : 'fixed'}" *ngIf="loadingValue === 100">
+  <div class="navigate">
+    <img [src]="logoImageSrc" routerLink="/home">
 
+    <div class="nav">
+      <p (click)="navigate('infos')">Mes informations</p>
+      <p (click)="navigate('preferences')">Mes préférences</p>  
+      <fa-icon [icon]="powerIcon" (click)="deconnect()"></fa-icon>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div *ngIf="divToShow === 'infos' && stats != null" class="infos">
+      <div class="title">
+        <div class="titleDiv">
+          <h1>01</h1>
+          <fa-icon [icon]="photoIcon"></fa-icon>
+        </div>
+        <div class="pictureAndName">
+          <div class="picture center" [ngStyle]="{'background' : (img != null && img.length > 0) ? 'url('+img+')' : 'var(--black)'}">
+            <fa-icon id="noPicture" [icon]="userIcon" *ngIf="(img == null || img.length === 0)"></fa-icon>
+            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event)"></upload-button>
+            <fa-icon class="center" id="remove" [icon]="crossIcon" *ngIf="(img != null && img.length > 0)" (click)="removeImg()"></fa-icon>
+          </div>
+          <div class="titleAndPlaces">
+            <h3>{{login}}</h3>
+            <p *ngIf="nbPlaceOfUser < 2">{{nbPlaceOfUser}} lieu</p>
+            <p *ngIf="nbPlaceOfUser > 1">{{nbPlaceOfUser}} lieux</p>
+          </div>
+        </div>
+        <div class="buttons">
+          <round-button text="Suivre quelqu'un" [styleInfos]="normalButton" (click)="changePage()"></round-button>         
+        </div>
+      </div>
+      <div class="stats">
+        <div class="titleDiv">
+          <fa-icon [icon]="statsIcon"></fa-icon>
+          <h1>02</h1>
+        </div>
+        <div class="testedCards">
+          <div class="card center">
+            <div class="mainInfo center">
+              <h1>{{stats.place}}</h1>
+              <h2 *ngIf="stats.place > 1">Lieux ajoutés</h2>
+              <h2 *ngIf="stats.place < 2">Lieu ajouté</h2>
+            </div>
+            <div class="detailsInfo">
+              <ng-container *ngFor="let stat of stats.categoriesStats">
+                <div class="smallStats center" *ngIf="stat.count > 0">
+                  <h1>{{stat.count}}</h1>
+                  <h3 *ngIf="stat.count > 1">{{stat.category}}s</h3>
+                  <h3 *ngIf="stat.count < 2">{{stat.category}}</h3>  
+                </div>
+              </ng-container>
+            </div>
+          </div>
+          <div class="card center">
+            <div class="mainInfo center">
+              <h1>{{stats.tested}}</h1>
+              <h2 *ngIf="stats.tested > 1">Lieux testés</h2>
+              <h2 *ngIf="stats.tested < 2">Lieu testé</h2>
+            </div>
+            <div class="detailsInfo">
+              <ng-container *ngFor="let stat of stats.categoriesStats">
+                <div class="smallStats center" *ngIf="stat.tested > 0">
+                  <h1>{{stat.tested}}</h1>
+                  <h3 *ngIf="stat.tested > 1">{{stat.category}}s</h3>
+                  <h3 *ngIf="stat.tested < 2">{{stat.category}}</h3>  
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="graph">
+          <round-select [infos]="normalSelectInfos" [data]="statsSelects" [selectAll]="false" [multiselect]="false" text="Statistiques" (selectionChange)="setValue($event,'stats')"></round-select>  
+          <ng-container *ngFor="let graph of graphs;index as j;">
+            <ng-container *ngIf="statsToShow === graph.category">
+              <div class="bars">
+                <div class="barContainer" *ngFor="let stat of graph.counter;index as i">
+                  <div class="bar center" (mouseenter)="getSizeOfLegend(stat,i,graph.category)" [ngStyle]="{'height.%' : 80 / graph.counter[0].percent * stat.percent}">
+                    <p id="counter">{{stat.counter}}</p>
+                    <p id="value">{{stat.value}}</p>
+                    <div class="testedBar center" [ngStyle]="{'height.%' : 100 / stat.counter * stat.tested}">
+                      <p>{{stat.tested}}</p>
+                      <div class="background"></div>
+                    </div>
+                  </div>
+                  <span id="legend" [ngStyle]="{'width.px': stat.legendWidth, 'padding': !stat.animationFinished ? '0' : stat.legend != null && stat.legend.length > 0 ? '10px' : '0'}">{{stat.legend}}</span>
+                </div>
+              </div>
+              
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      
+
+      <div class="loginAndPassword">
+        <div class="titleDiv">
+          <h1>03</h1>
+          <fa-icon [icon]="formIcon"></fa-icon>
+        </div>
+        <div class="login">
+          <app-input [value]="userForm.newLogin" class="number" text="Nouveau login" [styleInfo]="loginChecked ? validInput : invalidInput" (input)="setValue($event,'login')"></app-input>
+          <round-button text="Modifier login" [styleInfos]="loginChecked ? validButton : invalidButton" (click)="setLogin()"></round-button>         
+        </div>
+        <div class="password">
+          <app-input [value]="userForm.password" type="password" class="number" text="Ancien mot de passe" [styleInfo]="normalInput" (input)="setValue($event,'password')"></app-input>
+          <app-input [value]="userForm.newPassword" type="password" class="number" text="Nouveau mot de passe" [styleInfo]="userForm.newPassword.length > 3 ? validInput : invalidInput" (input)="setValue($event,'newPassword')"></app-input>
+          <round-button text="Modifier mot de passe" [styleInfos]="passwordChecked ? validButton : invalidButton" (click)="setPassword()"></round-button>           
+        </div>
+      </div>
+      
+    </div>
+    <div *ngIf="divToShow === 'preferences'" class="preferences">
+      <div class="stations">
+        <div class="titleDiv">
+          <h1>01</h1>
+          <fa-icon [icon]="trainIcon"></fa-icon>
+        </div>
+        <div class="selects">
+          <round-select [infos]="selectInfosRegion" [data]="regionSelect" [selectAll]="false" [multiselect]="false" text="Région" (selectionChange)="setPreferenceGeo($event,'reg')"></round-select>
+          <round-select [ngClass]="transportSelect.length >= 1 ? 'showSelectStations' : 'hideSelectStations'" [infos]="selectInfosRegion" [data]="transportSelect" [selectAll]="false" [multiselect]="false" text="Transport" (selectionChange)="setPreferenceGeo($event,'trans')"></round-select>  
+          <round-select [ngClass]="ligneSelect.length >= 1 ? 'showSelectStations' : 'hideSelectStations'" [infos]="selectInfosRegion" [data]="ligneSelect" [selectAll]="false" [multiselect]="false" text="Lignes" (selectionChange)="setPreferenceGeo($event,'lig')"></round-select>
+          <round-select [ngClass]="stationSelect.length >= 1 ? 'showSelectStations' : 'hideSelectStations'" [infos]="selectInfosRegion" [data]="stationSelect" [selectAll]="true" [multiselect]="true" text="Stations" (selectionChange)="setPreferenceGeo($event,'stat')"></round-select>  
+        </div>
+        <div class="cards">
+          <station-card *ngFor="let params of stationsCardInfos" [infos]="params" (onClose)="removeStation($event)"></station-card>
+        </div>
+      </div>
+      
+      <div class="types">
+        <div class="titleDiv">
+          <fa-icon [icon]="prefIcon"></fa-icon>
+          <h1>02</h1>
+        </div>
+        <div class="selects">
+          <round-select [infos]="selectInfosType" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie" (selectionChange)="setPreferenceType($event,'cat')"></round-select>
+          <round-select  [ngClass]="typeSelect.length > 0 ? 'showSelectTypes' : 'hideSelectTypes'" [infos]="selectInfosType" [data]="typeSelect" [selectAll]="false" [multiselect]="false" text="Type" (selectionChange)="setPreferenceType($event,'type')"></round-select>  
+        </div>
+        <div class="cards">
+          <type-card *ngFor="let params of typesCardInfos" [infos]="params" (onClose)="removeType($event)"></type-card>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div style="background: var(--black);" [ngStyle]="{'height.%' : animationChange === 'infos' ? '100' : '0', 'top' : animationChange === '' ? 'auto' : '0', 'bottom' : animationChange === 'infos' ? 'auto' : '0', 'width.%' : animationChange === 'infos' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'infos' ? '0' : 'auto'}" class="transition"></div>
+  <div style="background: var(--secondColor);" [ngStyle]="{'height.%' : animationChange === 'preferences' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'preferences' ? '0' : 'auto','width.%' : animationChange === 'preferences' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'preferences' ? '0' : 'auto'}" class="transition"></div>
+</div>
+<loading [percent]="loadingValue" (show)="getShowPage()"></loading>
 <div class="error" [ngStyle]="{'height' : showError ? '10vh' : '0','background' : !error ? 'var(--thirdColor)' : 'var(--secondColor)'}">
   <p>{{errorMessage}}</p>
 </div>

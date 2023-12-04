@@ -1,17 +1,25 @@
 button{
     position: relative;
     overflow: hidden;
-    cursor: pointer;
-    border-radius: 5px;
-    height: 100%;
+    cursor: var(--cursorCssVariable);
+    border-radius: var(--borderRadiusCssVariable);
+    height: var(--heightCssVariable);
     padding: 1vh 0;
     border: 2px solid;
-    width: 100%;
+    width: var(--heightCssVariable);
     background: var(--backgroundColor);
     color: var(--textColor);
     z-index: 1;
     transition: all 400ms;
     &:hover{
+        color: var(--textColorHover);
+        opacity: 1 !important;
+        &::before{
+            width: 100%;
+        }
+        border-color: var(--borderColorActive);
+    }
+    &:active{
         color: var(--textColorHover);
         opacity: 1 !important;
         &::before{
@@ -30,5 +38,55 @@ button{
         width: 0%;
         z-index: -1;
         transition: 0.4s;
+    }
+}
+
+.iconButton{
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--borderRadiusCssVariable);
+    border: 2px solid;
+    border-color: var(--borderColor);
+    background: var(--backgroundColor);
+    cursor: var(--cursorCssVariable);
+    &:hover{
+        fa-icon{
+            color: var(--textColorHover);
+        }
+        #hoverIcon{
+            width: 100%;
+        }
+        border-color: var(--borderColorActive);
+    }
+    &:active{
+        fa-icon{
+            color: var(--textColorHover);
+        }
+        #hoverIcon{
+            width: 100%;
+        }
+        border-color: var(--borderColorActive);
+    }
+    fa-icon{
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: var(--borderRadiusCssVariable);
+        color: var(--textColor);
+        z-index: 2;
+        transition: all 400ms;
+        width: 100%;
+        height: 100%;
+    }
+    #hoverIcon{
+        background: var(--backgroundColorActive);
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        z-index: 1;
+        transition: 0.4s;
+        overflow: hidden;
     }
 }

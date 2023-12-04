@@ -1,0 +1,10 @@
+<div class="range" id="range">
+    <div class="field center">
+        <input type="range" [min]="infos.minValue" [max]="infos.maxValue" [value]="value" (mouseleave)="displayValue()" (mouseover)="displayValue()" (change)="sendData()" (input)="getValue($event)"/>
+    </div>
+    <div class="values" [ngStyle]="{'opacity': showValue ? '1' : '0'}">
+        <span class="sliderValue center" [ngStyle]="{'left.%': positionDialog}" *ngIf="value < infos.maxValue">{{infos.legendText}}{{valueToSend}}{{infos.unit}}</span>
+        <span class="sliderValue center" [ngStyle]="{'left.%': positionDialog}" *ngIf="value === infos.maxValue">{{infos.maxValueText}}{{valueToSend}}{{infos.unit}}</span>
+        <span class="sliderValue center" [ngStyle]="{'left.%': positionDialog}" *ngIf="value === 0">{{valueToSend}}{{infos.unit}}</span>
+    </div>
+</div>

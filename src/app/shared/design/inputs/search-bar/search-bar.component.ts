@@ -1,8 +1,5 @@
-import { Component, ElementRef, EventEmitter, HostBinding, Input, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { ThemeService } from 'src/app/services/theme.service';
-import { InputInfos } from 'src/app/shared/model/designs';
-import { ColorPalette } from 'src/assets/style-infos/palettes';
+import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { AutocompleteInfos, InputInfos, SelectData } from 'src/app/shared/model/designs';
 
 @Component({
   selector: 'search-bar',
@@ -11,21 +8,13 @@ import { ColorPalette } from 'src/assets/style-infos/palettes';
 })
 export class SearchBarComponent {
 
-  constructor(private elementRef: ElementRef,
-    private themeService: ThemeService){
-    this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
-      this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
-      this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
-      this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
-    });
-  }
-  private themeSubscriber: Subscription;
+  constructor(){}
 
 
   @Input() styleInfo!: InputInfos;
+  @Input() autocompleteInfos!: AutocompleteInfos;
   @Input() preset: string = "";
+  @Input() autocomplete: SelectData[] = [];
   @Input() background: string = "white";
   @Input() text: string = "";
   @Output() filter: EventEmitter<string> = new EventEmitter();
@@ -41,17 +30,37 @@ export class SearchBarComponent {
   @HostBinding('style.--backgroundSearchColorHover') backgroundSearchColorHover: string = 'white';
   @HostBinding('style.--colorSearchHover') colorSearchHover: string = 'white';
   @HostBinding('style.--fontSize') fontSize: string = '16px';
+  @HostBinding('style.--backgroundColorAuto') backgroundColorAuto: string = 'var(--white)';
+  @HostBinding('style.--textColorAuto') textColorAuto: string = 'var(--black)';
+  @HostBinding('style.--backgroundColorAutoActive') backgroundColorAutoActive: string = 'var(--white)';
+  @HostBinding('style.--textColorAutoActive') textColorAutoActive: string = 'var(--black)';
 
   protected searchTerm: string = '';
+  protected autocompleteValues: SelectData[] = [];
+  protected filteredValues: SelectData[] = [];
+  protected autocompleteSize: string = "";
+  protected autocompleteOpened: boolean = false;
 
   ngOnInit(){
     if(this.styleInfo != null)  this.setStyle();
+    if(this.autocomplete.length > 0){
+      this.autocomplete.forEach((res: SelectData) => {
+        this.autocompleteValues.push({
+          id: res.id,
+          name: res.name,
+          selected: false,
+          subtitle: res.subtitle
+        });
+      });
+    }
+    if(this.autocompleteInfos != null){
+      this.backgroundColorAuto = this.autocompleteInfos.backgroundColor;
+      this.textColorAuto = this.autocompleteInfos.textColor;
+      this.backgroundColorAutoActive = this.autocompleteInfos.backgroundColorActive;
+      this.textColorAutoActive = this.autocompleteInfos.textColorActive;
+    }
   }
-
-  ngOnDestroy(){
-    this.themeSubscriber.unsubscribe();
-  }
-
+  
   setStyle(){
     this.backgroundColor = this.styleInfo.backgroundColor;
     this.borderColor = this.styleInfo.borderColor;

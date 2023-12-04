@@ -1,0 +1,33 @@
+<div class="container" [ngStyle]="{'height.px' : infos.height, 'width.vw' : infos.width,'border-color' : color}" *ngIf="lignes.length > 0 && stats != null">
+    <div class="name center" [ngStyle]="{'background':'url('+imgSrc+')'}">
+        <div class="background" [ngStyle]="{'background': gradient}"></div>
+        <h2>{{infos.station.name}}</h2>
+        <round-button id="close" class="center" [icon]="closeIcon" [styleInfos]="whiteButtonInfos" (click)="close()"></round-button> 
+    </div>
+    <div class="body">
+        <div class="icons">
+            <round-button [attr.data-text]="stats.nbRestaurants > 1 ? 'Restaurants' : 'Restaurant'" [text]="stats.nbRestaurants.toString()" [styleInfos]="statsButton"></round-button> 
+            <round-button [attr.data-text]="stats.nbBars > 1 ? 'Bars' : 'Bar'" [text]="stats.nbBars.toString()" [styleInfos]="statsButton"></round-button> 
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <round-button [text]="stats.nbRestaurantsOpen.toString()" [styleInfos]="getButtonInfos(stats.nbRestaurantsOpen)"></round-button> 
+                <h1 *ngIf="stats.nbRestaurantsOpen > 1">Restaurants ouverts</h1>
+                <h1 *ngIf="stats.nbRestaurantsOpen < 2">Restaurant ouvert</h1>
+            </div>
+            <div class="stat">
+                <round-button [text]="stats.nbBarsOpen.toString()" [styleInfos]="getButtonInfos(stats.nbBarsOpen)"></round-button> 
+                <h1 *ngIf="stats.nbRestaurantsOpen > 1">Bars ouverts</h1>
+                <h1 *ngIf="stats.nbRestaurantsOpen < 2">Bar ouvert</h1>
+            </div>
+        </div>
+        
+        
+        <div class="linesContainer">
+            <div class="lines center" *ngFor="let ligne of lignes">
+                <round-button [text]="ligne.name" [styleInfos]="ligne.buttonInfos" *ngIf="ligne.buttonInfos != null"></round-button> 
+            </div>
+        </div>
+        
+    </div>
+</div>

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { Data } from 'src/data';
-import { Horaires } from '../model/horaires';
+import { Horaires } from '../shared/model/table/horaires';
+import * as Icons from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faMartiniGlass, faOtter, faSmileWink, faStore, faToolbox, faUtensils } from '@fortawesome/free-solid-svg-icons';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,88 @@ export class PlacesService {
 
   public triggerImage: Subject<boolean> = new Subject();
   public filters: Subject<string> = new Subject();
+  public getIconOfCategory(category: string): IconDefinition{
+    let toReturn: IconDefinition;
+    switch(category){
+      case 'Restaurant':
+        toReturn = faUtensils;
+      break;
+      case 'Bar':
+        toReturn = faMartiniGlass;
+      break;
+      case 'Loisir':
+        toReturn = faSmileWink;
+      break;
+      case 'Magasin':
+        toReturn = faStore;
+      break;
+      case 'Service':
+        toReturn = faToolbox;
+      break;
+      case 'Autre':
+        toReturn = faOtter;
+      break;
+    }
+    return toReturn;
+  }
+  getCopyOfElement(element: any){
+    return JSON.parse(JSON.stringify(element));
+  }
+  hexToRgba(color: string, opacity): string{
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+
+    let R: number = parseInt(result[1], 16);
+    let G: number = parseInt(result[2], 16);
+    let B: number = parseInt(result[3], 16);
+
+    return "rgba(" + R + "," + G + "," + B + "," + opacity + ")";
+  }
+  shadeColor(color: string, percent:number): string {
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+
+    let R: number = parseInt(result[1], 16);
+    let G: number = parseInt(result[2], 16);
+    let B: number = parseInt(result[3], 16);
+
+    R = R * (100 + percent) / 100;
+    G = G * (100 + percent) / 100;
+    B = B * (100 + percent) / 100;
+
+    R = (R<255)?R:255;  
+    G = (G<255)?G:255;  
+    B = (B<255)?B:255;  
+
+    R = Math.round(R)
+    G = Math.round(G)
+    B = Math.round(B)
+
+    var RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+    var GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+    var BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+    return "#"+RR+GG+BB;
+  }
+
+  isColorLight(color: string): boolean {
+    let isLight: boolean = false;
+
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+
+    let R: number = parseInt(result[1], 16);
+    let G: number = parseInt(result[2], 16);
+    let B: number = parseInt(result[3], 16);
+
+    if(R+G+B > (255*3)/2) isLight = true;
+
+    return isLight;
+  }
+
+  getIconFromName(name: string)
+  {
+    return Icons[name];
+  }
 
   isOpened(horaires: Horaires[]): boolean{
     const today = this.convertDayTimeToDay(new Date().getDay());
@@ -23,7 +106,7 @@ export class PlacesService {
     const ouverture_soir: Date = new Date();
     const fermeture: Date = new Date();
 
-    if(todayHoraires.ouverture == null) return false;
+    if(todayHoraires.ouverture === '') return false;
     else{
       let hour: number = 0;
       let minutes: number = 0;
@@ -37,9 +120,9 @@ export class PlacesService {
       minutes = Number(todayHoraires.fermeture_midi.substring(3,5));
       fermeture_midi.setHours(hour);
       fermeture_midi.setMinutes(minutes);
-      if(hour < 10 && todayHoraires.ouverture_soir == null) fermeture_midi.setDate(fermeture_midi.getDate() + 1);
+      if(hour < ouverture.getHours() && todayHoraires.ouverture_soir == null) fermeture_midi.setDate(fermeture_midi.getDate() + 1);
 
-      if(todayHoraires.ouverture_soir != null){
+      if(todayHoraires.ouverture_soir != null && todayHoraires.ouverture_soir !== ""){
         hour = Number(todayHoraires.ouverture_soir.substring(0,2));
         minutes = Number(todayHoraires.ouverture_soir.substring(3,5));
         ouverture_soir.setHours(hour);
@@ -49,10 +132,8 @@ export class PlacesService {
         minutes = Number(todayHoraires.fermeture.substring(3,5));
         fermeture.setHours(hour);
         fermeture.setMinutes(minutes);
-        if(hour < 10) fermeture.setDate(fermeture_midi.getDate() + 1);
-
-
-        if((ouverture < new Date() && fermeture_midi > new Date()) || ouverture_soir < new Date() && fermeture > new Date()) return true;
+        if(hour < ouverture_soir.getHours()) fermeture.setDate(fermeture_midi.getDate() + 1);
+        if((ouverture < new Date() && fermeture_midi > new Date()) || (ouverture_soir < new Date() && fermeture > new Date())) return true;
         else  return false;
       }
       else{
@@ -107,6 +188,43 @@ export class PlacesService {
     else return 0;
   }
 
+  convertDayToNumber(day: string): number{
+    let value: number = 0;
+    switch(day){
+        case "Lundi":
+          value = 0;
+        break;
+        case "Mardi":
+          value = 1;
+        break;
+        case "Mercredi":
+          value = 2;
+        break;
+        case "Jeudi":
+          value = 3;
+        break;
+        case "Vendredi":
+          value = 4;
+        break;
+        case "Samedi":
+          value = 5;
+        break;
+        case "Dimanche":
+          value = 6;
+        break;
+    }
+    return value;
+  }
+  convertDateToString(date: Date): string{
+    date = new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Paris' }));
+    const day: number = date.getDate();
+    const month: number = date.getMonth()+1;
+    const year: number = date.getFullYear();
+    
+    let stringDay = day.toString();
+    if(stringDay.length === 1)  stringDay = "0" + stringDay;
+    return stringDay + "/" + month + "/" + year;
+  }
   convertDayTimeToDay(dayTime: number){
     let day = "Dimanche";
     if(dayTime === 1) day = "Lundi";
@@ -119,7 +237,9 @@ export class PlacesService {
     return day;
   }
 
-  getNearByTransports(coords: google.maps.LatLng){
-
+  changeRegToUrl(url: string){
+    url = url.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    url = url.split(' ').join('_');
+    return url;
   }
 }

@@ -1,0 +1,23 @@
+<div class="container" [ngStyle]="{'height.px' : infos.height, 'width.vw' : infos.width,'border-color' : color}" *ngIf="stats != null">
+    <div class="name center" [ngStyle]="{'background':'url('+imgSrc+')'}">
+        <div class="background" [ngStyle]="{'background': gradient}"></div>
+        <h2>{{infos.type.name}}</h2>
+        <round-button id="close" class="center" [icon]="closeIcon" [styleInfos]="whiteButtonInfos" (click)="close()"></round-button> 
+    </div>
+    <div class="icons">
+        <round-button [attr.data-text]="infos.type.category" id="category" [icon]="categoryIcon" [styleInfos]="whiteButtonInfos"></round-button> 
+        <round-button [attr.data-text]="infos.type.name" id="category" [icon]="infos.type.faIcon" [styleInfos]="whiteButtonInfos"></round-button> 
+    </div>
+    <div class="body">
+        <div class="nbPlace center">
+            <h1>{{stats.total}}</h1>
+            <h3 *ngIf="stats.total > 1">{{infos.type.category}}s</h3>
+            <h3 *ngIf="stats.total < 2">{{infos.type.category}}</h3>
+        </div>
+        <div class="nbPlace center">
+            <h1>{{stats.open}}</h1>
+            <h3 *ngIf="stats.open > 1">Ouverts</h3>
+            <h3 *ngIf="stats.open < 2">Ouverts</h3>
+        </div>
+    </div>
+</div>

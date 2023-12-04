@@ -1,4 +1,4 @@
-import { CircleNoteParams } from "../model/circle-notes-params";
+import { CircleNoteParams } from "./model/params/circle-notes-params";
 
 export const desktopParams: CircleNoteParams = {
     radius : 20,

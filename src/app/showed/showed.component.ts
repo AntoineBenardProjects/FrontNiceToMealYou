@@ -1,22 +1,19 @@
 import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { StorageService } from '../services/storage.service';
-import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { PlacesService } from '../services/places.service';
 import { Router } from '@angular/router';
 import { DatabaseService } from '../services/database.service';
 import { Horaires } from '../model/horaires';
 import { Pictures } from '../model/pictures';
-import { Comment } from '../model/comment';
-import { CardParams } from '../model/cardParams';
 import { CircleNoteParams } from '../model/circle-notes-params';
 import { Subject, Subscription } from 'rxjs';
 import { desktopParams, mobileParams } from '../shared/circleNoteParams';
 import { ColorPalette } from 'src/assets/style-infos/palettes';
 import { ThemeService } from '../services/theme.service';
 import { SelectData, SelectInfos } from '../shared/model/designs';
-import { Restaurant } from '../model/places';
+import { Place } from '../model/places';
 
 
 
@@ -27,7 +24,7 @@ import { Restaurant } from '../model/places';
 })
 export class ShowedComponent implements OnInit, OnDestroy {
 
-  protected place!: Restaurant;
+  protected place!: Place;
   protected pictures: Pictures[] = [];
   protected addresses: SelectData[] = [];
   protected types: SelectData[] = [];
@@ -46,10 +43,10 @@ export class ShowedComponent implements OnInit, OnDestroy {
   protected getLignes: Subject<boolean> = new Subject();
 
   
-  protected cardParamsSimilarPlaces : CardParams[] = [];
-  protected cardParamsSameLigne: CardParams[] = [];
-  protected cardParamsSameStation: CardParams[] = [];
-  protected cardParamsSameArrondissement: CardParams[] = [];
+  protected cardParamsSimilarPlaces : any[] = [];
+  protected cardParamsSameLigne: any[] = [];
+  protected cardParamsSameStation: any[] = [];
+  protected cardParamsSameArrondissement: any[] = [];
 
   private clickHandler: boolean = true;
   private positionResult : number = 0;

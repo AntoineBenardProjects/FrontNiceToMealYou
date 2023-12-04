@@ -1,0 +1,57 @@
+.container{
+    position: relative;
+}
+.glassCard{
+    border-radius: 5px;
+    position: relative;
+    transform-style: preserve-3d;
+    width: 0;
+    height: fit-content;
+    overflow: hidden;
+    .back{
+        position: relative;
+        border-radius: 5px;
+        width: calc(100% - 4px);
+        top: 0;
+        left: 0;
+        transform: rotateY(.5turn);
+        background: var(--white);
+    }
+    .frontContainer,.back{
+        position: absolute;
+        backface-visibility: hidden;
+        transform-style: preserve-3d;
+        border-radius: 5px;
+        box-shadow: 0 0 .5em 0 var(--black);
+    }
+    .frontContainer{
+        position: relative;
+        width: calc(100% - 4px);
+        .background{
+            top: 0;
+            left: 0;
+            position: absolute;
+            background: var(--white);
+            backdrop-filter: blur(5px);
+            z-index: -1;
+            height: 100%;
+            width: 100%;
+        }
+        .front{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            background: var(--white);
+            border-radius: 5px;
+            width: 100%;
+        }
+    }
+    place-card-face{
+        width: 100%;
+    }
+}
+
+.swapped{
+    transform: rotateY(.5turn);
+}

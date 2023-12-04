@@ -14,9 +14,10 @@ export interface InputInfos{
     hoverTextColor?: string,
     hoverBackgroundColor?: string,
     hoverTransition?: string,
-    hoverBorderColor?: string
+    hoverBorderColor?: string,
+    bottomOnly?: boolean,
+    noPadding?:boolean
 }
-
 export interface CheckboxInfos{
     color: string,
     colorActive: string,
@@ -31,7 +32,6 @@ export interface CheckboxInfos{
     hoverBackgroundColorValid?: string,
     hoverBorderColorValid?: string
 }
-
 export interface ButtonInfos{
     color: string,
     colorActive?: string,
@@ -40,16 +40,18 @@ export interface ButtonInfos{
     fontSize?: string,
     fontWeight?: number,
     borderColor?: string,
-    borderColorActive?: string
+    borderColorActive?: string,
+    radius?: string,
+    cursor?: string,
+    heightIcon?: string
 }
-
 export interface LinkCardInfos{
     color: string;
     borderColor: string;
-    colorActive?: string;
+    colorActive: string;
+    textColorActive: string;
     selectedBorderColor: string;
 }
-
 export interface SelectInfos{
     textColor?: string,
     backgroundColor?: string,
@@ -66,7 +68,6 @@ export interface SelectInfos{
     topHoverColor?: string,
     topHoverBorderColor?: string
 }
-
 export interface AutocompleteInfos{
     textColor?: string,
     backgroundColorActive?: string,
@@ -79,4 +80,31 @@ export interface SelectData{
     selected?: boolean,
     subtitle?: string,
     originalData?: any,
+}
+export interface RoundProgressBarInfos{
+    color: string,
+    textColor: string,
+    title?: string,
+    subtitle?: string,
+    width: number,
+    fontWeight?: number,
+    editable?: boolean,
+    note: number
+}
+export interface RangeSliderInfos{
+    activeColor: string,
+    unactiveColor: string,
+    pointSize: number,
+    width: number,
+    length: number,
+    maxValue: number,
+    minValue: number,
+    legendText: string,
+    maxValueText: string,
+    borderColor: string,
+    borderWidth: number,
+    borderWidthDialog: number,
+    unit: string,
+    initValue?: number,
+    plus: boolean
 }

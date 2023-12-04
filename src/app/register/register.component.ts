@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import { User } from '../model/user';
+import { User } from '../shared/model/table/user';
 import { DatabaseService } from '../services/database.service';
 import { ButtonInfos, InputInfos, SelectData, SelectInfos } from '../shared/model/designs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Router } from '@angular/router';
-import { Ligne, Station } from '../model/transports';
-import { Data } from 'src/data';
-import { TypePicture } from '../model/typePicture';
+import { Ligne, Station } from '../shared/model/table/transports';
+import { Type } from '../shared/model/table/type';
 import { Subject } from 'rxjs';
+import { StationCardParams, TypeCardParams } from '../shared/model/params/cardParams';
+import { IconDefinition, faUser, faXmark, faCameraRetro } from '@fortawesome/free-solid-svg-icons';
+import { buttonColorGeneralRegisterComponent, buttonColorRegionRegisterComponent, buttonColorRegisterComponent, buttonColorTypeRegisterComponent, crossButtonRegisterComponent, uploadButtonInfosRegisterComponent, uploadButtonRegisterComponent } from '../shared/model/design/buttonsDesign';
+import { invalidInputRegisterComponent, validInputRegisterComponent } from '../shared/model/design/inputsDesign';
+import { selectInfosRegionRegisterComponent, selectInfosTypeRegisterComponent } from '../shared/model/design/selectsDesign';
 
 @Component({
   selector: 'app-register',
@@ -133,67 +137,52 @@ import { Subject } from 'rxjs';
   ]
 })
 export class RegisterComponent {
+  constructor(private dataService: DatabaseService, private router: Router) { }
 
-  protected buttonColor: ButtonInfos = {
-    color: 'var(--white)',
-    borderColor: 'var(--white)',
-    borderColorActive: 'var(--white)',
-    colorActive: 'var(--black)',
-    backgroundColor: 'transparent',
-    backgroundColorActive: 'var(--white)'
-  }
-  protected buttonColorGeneral: ButtonInfos = {
-    color: 'var(--white)',
-    borderColor: 'var(--white)',
-    borderColorActive: 'var(--white)',
-    colorActive: 'var(--black)',
-    backgroundColor: 'transparent',
-    backgroundColorActive: 'var(--white)'
-  }
-  protected buttonColorRegion: ButtonInfos = {
-    color: 'var(--white)',
-    borderColor: 'var(--black)',
-    borderColorActive: 'var(--black)',
-    backgroundColor: 'var(--black)',
-    colorActive: 'var(--black)',
-    backgroundColorActive: 'var(--white)'
-  }
-  protected buttonColorType: ButtonInfos = {
-    color: 'var(--mainColor)',
-    borderColor: 'var(--secondColor)',
-    borderColorActive: 'var(--secondColor)',
-    backgroundColor: 'var(--secondColor)',
-    colorActive: 'var(--secondColor)',
-    backgroundColorActive: 'var(--mainColor)'
-  }
-  protected uploadButtonInfos: ButtonInfos = {
-    color: 'var(--black)',
-    backgroundColor: 'var(--white)'
-  }
-
-  protected validInput: InputInfos = {
-    color: "var(--white)",
-    placeholderColor: "var(--white)",
-    placeholderColorActive: "var(--thirdColor)",
-    backgroundColor: "var(--secondColor)",
-    borderColor: "var(--thirdColor)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--thirdColor)",
-    hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--thirdColor)",
-  }
-  protected invalidInput: InputInfos = {
-    color: "var(--white)",
-    placeholderColor: "var(--white)",
-    placeholderColorActive: "var(--white)",
-    backgroundColor: "var(--secondColor)",
-    borderColor: "var(--white)",
-    borderColorActive: "var(--white)",
-    hoverBackgroundColor: "var(--white)",
-    hoverTextColor: "var(--secondColor)",
-    hoverBorderColor: "var(--secondColor)",
-  }
-
+  //////////////////////////////////////////////  Variables  //////////////////////////////////////////////
+/*  Style Infos  */
+  protected buttonColor: ButtonInfos = buttonColorRegisterComponent;
+  protected buttonColorGeneral: ButtonInfos = buttonColorGeneralRegisterComponent;
+  protected buttonColorRegion: ButtonInfos = buttonColorRegionRegisterComponent;
+  protected buttonColorType: ButtonInfos = buttonColorTypeRegisterComponent;
+  protected uploadButtonInfos: ButtonInfos = uploadButtonInfosRegisterComponent;
+  protected validInput: InputInfos = validInputRegisterComponent;
+  protected invalidInput: InputInfos = invalidInputRegisterComponent;
+  protected uploadButton: ButtonInfos = uploadButtonRegisterComponent;
+  protected crossButton: ButtonInfos = crossButtonRegisterComponent;
+  protected selectInfosRegion: SelectInfos = selectInfosRegionRegisterComponent;
+  protected selectInfosType: SelectInfos = selectInfosTypeRegisterComponent;
+/*  Icon  */
+  protected userIcon: IconDefinition = faUser;
+  protected crossIcon: IconDefinition = faXmark;
+  protected photoIcon: IconDefinition = faCameraRetro;
+/*  Select  */
+  protected regionSelect: SelectData[] = [];
+  protected transportSelect: SelectData[] = [];
+  protected ligneSelect: SelectData[] = [];
+  protected stationSelect: SelectData[] = [];
+  protected stations: SelectData[] = [];
+  protected categorySelect: SelectData[] = [
+    {id: "res", name: "Restaurant",selected: false},
+    {id: "bar", name: "Bar",selected: false},
+    {id: "loi", name: "Loisir",selected: false},
+    {id: "mag", name: "Magasin",selected: false},
+    {id: "ser", name: "Service",selected: false},
+    {id: "aut", name: "Autre",selected: false}
+  ];
+  protected typeSelect: SelectData[] = [];
+  protected types: SelectData[] = [];
+/*  Algo  */
+  protected nextStepButtonMessage: string = "Vos stations";
+  protected generalAnimation: string = "show";
+  protected regionAnimation: string = "hidden";
+  protected typeAnimation: string = "hidden";
+  protected titleGeneralAnimation: string = "show";
+  protected titleRegionAnimation: string = "hidden";
+  protected titleTypeAnimation: string = "hidden";
+  protected stationsCardInfos: StationCardParams[] = [];
+  protected typesCardInfos: TypeCardParams[] = [];
+  protected region: string = "";
   protected userInfos: User = {
     id: "",
     login: "",
@@ -206,20 +195,14 @@ export class RegisterComponent {
   protected message: string = "";
   protected showMessage: string="hidden";
   protected valid: boolean = false;
-  constructor(private dataService: DatabaseService, private router: Router) { }
+  protected firstClickPrevious: boolean = false;
+  protected dblClickPrevious: boolean = false;
+  protected firstClickNext: boolean = false;
+  protected dblClickNext: boolean = false;
 
-  protected nextStepButtonMessage: string = "Vos stations";
-  protected generalAnimation: string = "show";
-  protected regionAnimation: string = "hidden";
-  protected typeAnimation: string = "hidden";
-  protected titleGeneralAnimation: string = "show";
-  protected titleRegionAnimation: string = "hidden";
-  protected titleTypeAnimation: string = "hidden";
-  
-  
-  ngOnInit(){
-    this.dataService.getAllRegion().subscribe((res: string[]) => {
-      res.forEach((element: string) => {
+  private ngOnInit(): void{
+    this.dataService.getAllRegion().subscribe((regions: string[]) => {
+      regions.forEach((element: string) => {
         this.regionSelect.push({
           id: element,
           name: element,
@@ -229,43 +212,18 @@ export class RegisterComponent {
       this.regionSelect = this.regionSelect.slice();
     });
   }
-
-  setValue(event: any, params: string){
+  protected setValue(event: any, params: string): void{
+    this.userInfos[params.toLocaleLowerCase()] = event.target.value;
     if(params === 'Login'){
-      this.userInfos.login = event.target.value;
-      if(this.userInfos.login.length > 2){
-        this.dataService.getValidName(this.userInfos.login).subscribe((res: boolean) => {
-          this.validName = res;
-        });
-      } else{
-        this.validName = false;
-      }
+      this.userInfos.login.length <= 2 ? this.validName = false : this.dataService.getValidName(this.userInfos.login).subscribe((res: boolean) => {
+        this.validName = res;
+      });
     }
     else if(params === 'Password'){
-      this.userInfos.password = event.target.value;
       event.target.value.length > 3 ? this.validPassword = true : this.validPassword = false;
     }
   }
-
-  protected selectInfosRegion: SelectInfos = {
-    backgroundColor: 'var(--white)',
-    topHoverBackgroundColor: 'var(--black)',
-    topHoverColor: 'var(--white)',
-    textColor: 'var(--black)',
-    optionTextColor: 'var(--black)',
-    optionBackgroundColor: 'var(--white)',
-    hoverBackgroundColor: 'var(--black)',
-    hoverTextColor: 'var(--white)',
-    borderColor: 'var(--black)',
-    width: 10
-  }
-  protected regionSelect: SelectData[] = [];
-  protected transportSelect: SelectData[] = [];
-  protected ligneSelect: SelectData[] = [];
-  protected stationSelect: SelectData[] = [];
-  protected stations: SelectData[] = [];
-  protected region: string = "";
-  setPreferenceGeo(event: any, params: string){
+  protected setPreferenceGeo(event: any, params: string): void{
     if(params === 'reg'){
       this.transportSelect = [];
       this.ligneSelect = [];
@@ -319,15 +277,19 @@ export class RegisterComponent {
         return false;
       });
       if(filter.length > 0) {
-        this.stations.push(filter[0]);
-        let counter: number = 0;
-        this.stations.forEach((element: SelectData) => {
-          this.dataService.getLignesOfStation(element.id).subscribe((res: Ligne[]) => {
-            element.originalData = res;
-            counter++;
-            if(counter === this.stations.length - 1)  this.stations = this.stations.slice();
-          });
+        this.dataService.getLignesOfStation(filter[0].id).subscribe((lignes: Ligne[]) => {
+          filter.originalData = lignes;
         });
+        this.stations.push(filter[0]);
+        this.stationsCardInfos.push({
+          station: {
+            id: filter[0].id,
+            name: filter[0].name
+          },
+          width: 20,
+          height: 450,
+        });
+        this.stations = this.stations.slice();
       }
       else{
         filter = event.filter((station: SelectData) => {
@@ -340,41 +302,42 @@ export class RegisterComponent {
           if(station.id === idToSuppress) return false;
           return true;
         }).slice();
+        this.stationsCardInfos = this.stationsCardInfos.filter((params: StationCardParams) => {
+          if(params.station.id === idToSuppress) return false;
+          return true;
+        }).slice();
       }
     }
   }
-
-  protected selectInfosType: SelectInfos = {
-    backgroundColor: 'var(--mainColor)',
-    topHoverBackgroundColor: 'var(--black)',
-    topHoverColor: 'var(--mainColor)',
-    textColor: 'var(--black)',
-    optionTextColor: 'var(--black)',
-    optionBackgroundColor: 'var(--mainColor)',
-    hoverBackgroundColor: 'var(--black)',
-    hoverTextColor: 'var(--mainColor)',
-    borderColor: 'var(--black)',
-    width: 10
+  protected removeStation(id: string): void{
+    this.stations = this.stations.filter((station: SelectData) => {
+      if(station.id === id) return false;
+      return true;
+    }).slice();
+    this.stationsCardInfos = this.stationsCardInfos.filter((params: StationCardParams) => {
+      if(params.station.id === id) return false;
+      return true;
+    }).slice();
   }
-  protected categorySelect: SelectData[] = [{id: "Restaurant", name: "Restaurant", selected: false}];
-  protected typeSelect: SelectData[] = [];
-  protected types: SelectData[] = [];
-  setPreferenceType(event: any, params: string){
+  protected setPreferenceType(event: any, params: string): void{
     if(params === 'cat'){
       let category = event.find((element: SelectData) => element.selected === true)?.name;
       this.typeSelect = [];
-      Data.forEach((type: TypePicture) => {
-        const find: SelectData = this.types.find((element: SelectData) => type.type === element.id);
-        let selected: boolean = false;
-        if(find != null)  selected = true;
-        if(type.place === category)  this.typeSelect.push({
-          id: type.type,
-          name: type.type,
-          originalData: type.urlIcon,
-          selected: selected
+      this.dataService.getTypeByCategory(category).subscribe((types: Type[]) => {
+        types.forEach((type: Type) => {
+          let selected: boolean = false;
+          if(this.types.find((element: SelectData) => type.id === element.id) != null)  selected = true;
+          this.typeSelect.push({
+            id: type.id,
+            name: type.name,
+            originalData: type,
+            selected: selected
+          });
         });
+        this.typeSelect = [...this.typeSelect];
       });
     } else if(params === 'type'){
+      this.typesCardInfos = [];
       let filter = event.filter((type: SelectData) =>{
         const find = this.types.find((check: SelectData) => check.id === type.id);
         if(find != null)  return false;
@@ -394,23 +357,25 @@ export class RegisterComponent {
           return true;
         }).slice();
       }
+      this.types.forEach((element: SelectData) => {
+        this.typesCardInfos.push({
+          type: element.originalData,
+          width: 20,
+          height: 400
+        });
+      });
     }
   }
-
-  removeImg(){
+  protected removeImg(): void{
     this.userInfos.img = "";
   }
-  facadeImage(event: string) {
+  protected getFile(event: string): void {
     this.userInfos.img = event;
   }
-
-  navigateToLogin(){
+  protected navigateToLogin(): void{
     this.router.navigate(['/login']);
   }
-
-  protected firstClickPrevious: boolean = false;
-  protected dblClickPrevious: boolean = false;
-  previousStep(){
+  protected previousStep(): void{
     if(this.firstClickPrevious){
       this.dblClickPrevious = true;
     }
@@ -449,10 +414,7 @@ export class RegisterComponent {
       this.nextStepButtonMessage = "Vos préférences";
     }
   }
-
-  protected firstClickNext: boolean = false;
-  protected dblClickNext: boolean = false;
-  nextStep(){
+  protected nextStep(): void{
     if(this.firstClickNext){
       this.dblClickNext = true;
     }
@@ -491,26 +453,35 @@ export class RegisterComponent {
         this.titleTypeAnimation = "show";
       },500);
     }
+    else if(this.titleTypeAnimation === "show"){
+      this.create();
+    }
   }
-
-  create(){
+  protected create(): void{
     this.valid = false;
     if(this.validName && this.validPassword){
+      this.userInfos.id = this.dataService.setId();
       this.dataService.signup(this.userInfos).subscribe(res => {
-        this.userInfos = {
-          id: "",
-          login: "",
-          password: "",
-          role: "User",
-          img: ""
-        };
         if(res.error){
           this.message = res.message;
           this.showMessage = "show";
           setTimeout(() => {
             this.showMessage = "hidden";
           },2000);
+          this.userInfos = {
+            id: "",
+            login: "",
+            password: "",
+            role: "User",
+            img: ""
+          };
         } else{
+          this.stations.forEach((station: SelectData) => {
+            this.dataService.addStationOfUser(this.userInfos.id,station.id);
+          });
+          this.types.forEach((type: SelectData) => {
+            this.dataService.addTypeOfUser(this.userInfos.id,type.id);
+          });
           this.valid = true;
           this.message = "Utilisateur créé avec succès";
           this.showMessage = "show";

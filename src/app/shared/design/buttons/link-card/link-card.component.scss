@@ -3,20 +3,28 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    height: 50vh;
-    width: 20vw;
+    height: 40vh;
+    width: 40vw;
     border-radius: 5px;
     &:hover{
-        .card,.img{height: 99%;width: 98.5%; margin-top: .5%;}
-        .topLeft,.topRight{top: -1%;}
-        .bottomLeft,.bottomRight{bottom: -1%;}
-        .topLeft,.bottomLeft{left: -1%;}
-        .topRight,.bottomRight{right: -1%;}
-        #text{font-size: 24px;}
+        .card{
+            opacity: 1;
+            background-color: transparent;
+            &::before{
+                left: 0;
+                bottom: 0;
+                top: auto;
+                right: auto;
+                height: 100%;
+            }
+        }
+        #text{
+            color: var(--textColorActive);
+        }
     }
 }
 #text{
-    transition: all 200ms;
+    transition: all 400ms;
     z-index: 3;
     color: var(--textColor);
     font-size: 25px;
@@ -33,34 +41,31 @@
     width: 100%;
     border-radius: 5px;
     transition: all 200ms;
-    background-size: cover !important;
-    background-attachment: fixed;
     border: 2px solid var(--borderColor);
+    background-size: cover !important;
 }
 .card{
-    cursor: pointer;
     z-index: 2;
     position: absolute;
     top: 0;
     height: 100%;
     width: 100%;
     border-radius: 5px;
-    transition: all 200ms;
-    background: var(--black);
-    opacity: 0.5;
+    transition: opacity 0.4s, background-color linear .4s 0s;
     border: 2px solid var(--borderColor);
+    &::before{
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 0;
+        background: var(--colorActive);
+        background-size: cover !important;
+        top: 0;
+        right: 0;
+        transition: height .4s, width .4s;
+        z-index: 3;
+    }
 }
-.topLeft,.topRight,.bottomLeft,.bottomRight{
-    position: absolute;
-    height: 12.5vh;
-    width: 5vw;
-    background: var(--selectedBorderColor);
-    transition: all 200ms;
-}
-.topLeft{top: 0;left: 0; border-top-left-radius: 5px;}
-.topRight{top: 0;right: 0; border-top-right-radius: 5px;}
-.bottomLeft{bottom: 0;left: 0; border-bottom-left-radius: 5px;}
-.bottomRight{bottom: 0;right: 0; border-bottom-right-radius: 5px;}
 
 @media screen and (max-width: 600px){
     .container{height: 20vh; width: 80vw;}

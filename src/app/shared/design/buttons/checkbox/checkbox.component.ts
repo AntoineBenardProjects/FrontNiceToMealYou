@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, SimpleChanges } from '@angular/core';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { info } from 'console';
@@ -35,8 +35,29 @@ export class CheckboxComponent {
     }
   }
 
-  ngOnChanges(){
-    this.setColor();
+  ngOnChanges(changes: SimpleChanges){
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName)) {
+        switch (propName) {
+          case 'value': {
+            if(this.value){
+              this.text = "O";
+              if(this.styleInfos.hoverBackgroundColorValid != null) this.hoverBackgroundColor = this.styleInfos.hoverBackgroundColorValid;
+              if(this.styleInfos.hoverBorderColorValid != null) this.hoverBorderColor = this.styleInfos.hoverBorderColorValid;
+              if(this.styleInfos.hoverTextColorValid != null) this.hoverColor = this.styleInfos.hoverTextColorValid;
+            } else{
+              this.text = "N";
+              if(this.styleInfos.hoverBackgroundColor != null) this.hoverBackgroundColor = this.styleInfos.hoverBackgroundColor;
+              if(this.styleInfos.hoverBorderColor != null) this.hoverBorderColor = this.styleInfos.hoverBorderColor;
+              if(this.styleInfos.hoverTextColor != null) this.hoverColor = this.styleInfos.hoverTextColor;
+            }
+            this.setColor();
+          }
+          break;
+        }
+      }
+    }
+    // this.setValue();
   }
 
   setValue(){

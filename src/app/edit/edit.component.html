@@ -1,0 +1,220 @@
+<div class="body" [ngStyle]="{'background' : backgroundColor}" *ngIf="placeInfos != null">
+    <div class="first">
+      <div class="topbarContainer">
+        <div class="navbar">
+            <div class="container">
+                <img id="logo" [src]="logoImageSrc" routerLink="/home">
+                <round-button id="mainLink" text="Mes lieux" [styleInfos]="myPlacesButtonInfos" routerLink="/filter"></round-button>         
+            </div>
+        </div>
+      </div>
+      <div class="section" id="firstSection">
+        <div class="subtitles" [ngStyle]="{'left.vw': firstSectionPosition}">
+          <h1 class="subtitle">InfosEssentielles</h1>
+          <h1 class="subtitle">InfosEssentielles</h1>
+          <h1 class="subtitle">InfosEssentielles</h1>  
+        </div>
+  
+        <div class="nameAndAddress">
+          <app-input id="nameAndAddress" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteName" [errorMessage]="this.placeInfos.name.length > 2 ? '' : 'Le nom doit faire plus de deux caractères.'" [value]="placeInfos.name" text="Nom" (change)="nameFilled()" [styleInfo]="this.placeInfos.name.length > 2 ? validInput : invalidInput" (input)="setValue($event,'name')"></app-input>
+          <app-input id="nameAndAddress" (selectAutocomplete)="fillForm($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteAddress" [errorMessage]="addressError" [value]="placeInfos.address" (change)="checkAddress()" text="Adresse" [styleInfo]="isValidAddress ? validInput : invalidInput" (input)="setValue($event,'address')"></app-input>  
+        </div>
+        <div class="selects">
+          <round-select [errorMessage]="categoryError" [multiselect]="false" (selectionChange)="setValue($event,'category')" [selectAll]="false" [infos]="placeInfos.category.length > 0 ? validSelectInfos : invalidSelectInfos" [data]="categoriesSelect" text="Catégorie"></round-select>
+          <round-select [errorMessage]="typeError" [multiselect]="true" id="restaurantType" [ngClass]="placeInfos.category !== '' && placeInfos.category !== 'Autre' ? 'showType' : 'hideType'" (selectionChange)="setValue($event,'type')" [selectAll]="false" [infos]="selectedTypesIds.length > 0 ? validSelectInfos : invalidSelectInfos" [data]="typesSelect" [text]="'Type de ' + placeInfos.category.toLowerCase()"></round-select>
+        </div>
+        <div class="checkboxs">
+          <div class="line">
+            <checkbox [value]="comment.tested" (checked)="setValue($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
+            <p style="color: var(--thirdColor);" *ngIf="comment.tested && placeInfos.category !== ''">{{placeInfos.category}} testé</p>
+            <p style="color: var(--thirdColor);" *ngIf="comment.tested && placeInfos.category === ''">Lieu testé</p>
+            <p style="color: var(--secondColor);" *ngIf="!comment.tested && placeInfos.category !== ''">{{placeInfos.category}} non testé</p>
+            <p style="color: var(--secondColor);" *ngIf="!comment.tested && placeInfos.category === ''">Lieu non testé</p>
+          </div>
+  
+          <div class="line">
+            <checkbox [value]="placeInfos.visible" (checked)="setValue($event,'visible')" [styleInfos]="checkboxInfos"></checkbox>
+            <p style="color: var(--thirdColor);" *ngIf="placeInfos.visible && placeInfos.category !== ''">{{placeInfos.category}} visible pour les autres utilisateurs</p>
+            <p style="color: var(--thirdColor);" *ngIf="placeInfos.visible && placeInfos.category === ''">Lieu visible pour les autres utilisateurs</p>
+            <p style="color: var(--secondColor);" *ngIf="!placeInfos.visible && placeInfos.category !== ''">{{placeInfos.category}} invisible pour les autres utilisateurs</p>
+            <p style="color: var(--secondColor);" *ngIf="!placeInfos.visible && placeInfos.category === ''">Lieu invisible pour les autres utilisateurs</p>
+          </div>
+          
+        </div>
+      </div>
+      <div class="section" [ngStyle]="{'display' : comment.tested && canSubmit() ? 'flex' : 'none'}" id="gradeSection">
+        <div class="subtitles" [ngStyle]="{'right.vw': gradeSectionPosition}">
+          <h1 class="subtitle">TesNotes</h1>
+          <h1 class="subtitle">TesNotes</h1>
+          <h1 class="subtitle">TesNotes</h1>  
+          <h1 class="subtitle">TesNotes</h1>
+          <h1 class="subtitle">TesNotes</h1>
+          <h1 class="subtitle">TesNotes</h1> 
+          <h1 class="subtitle">TesNotes</h1>
+          <h1 class="subtitle">TesNotes</h1>
+          <h1 class="subtitle">TesNotes</h1> 
+        </div>
+        <app-textfield [value]="comment.comment" text="Commentaire" [styleInfo]="normalInput" (input)="setValue($event,'comment')"></app-textfield>
+        <div class="grades" *ngIf="placeInfos.category === 'Restaurant'">
+          <div class="range">
+            <p>Rapport qualité/prix</p>
+            <range [infos]="rangeSliderInfos" (values)="setValue($event,'quality_price')"></range>
+          </div>
+          <div class="range">
+            <p>Quantité</p>
+            <range [infos]="rangeSliderInfos" (values)="setValue($event,'quantity')"></range>
+          </div>
+          <div class="range">
+            <p>Service</p>
+            <range [infos]="rangeSliderInfos" (values)="setValue($event,'service')"></range>
+          </div>
+        </div>
+        <div class="grades" *ngIf="placeInfos.category === 'Bar'">
+          <app-input [value]="comment.quality_price" class="number" text="Qualité" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quality_price')"></app-input>
+          <app-input [value]="placeInfos.prix_pinte" [max]="50" [min]="1" class="number" text="Prix pinte" type="number" [styleInfo]="normalInput" (input)="setValue($event,'prix_pinte')"></app-input>
+          <app-input [value]="placeInfos.prix_cocktail" [max]="150" [min]="1" class="number" text="Prix cocktail" type="number" [styleInfo]="normalInput" (input)="setValue($event,'prix_cocktail')"></app-input>    
+          <app-input [value]="placeInfos.prix_coffee" [max]="150" [min]="1" class="number" text="Prix café" type="number" [styleInfo]="normalInput" (input)="setValue($event,'prix_coffee')"></app-input>    
+        </div>
+        <div class="grades" *ngIf="placeInfos.category !== 'Bar' && placeInfos.category !== 'Restaurant'">
+          <app-input [value]="comment.quality_price" class="number" text="Rapport qualité/prix" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quality_price')"></app-input>
+        </div>
+      </div>
+      <div class="section" id="complementSection" *ngIf="canSubmit()">
+        <div class="subtitles" [ngStyle]="{'left.vw': secondSectionPosition}">
+          <h1 class="subtitle">InfosComplémentaires</h1>
+          <h1 class="subtitle">InfosComplémentaires</h1>
+          <h1 class="subtitle">InfosComplémentaires</h1>  
+        </div>
+        <div class="containerInfos">
+          <div class="stations">
+            <div class="line" *ngFor="let station of stations">
+              <div class="station">
+                <p>{{station.name}}</p>
+                <div class="lignesPictures">
+                  <round-button *ngFor="let ligne of station.lignes" [text]="ligne.name" [styleInfos]="stationButtonInfos"></round-button> 
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="infos">
+            <app-input [value]="placeInfos.website" text="Site Web" [styleInfo]="normalInput" (input)="setValue($event,'website')"></app-input>
+            <app-input [value]="placeInfos.phone" text="Téléphone" [styleInfo]="normalInput" (input)="setValue($event,'phone')"></app-input>
+            <app-input [value]="placeInfos.link_menu" text="Lien Menu" [styleInfo]="normalInput" (input)="setValue($event,'menu')" *ngIf="placeInfos.category === 'Restaurant' || placeInfos.category === 'Bar'"></app-input>  
+            <app-input [value]="placeInfos.promotion" text="Promotion" [styleInfo]="normalInput" (input)="setValue($event,'promotion')"></app-input>    
+          </div>
+        </div>
+        <div class="pictures">
+          <div class="picture" id="first">
+            <upload-button [styleInfos]="uploadButtonInfos" type="picture" (file)="addImage($event)"></upload-button>
+          </div>
+          <div class="picturesContainer">
+            <div class="picture" *ngFor="let picture of pictures; index as i;"
+              [ngStyle]="{'background-image': 'url('+picture.src+')'}">
+              <fa-icon [icon]="crossIcon" (click)="removeImage(i)"></fa-icon>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <div class="section" id="horairesSection" *ngIf="canSubmit()">
+        <div class="subtitles" [ngStyle]="{'right.vw': horairesSectionPosition}">
+          <h1 class="subtitle">Horaires</h1>
+          <h1 class="subtitle">Horaires</h1>
+          <h1 class="subtitle">Horaires</h1>  
+          <h1 class="subtitle">Horaires</h1>
+          <h1 class="subtitle">Horaires</h1>
+          <h1 class="subtitle">Horaires</h1>  
+          <h1 class="subtitle">Horaires</h1>
+          <h1 class="subtitle">Horaires</h1>
+          <h1 class="subtitle">Horaires</h1> 
+        </div>
+  
+        <div class="table">
+          <div class="column" id="left">
+            <div class="header center">
+              <h3>Horaires</h3>
+            </div>
+            <div class="body center">
+              <p>Ouverture</p>
+            </div>
+            <div class="body center">
+              <p>Première fermeture</p>
+            </div>
+            <div class="body center">
+              <p>Deuxième ouverture</p>
+            </div>
+            <div class="body center">
+              <p>Deuxième fermeture</p>
+            </div>
+          </div>
+          <div class="column" *ngFor="let h of horairesAdded; index as i">
+            <div class="header center" [ngClass]="dayOpen[h.day] ? 'enable' : 'disable'">
+              <h3>{{h.day}}</h3>
+              <fa-icon class="center" [icon]="dayOpen[h.day] ? checkIcon : crossIcon" (click)="closeDay(h.day)"></fa-icon>
+            </div>
+            <div class="body center" [ngClass]="dayOpen[h.day] ? 'enable' : 'disable'">
+              <input type="time" [value]="h.ouverture" (input)="setValue($event,'horaires',h.day,'ouverture')">
+            </div>
+            <div class="body center" [ngClass]="h.ouverture !== '' && dayOpen[h.day] ? 'enable' : 'disable'">
+              <input type="time" [value]="h.fermeture_midi" (input)="setValue($event,'horaires',h.day,'fermeture_midi')">
+            </div>
+            <div class="body center" [ngClass]="h.fermeture_midi !== '' && dayOpen[h.day] ? 'enable' : 'disable'">
+              <input type="time" [value]="h.ouverture_soir" (input)="setValue($event,'horaires',h.day,'ouverture_soir')">
+            </div>
+            <div class="body center" [ngClass]="h.ouverture_soir !== '' && dayOpen[h.day] ? 'enable' : 'disable'">
+              <input type="time" [value]="h.fermeture" (input)="setValue($event,'horaires',h.day,'fermeture')">
+            </div>
+          </div>
+        </div>
+  
+        <div class="fillAllHoraires center">
+          <div class="table">
+            <div class="column" id="left">
+              <div class="header center">
+                <h3>Horaires</h3>
+              </div>
+              <div class="body center">
+                <p>Ouverture</p>
+              </div>
+              <div class="body center">
+                <p>Première fermeture</p>
+              </div>
+              <div class="body center">
+                <p>Deuxième ouverture</p>
+              </div>
+              <div class="body center">
+                <p>Deuxième fermeture</p>
+              </div>
+            </div>
+            <div class="column" id="week">
+              <div class="header center">
+                <h3>Rempli tous les champs</h3>
+              </div>
+              <div class="body center">
+                <input type="time" [value]="globalHoraires.ouverture" (input)="setAllHoraires($event,'ouverture')">
+              </div>
+              <div class="body center" [ngClass]="globalHoraires.ouverture !== '' ? 'enable' : 'disable'">
+                <input type="time" [value]="globalHoraires.fermeture_midi" (input)="setAllHoraires($event,'fermeture_midi')">
+              </div>
+              <div class="body center" [ngClass]="globalHoraires.fermeture_midi !== '' ? 'enable' : 'disable'">
+                <input type="time" [value]="globalHoraires.ouverture_soir" (input)="setAllHoraires($event,'ouverture_soir')">
+              </div>
+              <div class="body center" [ngClass]="globalHoraires.ouverture_soir !== '' ? 'enable' : 'disable'">
+                <input type="time" [value]="globalHoraires.fermeture" (input)="setAllHoraires($event,'fermeture')">
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        
+      </div>
+    </div>
+    <round-button *ngIf="device !== 'mobile'" id="submit" text="Enregistrer" (click)="add()" [styleInfos]="canSubmit() ? validButton : invalidButton"></round-button>         
+    <fa-icon id="submitMobile" [icon]="checkIcon" *ngIf="device === 'mobile'" (click)="add()" 
+    [ngStyle]="{'background' : canSubmit() ? 'var(--thirdColor)' : 'var(--secondColor)'}"></fa-icon>
+    <div class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '10vh' : '0','background' : !error ? 'var(--thirdColor)' : 'var(--secondColor)'}">
+      <p>{{errorMessage}}</p>
+    </div>
+  </div>
+    

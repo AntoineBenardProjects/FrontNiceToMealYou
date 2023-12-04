@@ -1,4 +1,5 @@
 import { Component, HostBinding, Input } from '@angular/core';
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { ButtonInfos } from 'src/app/shared/model/designs';
 
 @Component({
@@ -9,9 +10,12 @@ import { ButtonInfos } from 'src/app/shared/model/designs';
 export class RoundButtonComponent {
   @Input() styleInfos: ButtonInfos;
   @Input() preset: string = '';
-
+  @Input() icon: IconDefinition;
   @Input() text: string = "Ajouter";
 
+  @HostBinding('style.--heightCssVariable') heightCssVariable = '100%';
+  @HostBinding('style.--cursorCssVariable') cursorCssVariable = 'pointer';
+  @HostBinding('style.--borderRadiusCssVariable') borderRadiusCssVariable = '5px';
   @HostBinding('style.--borderColor') borderColorCssVariable = 'transparent';
   @HostBinding('style.--borderColorActive') borderColorActiveCssVariable = 'transparent';
   @HostBinding('style.--backgroundColor') backgroundColorCssVariable = 'transparent';
@@ -33,6 +37,9 @@ export class RoundButtonComponent {
       this.textColorCssVariable = this.styleInfos.color;
       this.textColorHoverCssVariable = this.styleInfos.colorActive;
       if(this.styleInfos.fontSize != null) this.fontSize = this.styleInfos.fontSize;
+      if(this.styleInfos.radius != null) this.borderRadiusCssVariable = this.styleInfos.radius;
+      if(this.styleInfos.cursor != null) this.cursorCssVariable = this.styleInfos.cursor;
+      if(this.styleInfos.heightIcon != null) this.heightCssVariable = this.styleInfos.heightIcon;
     }
   }
 
@@ -46,6 +53,9 @@ export class RoundButtonComponent {
       this.textColorCssVariable = this.styleInfos.color;
       this.textColorHoverCssVariable = this.styleInfos.colorActive;
       if(this.styleInfos.fontSize != null) this.fontSize = this.styleInfos.fontSize;
+      if(this.styleInfos.radius != null) this.borderRadiusCssVariable = this.styleInfos.radius;
+      if(this.styleInfos.cursor != null) this.cursorCssVariable = this.styleInfos.cursor;
+      if(this.styleInfos.heightIcon != null) this.heightCssVariable = this.styleInfos.heightIcon;
     }
   }
 }

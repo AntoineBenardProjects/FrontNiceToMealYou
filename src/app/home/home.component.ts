@@ -1,208 +1,72 @@
-import { Component, ElementRef, HostBinding, ViewChild } from '@angular/core';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
 import { ButtonInfos, LinkCardInfos } from '../shared/model/designs';
-import { ColorPalette } from 'src/assets/style-infos/palettes';
-import { ThemeService } from '../services/theme.service';
-import { MapInfoWindow, MapMarker } from '@angular/google-maps';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faLocationDot, faAddressCard, faFilter } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
+import { iconsCarouselInfosHomeComponent, iconsCategoryInfosHomeComponent, myPlacesButtonInfosHomeComponent, myPlacesButtonInfosHomeComponent2 } from '../shared/model/design/buttonsDesign';
+import { DatabaseService } from '../services/database.service';
+import { PlaceCardParams } from '../shared/model/params/cardParams';
+import { IconDefinition, faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { Message } from '../shared/model/params/message';
+import { Counter } from '../shared/model/table/user';
+import { categories } from '../shared/data';
+import { PlacesService } from '../services/places.service';
 
 
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  animations: [
-    trigger('slogan', [
-      state('show', style({
-        width: '50vw'
-      })),
-      state('hidden', style({
-        width: '0'
-      })),
-      transition('* => hidden', [
-        animate('1.5s ease-out')
-      ]),
-      transition('* => show', [
-        animate('1.5s ease-out')
-      ])
-    ]),
-    trigger('bottomLogo', [
-      state('show', style({
-        opacity: '1',
-        right: '15vw'
-      })),
-      state('hidden', style({
-        opacity: '0',
-        right: '0'
-      })),
-      transition('* => hidden', [
-        animate('2s ease-out')
-      ]),
-      transition('* => show', [
-        animate('2s ease-out')
-      ])
-    ]),
-    trigger('topLogo', [
-      state('show', style({
-        opacity: '1',
-        left: '15vw'
-      })),
-      state('hidden', style({
-        opacity: '0',
-        left: '0'
-      })),
-      transition('* => hidden', [
-        animate('2s ease-out')
-      ]),
-      transition('* => show', [
-        animate('2s ease-out')
-      ])
-    ]),
-    trigger('resultDiv', [
-      state('show', style({
-        opacity: '1'
-      })),
-      state('hidden', style({
-        opacity: '0'
-      })),
-      transition('* => hidden', [
-        animate('1s ease')
-      ]),
-      transition('* => show', [
-        animate('1s ease')
-      ])
-    ]),
-    trigger('button', [
-      state('show', style({
-        opacity: '1'
-      })),
-      state('hidden', style({
-        opacity: '0'
-      })),
-      transition('* => hidden', [
-        animate('1s ease')
-      ]),
-      transition('* => show', [
-        animate('1s ease')
-      ])
-    ]),
-    trigger('showTitle', [
-      state('show', style({
-        opacity: '1'
-      })),
-      transition('* => show', [
-        animate('2s ease')
-      ])
-    ])
-  ]
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  display: any;
-  @ViewChild(MapInfoWindow) infoWindow: MapInfoWindow;
-
-    center: google.maps.LatLngLiteral = {
-      lat:48.85663194918784, lng:2.3522139326422447
-    };
-    zoom = 12;
-    moveMap(event: google.maps.MapMouseEvent) {
-        if (event.latLng != null) this.center = (event.latLng.toJSON());
-    }
-    move(event: google.maps.MapMouseEvent) {
-        if (event.latLng != null) this.display = event.latLng.toJSON();
-    }
-    markerOptions: google.maps.MarkerOptions = {
-        draggable: false
-    };
-    markerPositions: google.maps.LatLngLiteral[] = [];
-    openInfoWindow(marker: MapMarker) {
-      this.infoWindow.open(marker);
-    }
-
-
   constructor(
-    private elementRef: ElementRef,
-    private themeService: ThemeService,
-    private router: Router
-  ) {
-    this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
-      this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
-      this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
-      this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
-    });
-  }
-  private themeSubscriber: Subscription = new Subscription();
+    private router: Router,
+    private databaseService: DatabaseService,
+    private placesService: PlacesService
+  ) {}
+//////////////////////////////////////////////  Variables  //////////////////////////////////////////////
+/*  Style Infos  */
+  protected myPlacesButtonInfos: ButtonInfos = myPlacesButtonInfosHomeComponent;
+  protected iconsCarouselInfos: ButtonInfos = iconsCarouselInfosHomeComponent;
+  protected iconsCategoryInfos: ButtonInfos = iconsCategoryInfosHomeComponent;
 
-  //////////////////////////////////////////////  Background Page  //////////////////////////////////////////////
-  protected backgroundColor: string = 'var(--black)'
-  setBackgroundColor(scrollPosition: number) : void {
-    if(scrollPosition >= 0 && scrollPosition < window.innerHeight * 1.8){
-      this.styleLine = {
-        textColor: "var(--white)",
-        titleColor: "var(--mainColor)",
-        shadowGradient: "linear-gradient(rgba(218,195,200,0.2),rgba(218,195,200,0.2))"
-      }
-      this.backgroundColor = "var(--black)";
-      this.logoImageSrc = "../../assets/logo/white_logo.png";
-      this.buttonColor = {
-        color: 'var(--black)',
-        colorActive: 'var(--mainColor)',
-        backgroundColor: 'var(--mainColor)',
-        backgroundColorActive: 'var(--black)',
-        fontWeight: 1000
-      }
-      this.logoColor = "var(--mainColor)";
-      this.linkCardInfos = {
-        color: 'var(--white)',
-        borderColor: 'var(--white)',
-        selectedBorderColor: 'var(--white)'
-      }
-    } else{
-      this.styleLine = {
-        textColor: "var(--black)",
-        titleColor: "var(--secondColor)",
-        shadowGradient: "linear-gradient(rgba(12,18,18,0.2),rgba(12,18,18,0.2))"
-      }
-      this.backgroundColor = "var(--mainColor)";
-      this.logoImageSrc = "../../assets/logo/black_logo.png";
-      this.buttonColor = {
-        color: 'var(--mainColor)',
-        colorActive: 'var(--black)',
-        backgroundColor: 'var(--black)',
-        backgroundColorActive: 'var(--mainColor)',
-        fontWeight: 1000
-      }
-      this.logoColor = "var(--black)";
-      this.linkCardInfos = {
-        color: 'var(--mainColor)',
-        borderColor: 'var(--black)',
-        selectedBorderColor: 'var(--secondColor)'
-      }
-    }
-  }
-
-  //////////////////////////////////////////////  Logo and topbar  //////////////////////////////////////////////
-  protected triggerLogoAnimation: string = "hidden";
-  @HostBinding('style.--logoColor') logoColor: string = "var(--mainColor)";
-  protected buttonColor: ButtonInfos = {
-    color: 'var(--black)',
-    colorActive: 'var(--mainColor)',
-    backgroundColor: 'var(--mainColor)',
-    backgroundColorActive: 'var(--black)',
-    fontWeight: 1000
-  }
-  protected logoPosition: number = 0;
+/*  Css/Icons  */
+  protected backgroundColor: string = 'var(--black)';
   protected logoImageSrc: string = "../../assets/logo/white_logo.png";
-  moveLogo(scrollPosition: number) : void{
-    const stopLogoScroll: number = 500;
-    this.logoPosition = 15 - 5 * (scrollPosition/stopLogoScroll);
+  protected leftIcon: IconDefinition = faCaretLeft;
+  protected rightIcon: IconDefinition = faCaretRight;
+  protected scaleTypes: number = 1;
+  protected topSuggestions: number = 150;
+  protected scroll: number = 0;
+  private stopScrolling: boolean = false;
+  protected styleTypes: StyleText[] = [
+    {opacity: 1,top: 15, left: 10,text: "NiceTo",font:"'Arvo', sans-serif",color: "var(--white)"},
+    {opacity: 1,bottom: 15, right: 10,text: "MealYou",font:"'Arvo', sans-serif",color: "var(--white)"},
+  ];
+  protected styleFirst: StyleText[] = [
+    {opacity: 0,top: 10, left: 10,text: "NiceTo",font:"'Poppins', sans-serif",color: "var(--white)",backgroundImage:"url('../../assets/common/map.jpg')"},
+    {opacity: 0,bottom: 10, right: 10,text: "MealYou",font:"'Poppins', sans-serif",color: "var(--white)",backgroundImage:"url('../../assets/common/map.jpg')"},
+  ];
+  protected opacityCards: number[] = [0,0,0,0,0];
+  protected opacityNavbar: number = 1;
+  protected overflow: string = "hidden";
+/*  Algo  */
+  protected isAdmin: boolean = false;
+  protected linkCardInfos: LinkCardInfos = {
+    color: 'var(--white)',
+    colorActive: 'var(--black)',
+    textColorActive: 'var(--white)',
+    borderColor: 'var(--white)',
+    selectedBorderColor: 'var(--white)'
   }
-  navigate(url: string, filterType?: string) : void{
+  protected stationsPlacesCards: PlaceCardParams[] = [];
+  protected showSuggestion: boolean = false;
+  protected loadingValue: number = 0;
+  protected counterSuggestion: number = 0;
+  protected favoritesStations: SuggestionShow[] = [];
+
+  protected navigate(url: string, opacity?: number) : void{
+    let valid: number = 1;
+    if(opacity != null) valid = opacity;
     if(url === 'about'){
       const aboutElement: HTMLElement = document.getElementById("about");
       window.scrollTo({
@@ -210,143 +74,288 @@ export class HomeComponent {
         left: 0,
         behavior: "smooth",
       });
-    } else{
+    } else if(valid === 1){
       this.router.navigate([url]);
       sessionStorage.setItem("lastPage","/home");
     }
   }
-
-  //////////////////////////////////////////////  Types  //////////////////////////////////////////////
-  protected linkCardInfos: LinkCardInfos = {
-    color: 'var(--white)',
-    borderColor: 'var(--white)',
-    selectedBorderColor: 'var(--white)'
+  protected closeCard(id: string): void{
+    this.stationsPlacesCards = this.stationsPlacesCards.filter((params: PlaceCardParams) => {
+      if(params.place.id === id)  return false;
+      return true;
+    });
   }
-
-  //////////////////////////////////////////////  Presentation  //////////////////////////////////////////////
-  protected locationIcon: IconDefinition = faLocationDot;
-  protected presentationIcon: IconDefinition = faAddressCard;
-  protected filterIcon: IconDefinition = faFilter;
-  protected positionPresentationIcon: PositionIcon = {
-    paddingIcon: 0,
-    scaleShadow: 1,
-    textOpacity: true,
-    titleOpacity: true
-  };
-  protected positionLocationIcon: PositionIcon = {
-    paddingIcon: 0,
-    scaleShadow: 1,
-    textOpacity: true,
-    titleOpacity: true
-  };
-  protected positionFilterIcon: PositionIcon = {
-    paddingIcon: 0,
-    scaleShadow: 1,
-    textOpacity: true,
-    titleOpacity: true
-  };
-  protected styleLine: StyleLine = {
-    textColor: "",
-    titleColor: "",
-    shadowGradient: "",
+  protected moveCarousel(direction: string, carousel: string): void{
+    let find: SuggestionShow = this.favoritesStations.find((element: SuggestionShow) => element.name_station === carousel);
+    if(direction === 'left' && find.transform !== 0){
+      find.transform += 550;
+    } else if(direction === 'right' && find.transform !== -(find.cards.length-1) * 550){
+      find.transform -= 550;
+    }
   }
-  moveIcon(scrollPosition: number) : void{
-    let position: number = scrollPosition - window.innerHeight;
-    const stopPresentationIconScroll: number = window.innerHeight * 0.65;
-    let stopLocationIconScroll: number = window.innerHeight * 1.3;
-    let stopFilterIconScroll: number = window.innerHeight * 1.95;
-
-    if(0 <= position && stopPresentationIconScroll >= position){
-      this.positionPresentationIcon.paddingIcon = (-60) + 100 * (position/stopPresentationIconScroll);
-      this.positionPresentationIcon.scaleShadow = 0 + 1 * (position/stopPresentationIconScroll);
-      if(this.positionPresentationIcon.paddingIcon > -35) this.positionPresentationIcon.titleOpacity = true;
-      else this.positionPresentationIcon.titleOpacity = false;
-      if(this.positionPresentationIcon.paddingIcon > -15) this.positionPresentationIcon.textOpacity = true;
-      else this.positionPresentationIcon.textOpacity = false;
-    } if(stopPresentationIconScroll <= position && stopLocationIconScroll >= position){
-      position -= stopPresentationIconScroll;
-      stopLocationIconScroll -= stopPresentationIconScroll;
-
-      this.positionPresentationIcon.paddingIcon = 40;
-      this.positionPresentationIcon.scaleShadow = 1;
-      this.positionPresentationIcon.titleOpacity = true;
-      this.positionPresentationIcon.textOpacity = true;
-
-      this.positionLocationIcon.paddingIcon = (-60) + 100 * (position/stopLocationIconScroll);
-      this.positionLocationIcon.scaleShadow = 0 + 0.6 * (position/stopLocationIconScroll);
-      if(this.positionLocationIcon.paddingIcon > -35) this.positionLocationIcon.titleOpacity = true;
-      else this.positionLocationIcon.titleOpacity = false;
-      if(this.positionLocationIcon.paddingIcon > -15) this.positionLocationIcon.textOpacity = true;
-      else this.positionLocationIcon.textOpacity = false;
-    }
-    if(stopLocationIconScroll <= position && stopFilterIconScroll >= position){
-      position -= stopLocationIconScroll;
-      stopFilterIconScroll -= stopLocationIconScroll;
-      this.positionLocationIcon.paddingIcon = 40;
-      this.positionLocationIcon.scaleShadow = 1;
-      this.positionLocationIcon.titleOpacity = true;
-      this.positionLocationIcon.textOpacity = true;
-
-      this.positionFilterIcon.paddingIcon = (-60) + 100 * (position/stopFilterIconScroll);
-      this.positionFilterIcon.scaleShadow = 0 + 0.6 * (position/stopFilterIconScroll);
-      if(this.positionFilterIcon.paddingIcon > -35) this.positionFilterIcon.titleOpacity = true;
-      else this.positionFilterIcon.titleOpacity = false;
-      if(this.positionFilterIcon.paddingIcon > -15) this.positionFilterIcon.textOpacity = true;
-      else this.positionFilterIcon.textOpacity = false;
-    }
-    else if(stopFilterIconScroll < position){
-      this.positionFilterIcon.paddingIcon = 40;
-      this.positionFilterIcon.scaleShadow = 1;
-      this.positionFilterIcon.titleOpacity = true;
-      this.positionFilterIcon.textOpacity = true;
-    }
-    else if(position < 0){
-      this.positionPresentationIcon.textOpacity = false;
-      this.positionLocationIcon.textOpacity = false;
-      this.positionFilterIcon.textOpacity = false;
-    }
-
+  protected addPlace(id: string): void{
+    this.databaseService.addPlaceOfUser({idPlace: id, idUser: localStorage.getItem("id")}).subscribe((message: Message) => {
+      console.log(message);
+    });
   }
-
-  nearbyCallback(results, status): void {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
-      results.forEach((element) => {
-        const coords: google.maps.LatLngLiteral = element.geometry.location.toJSON();
-        this.markerPositions.push(coords);
-
+  private setBackground(event: any): void {
+    if(event.wheelDelta < 0 && !this.stopScrolling) this.scroll += 10;
+    if(event.wheelDelta > 0 && this.scroll > 9) this.scroll -= 10;
+    let verifyPosition: number = 0;
+    510 - this.scroll > 0 ? verifyPosition = 510 - this.scroll : verifyPosition = 0;
+    let scrollPosition: number = this.scroll/40 - 2;  
+    if(this.isAdmin)  scrollPosition === 8.25 && (this.favoritesStations[0] == null || this.favoritesStations[0].cards.length === 0) ? this.stopScrolling = true : this.stopScrolling = false;
+    else  scrollPosition === 6.75 && (this.favoritesStations[0] == null || this.favoritesStations[0].cards.length === 0) ? this.stopScrolling = true : this.stopScrolling = false;
+    if(scrollPosition >= 9){
+      scrollPosition === 12.5 + (this.favoritesStations.length - 1)*4.5 ? this.stopScrolling = true : this.stopScrolling = false;
+      this.favoritesStations.forEach((suggestion: SuggestionShow,index: number) => {
+        if(scrollPosition === 11 + (index)*4.5){
+          suggestion.titlePosition = 8;  
+          suggestion.titleOpacity = .5;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 0.3;
+          });
+        } else if(scrollPosition === 11.25 + (index)*4.5){
+          suggestion.titlePosition = 4;  
+          suggestion.titleOpacity = .8;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 0.8;
+          });
+        } else if(scrollPosition === 11.5 + (index)*4.5){
+          suggestion.titlePosition = 2;  
+          suggestion.titleOpacity = 1;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 1;
+          });
+        }else if(scrollPosition === 14.25 + (index)*4.5){
+          suggestion.titlePosition = 2;  
+          suggestion.titleOpacity = 1;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 1;
+          });
+        } else if(scrollPosition === 14.5 + (index)*4.5){
+          suggestion.titlePosition = 4;  
+          suggestion.titleOpacity = .8;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 0.8;
+          });
+        } else if(scrollPosition === 14.75 + (index)*4.5){
+          suggestion.titlePosition = 8;  
+          suggestion.titleOpacity = .5;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 0.3;
+          });
+        } else if(scrollPosition === 15 + (index)*4.5){
+          suggestion.titlePosition = 20;  
+          suggestion.titleOpacity = 0;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 0;
+          });
+        } else if(scrollPosition < 11 + (index)*4.5){
+          suggestion.titlePosition = 20;  
+          suggestion.titleOpacity = 0;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 0;
+          });
+        }
       });
     }
-}
-
-
-//////////////////////////////////////////////  Life cycle  //////////////////////////////////////////////
-  ngAfterViewInit(): void {
-    window.addEventListener("wheel", () => {
-      this.moveLogo(window.scrollY);
-      this.setBackgroundColor(window.scrollY);
-      this.moveIcon(window.scrollY);
-    });    
-    window.addEventListener("scroll", () => {
-      this.moveLogo(window.scrollY);
-      this.setBackgroundColor(window.scrollY);
-      this.moveIcon(window.scrollY);
+    const scale: number = 1 - this.scroll/100;
+    scale >= 0 ? this.scaleTypes = 1 - this.scroll/100 : this.scaleTypes = 0;
+    this.styleTypes.forEach((style: StyleText, index: number) => {
+      if(index === 0 || index === 1){
+        const opacity: number = 1 - this.scroll/40;
+        opacity > 0 ? style.opacity = opacity : style.opacity = 0;
+        if(style.left != null)  opacity > 0 ? style.left = opacity*10 : style.left = 0;
+        if(style.right != null)  opacity > 0 ? style.right = opacity*10 : style.right = 0;
+      }
     });
-    this.triggerLogoAnimation = "show";
+    this.styleFirst.forEach((style: StyleText, index: number) => {
+      if(index === 0 || index === 1){
+        const opacity: number = this.scroll/40 - 2;
+        opacity > 0 ? style.opacity = opacity : style.opacity = 0;
+        if(style.left != null)  opacity > 0 ? style.left = opacity*10 : style.left = 0;
+        if(style.right != null)  opacity > 0 ? style.right = opacity*10 : style.right = 0;
+        if(opacity >= 1 && opacity < 2.5){
+          this.opacityCards = [1,0,0,0,0];
+          style.backgroundImage = "url('../../assets/common/map.jpg')";
+          style.color = "transparent";
+        }
+        else if(opacity > 2.5 && opacity < 4){
+          this.opacityCards = [0,1,0,0,0];
+          style.backgroundImage = "url('../../assets/common/add.jpg')";
+          style.color = "transparent";
+        }
+        else if(opacity > 4 && opacity < 5.5){
+          this.opacityCards = [0,0,1,0,0];
+          style.backgroundImage = "url('../../assets/common/help.jpg')";
+          style.color = "transparent";
+        }
+        else if(opacity > 5.5 && opacity < 7){
+          this.opacityCards = [0,0,0,1,0];
+          style.backgroundImage = "url('../../assets/common/profile.jpg')";
+          style.color = "transparent";
+        }
+        else if(opacity > 7 && opacity < 8.5 && this.isAdmin){
+          this.opacityCards = [0,0,0,0,1];
+          style.backgroundImage = "url('../../assets/common/admin.jpg')";
+          style.color = "transparent";
+        }
+        else{
+          this.opacityCards = [0,0,0,0,0];
+        }
+        if(opacity > 9){
+          style.color = "transparent";
+          style.backgroundImage = "url('../../assets/common/profile.jpg')";
+          style.opacity = 10 - opacity;
+          this.opacityNavbar = 10 - opacity;
+        } else{
+          this.opacityNavbar = 1;
+        }
+      }
+    });
+    const maxScroll: number = this.isAdmin ? 7 : 8;
+    if(scrollPosition > maxScroll){
+      verifyPosition > 0 ? this.topSuggestions = verifyPosition : this.topSuggestions = 0;
+      verifyPosition > 0 ? this.overflow = "hidden" : this.overflow = "auto";
+    }
+    sessionStorage.setItem("scroll",this.scroll.toString());
   }
-  ngOndestroy(): void{
-    this.themeSubscriber.unsubscribe();
+  private ngOnInit(): void{
+    if(localStorage.getItem("role") === "Admin")  this.isAdmin = true;
+    if(sessionStorage.getItem("scroll") != null)  this.scroll = Number(sessionStorage.getItem("scroll"));
+    this.setBackground(this.scroll);
+    this.databaseService.getPlacesSuggestionsOfUser(localStorage.getItem('id')).subscribe((stationsOfUser: any) => {
+      const favoritesStationsName = Array.from(new Set(stationsOfUser.near_stations.map((item) => item.name_station)));
+      favoritesStationsName.forEach((name: string,index) => {        
+        this.favoritesStations.push({
+          name_station: name,
+          cards: [],
+          transform: 0,
+          titlePosition: 10,
+          titleOpacity: 0,
+          categories: []
+        });
+      });
+      let counter: number = 0;
+      if(this.favoritesStations.length > 0){
+        stationsOfUser.near_stations.forEach((infos: any) => {
+          this.databaseService.getPlaceInfos(infos.id_place,null).subscribe((infosPlaces: PlaceCardParams) => {
+            let find: SuggestionShow = this.favoritesStations.find((suggestion: SuggestionShow) => suggestion.name_station === infos.name_station); 
+            find.cards.push(infosPlaces);
+            counter++;
+            this.loadingValue = counter/stationsOfUser.near_stations.length * 100;
+            if(counter === stationsOfUser.near_stations.length){
+              this.showSuggestion = true;
+              this.favoritesStations.forEach((suggestion: SuggestionShow) => {
+                categories.forEach((category: string) => {
+                  const counter: number = suggestion.cards.filter((element: PlaceCardParams) => element.place.category === category).length
+                  if(counter > 0) suggestion.categories.push({
+                    value: category.toLocaleLowerCase(),
+                    counter: counter,
+                    icon: this.placesService.getIconOfCategory(category),
+                    percent: 0
+                  });
+                });
+              });
+              let scrollPosition: number = this.scroll/40 - 2;  
+              if(scrollPosition >= 11){
+                this.favoritesStations.forEach((suggestion: SuggestionShow,index: number) => {
+                  if(scrollPosition === 11 + (index)*4.5){
+                    suggestion.titlePosition = 8;  
+                    suggestion.titleOpacity = .5;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 0.3;
+                    });
+                  } else if(scrollPosition === 11.25 + (index)*4.5){
+                    suggestion.titlePosition = 4;  
+                    suggestion.titleOpacity = .8;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 0.8;
+                    });
+                  } else if(scrollPosition === 11.5 + (index)*4.5){
+                    suggestion.titlePosition = 2;  
+                    suggestion.titleOpacity = 1;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 1;
+                    });
+                  }else if(scrollPosition === 14.25 + (index)*4.5){
+                    suggestion.titlePosition = 2;  
+                    suggestion.titleOpacity = 1;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 1;
+                    });
+                  } else if(scrollPosition === 14.5 + (index)*4.5){
+                    suggestion.titlePosition = 4;  
+                    suggestion.titleOpacity = .8;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 0.8;
+                    });
+                  } else if(scrollPosition === 14.75 + (index)*4.5){
+                    suggestion.titlePosition = 8;  
+                    suggestion.titleOpacity = .5;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 0.3;
+                    });
+                  } else if(scrollPosition === 15 + (index)*4.5){
+                    suggestion.titlePosition = 20;  
+                    suggestion.titleOpacity = 0;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 0;
+                    });
+                  } else if(scrollPosition < 11 + (index)*4.5){
+                    suggestion.titlePosition = 20;  
+                    suggestion.titleOpacity = 0;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 0;
+                    });
+                  } else{
+                    suggestion.titlePosition = 2;  
+                    suggestion.titleOpacity = 1;
+                    suggestion.categories.forEach((category: Counter) => {
+                      category.percent = 1;
+                    });
+                  }
+                });
+              }
+            }
+          });
+        });
+      } else{
+        this.loadingValue = 50;
+        setTimeout(() => {
+          this.showSuggestion = true;
+          this.loadingValue = 100;
+        }, 1000);
+      }
+      
+    });
+  }
+  private ngAfterContentInit(): void {
+    window.addEventListener("wheel", (event:Event) => {
+      if(this.showSuggestion) this.setBackground(event);
+    });    
+    window.addEventListener("scroll", (event:Event) => {
+      if(this.showSuggestion) this.setBackground(event);
+    });
   }
 }
-
-
-interface StyleLine{
-  textColor: string,
-  titleColor: string,
-  shadowGradient: string
+interface StyleText{
+  opacity: number,
+  top?: number,
+  left?: number,
+  right?: number,
+  bottom?: number,
+  text: string,
+  backgroundImage?: string,
+  color: string
+  font: string
 }
-interface PositionIcon{
-  paddingIcon: number,
-  scaleShadow: number,
-  textOpacity: boolean,
-  titleOpacity: boolean
+interface SuggestionShow{
+  name_station: string,
+  cards: PlaceCardParams[],
+  transform: number,
+  titlePosition: number,
+  titleOpacity: number,
+  categories: Counter[]
 }

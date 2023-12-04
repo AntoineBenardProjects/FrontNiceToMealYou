@@ -1,21 +1,21 @@
-import { Component, ElementRef, HostBinding } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Data } from 'src/data';
-import { Comment, RestaurantsGrades } from '../model/comment';
-import { Horaires } from '../model/horaires';
-import { Pictures } from '../model/pictures';
+import { Component, HostBinding } from '@angular/core';
+import { Comment } from '../shared/model/table/comment';
+import { Horaires } from '../shared/model/table/horaires';
+import { Pictures } from '../shared/model/table/pictures';
 import { DatabaseService } from '../services/database.service';
 import { Router } from '@angular/router';
-import { ThemeService } from '../services/theme.service';
-import { ColorPalette } from 'src/assets/style-infos/palettes';
-import { Place, Restaurant } from '../model/places';
-import { AutocompleteInfos, ButtonInfos, CheckboxInfos, InputInfos, SelectData, SelectInfos } from '../shared/model/designs';
-import { TypePicture } from '../model/typePicture';
+import { City, Place } from '../shared/model/table/places';
+import { ButtonInfos, CheckboxInfos, InputInfos, SelectData, SelectInfos } from '../shared/model/designs';
 import { faCheck, faXmark, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { PlacesService } from '../services/places.service';
-import { Ligne, Station } from '../model/transports';
-import { HttpClient } from '@angular/common/http';
-import { PlaceOfUser } from '../model/user';
+import { Ligne, Station } from '../shared/model/table/transports';
+import { PlaceOfUser } from '../shared/model/table/user';
+import { invalidSelectInfosAddComponent, validSelectInfosAddComponent } from '../shared/model/design/selectsDesign';
+import { horairesInputAddComponent, invalidInputAddComponent, normalInputAddComponent, validInputAddComponent } from '../shared/model/design/inputsDesign';
+import { blackButtonPlaceCard, iconsAddComponent, iconsFirstPageComponent, invalidButtonAddComponent, myPlacesButtonInfosAddComponent, uploadButtonInfosAddComponent, validButtonAddComponent } from '../shared/model/design/buttonsDesign';
+import { checkboxInfosAddComponent } from '../shared/model/design/checkboxesDesign';
+import { Type, TypeOfPlace } from '../shared/model/table/type';
+import { Message } from '../shared/model/params/message';
 
 @Component({
   selector: 'app-add',
@@ -24,194 +24,125 @@ import { PlaceOfUser } from '../model/user';
   animations: []
 })
 export class AddComponent {
-
-  protected options: string[] = ['Restaurant', 'Bar', 'Autres'];
-  private facadeFile: string = "";
-  protected facadeName: string = "Façade";
-  protected allPictures: Pictures[] = [];
-  protected positifs: Comment[] = [];
-  protected negatifs: Comment[] = [];
   
-
-
   constructor(
     private databaseService: DatabaseService,
     private placesService: PlacesService,
-    private router: Router,
-    private elementRef: ElementRef,
-    private themeService: ThemeService,
-    private http: HttpClient) { 
-      this.themeSubscriber = themeService.getPalette().subscribe((Palette: ColorPalette) => {
-        this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
-        this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
-        this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-        this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-        this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
-      });
-    }
-  private themeSubscriber: Subscription = new Subscription();
+    private router: Router) {}
 
 
-//////////////////////////////////////////////  Style  //////////////////////////////////////////////
-  protected horairesInput: InputInfos = {
-    color: "var(--black)",
-    placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--black)",
-    backgroundColor: "var(--mainColor)",
-    borderColor: "var(--black)",
-    borderColorActive: "var(--black)",
-  }
-  protected normalInput: InputInfos = {
-    color: "var(--black)",
-    placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--thirdColor)",
-    backgroundColor: "var(--mainColor)",
-    borderColor: "var(--black)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--thirdColor)",
-    hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--thirdColor)",
-  }
-  protected validInput: InputInfos = {
-    color: "var(--black)",
-    placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--thirdColor)",
-    backgroundColor: "var(--mainColor)",
-    borderColor: "var(--thirdColor)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--thirdColor)",
-    hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--thirdColor)",
-    
-  }
-  protected invalidInput: InputInfos = {
-    color: "var(--black)",
-    placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--secondColor)",
-    backgroundColor: "var(--mainColor)",
-    borderColor: "var(--secondColor)",
-    borderColorActive: "var(--secondColor)",
-    hoverBackgroundColor: "var(--secondColor)",
-    hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--secondColor)",
-  }
-  protected validSelectInfos: SelectInfos = {
-    backgroundColor: 'var(--mainColor)',
-    textColor: 'var(--black)',
-    optionTextColor: 'var(--white)',
-    optionBackgroundColor: 'var(--black)',
-    hoverBackgroundColor: 'var(--thirdColor)',
-    hoverTextColor: 'var(--white)',
-    borderColor: 'var(--thirdColor)',
-    width: 10,
-    topHoverBackgroundColor: "var(--thirdColor)",
-    topHoverColor: "var(--white)",
-    topHoverBorderColor: "var(--thirdColor)"
-  }
-  protected invalidSelectInfos: SelectInfos = {
-    backgroundColor: 'var(--mainColor)',
-    textColor: 'var(--black)',
-    optionTextColor: 'var(--white)',
-    optionBackgroundColor: 'var(--black)',
-    hoverBackgroundColor: 'var(--secondColor)',
-    hoverTextColor: 'var(--white)',
-    borderColor: 'var(--secondColor)',
-    width: 10,
-    topHoverBackgroundColor: "var(--secondColor)",
-    topHoverColor: "var(--white)",
-    topHoverBorderColor: "var(--secondColor)"
-  }
-  protected validButton: ButtonInfos = {
-    color: 'var(--mainColor)',
-    colorActive: 'var(--thirdColor)',
-    backgroundColor: 'var(--thirdColor)',
-    backgroundColorActive: 'var(--mainColor)',
-    fontWeight: 1000
-  }
-  protected invalidButton: ButtonInfos = {
-    color: 'var(--mainColor)',
-    colorActive: 'var(--secondColor)',
-    backgroundColor: 'var(--secondColor)',
-    backgroundColorActive: 'var(--mainColor)',
-    fontWeight: 1000
-  }
-  protected secondLineButton: ButtonInfos = {
-    color: 'var(--black)',
-    colorActive: 'var(--mainColor)',
-    backgroundColor: 'var(--mainColor)',
-    backgroundColorActive: 'var(--black)',
-    fontSize: "30px"
-  }
-  protected checkboxInfos: CheckboxInfos = {
-    color: "var(--white)",
-    backgroundColor: "var(--secondColor)",
-    borderColor: "var(--secondColor)",
-    colorActive: "var(--white)",
-    backgroundColorActive: "var(--thirdColor)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--mainColor)",
-    hoverBorderColor: "var(--secondColor)",
-    hoverTextColor: "var(--secondColor)",
-    hoverBackgroundColorValid: "var(--mainColor)",
-    hoverBorderColorValid: "var(--thirdColor)",
-    hoverTextColorValid: "var(--thirdColor)",
-  }
-  protected autocompleteInfos: AutocompleteInfos = {
-    textColor: 'var(--white)',
-    textColorActive: 'var(--white)',
-    backgroundColor: 'var(--black)',
-    backgroundColorActive: 'var(--thirdColor)'
-  }
+//////////////////////////////////////////////  Variables  //////////////////////////////////////////////
+/*  Infos style  */
+  protected horairesInput: InputInfos = horairesInputAddComponent;
+  protected normalInput: InputInfos = normalInputAddComponent;
+  protected validInput: InputInfos = validInputAddComponent;
+  protected invalidInput: InputInfos = invalidInputAddComponent;
+  protected validSelectInfos: SelectInfos = validSelectInfosAddComponent;
+  protected invalidSelectInfos: SelectInfos = invalidSelectInfosAddComponent;
+  protected stationButtonInfos: ButtonInfos = blackButtonPlaceCard;
+  protected myPlacesButtonInfos: ButtonInfos = myPlacesButtonInfosAddComponent;
+  protected validButtonInfos: ButtonInfos = validButtonAddComponent;
+  protected invalidButtonInfos: ButtonInfos = invalidButtonAddComponent;
+  protected uploadButtonInfos: ButtonInfos = uploadButtonInfosAddComponent;
+  protected checkboxInfos: CheckboxInfos = checkboxInfosAddComponent;
+  protected iconsInfos: ButtonInfos = iconsAddComponent;
 
-//////////////////////////////////////////////  Form  //////////////////////////////////////////////
-  protected placeInfo: Restaurant = {
-      id: "",
-      name: "",
-      address: "",
-      tested: false,
-      category: "",
-      type: "",
-      lat: 0,
-      lng: 0,
-      link_menu: "",
-      website: "",
-      google_note: 0,
-      total_google_note: 0,
-      vegetarian: false,
-      delivery: false,
-      visible: false,
-  }
-  setValue(event: any, params: string, day?: string, moment?: string): void{
-    if(params === 'address')  this.placeInfo.address = event.target.value;
-    else if(params === 'category'){
-      this.typesSelect = event;
-      const find: SelectData = event.find((element: SelectData) => element.selected === true);
-      find != null ? this.placeInfo.category = find.name : this.placeInfo.category = "";
-      this.placeInfo.category === "" ?  this.categoryError = "Le lieu doit appartenir à une catégorie" : this.categoryError = "";
-      this.initOptions(this.placeInfo.category);
-    }
-    else if(params === 'name'){
-      this.placeInfo.name = event.target.value;
-    }
-    else if(params === 'type'){
-      const find: SelectData = event.find((element: SelectData) => element.selected === true);
-      find != null ? this.placeInfo.type = find.name : this.placeInfo.type = "";
-      this.placeInfo.type === "" ?  this.typeError = "Le lieu doit avoir un type" : this.typeError = "";
-    }
-    else if(params === 'comment')  this.comment.comment = event.target.value;
-    else if(params === 'quantity')  this.comment.quantity = Number(event.target.value);
-    else if(params === 'quality_price')  this.comment.quality_price = Number(event.target.value);
-    else if(params === 'service')  this.comment.service = Number(event.target.value);
-    else if(params === 'website')  this.placeInfo.website = event.target.value;
-    else if(params === 'menu')  this.placeInfo.link_menu = event.target.value;
-    else if(params === 'tested')  this.placeInfo.tested = event;
-    else if(params === 'horaires'){
-      let find: Horaires = this.horaires.find((element: Horaires) => element.day === day);
-      find[moment] = event.target.value;
-    }
-    else if(params === 'visible'){this.placeInfo.visible = event;}
-  }
+/*  Css  */
+  @HostBinding("style.--titleColor") titleColor: string = 'var(--secondColor)';
+  @HostBinding("style.--pictureColor") pictureColor: string = 'var(--black)';
+  @HostBinding("style.--stationColor1") stationColor1: string = 'var(--black)';
+  @HostBinding("style.--stationColor2") stationColor2: string = 'var(--white)';
+  @HostBinding("style.--backgroundHeaderHoraires1") backgroundHeaderHoraires1: string = 'var(--secondColor)';
+  @HostBinding("style.--backgroundHeaderHoraires2") backgroundHeaderHoraires2: string = 'var(--black)';
+  @HostBinding("style.--colorHeaderHoraires") colorHeaderHoraires1: string = 'var(--white)';
+  @HostBinding("style.--colorBodyHoraires") colorBodyHoraires: string = 'var(--black)';
 
+/*  Icons  */
+  protected checkIcon: IconDefinition = faCheck;
+  protected crossIcon: IconDefinition = faXmark;
+/*  Selects  */
+  protected typeSelect: SelectData[] = [];
+  protected categorySelect: SelectData[] = [];
+/*  Algos  */
+  protected placeInfos: Place = {
+    id: "",
+    name: "",
+    address: "",
+    category: "",
+    lat: 0,
+    lng: 0,
+    link_menu: "",
+    website: "",
+    visible: false,
+    id_creator: null,
+    id_city: "",
+    creation: "",
+    postal: "",
+    phone: "",
+    promotion: ""
+  }
+  protected picturesAdded: Pictures[] = [];
+  protected stationsAdded: Station[] = [];
+  protected horairesAdded: Horaires[] = [{
+    day: "Lundi",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: "",
+  },
+  {
+    day: "Mardi",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: "",
+  },
+  {
+    day: "Mercredi",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: "",
+  },
+  {
+    day: "Jeudi",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: "",
+  },
+  {
+    day: "Vendredi",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: "",
+  },
+  {
+    day: "Samedi",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: "",
+  },
+  {
+    day: "Dimanche",
+    ouverture: "",
+    fermeture_midi: "",
+    ouverture_soir: "",
+    fermeture: "",
+    id_place: "",
+  }
+  ];
+  //Contient les ids des types sélectionnés
+  protected selectedTypesIds: string[] = [];
+  //Contient l'horaire type rempli par l'utilisateur afin que chaque jour puisse prendre ses valeurs
   protected globalHoraires: Horaires = {
     day: "",
     ouverture: "",
@@ -220,14 +151,8 @@ export class AddComponent {
     fermeture: "",
     id_place: ""
   }
-  setAllHoraires(event: any,moment: string): void{
-    this.globalHoraires[moment] = event.target.value;
-    this.horaires.forEach((element: Horaires) => {
-      element[moment] = event.target.value;
-    });
-    this.horaires = this.horaires.slice();
-  }
-  protected dayOpen: DayOpen = {
+  //Contient un boolean par jour disant si celui-ci est ouvert
+  protected dayOpen: isDayOpen = {
     Lundi: true,
     Mardi: true,
     Mercredi: true,
@@ -236,9 +161,71 @@ export class AddComponent {
     Samedi: true,
     Dimanche: true
   }
-  closeDay(day: string): void{
+  protected comment: Comment = {
+    id_place: "",
+    id_user: "",
+    comment: "",
+    tested: false
+  }
+  private cityOfPlace: City = {
+    name: "",
+    id: "",
+    reg: "",
+    land: "",
+    department: ""
+  }
+  protected firstSectionPosition: number = -20;
+  protected secondSectionPosition: number = -20;
+  protected gradeSectionPosition: number = 70;
+  protected horairesSectionPosition: number = 70;
+  protected isValidAddress: boolean = false;
+  protected errorMessage: string = "";
+  protected addressError: string = "";
+  protected categoryError: string = "";
+  protected typeError: string = "";
+  protected logoImageSrc: string = "../../assets/logo/red_logo.png";
+  protected backgroundColor: string = 'var(--mainColor)';
+  protected device: string = "";
+
+//////////////////////////////////////////////  Form  ////////////////////////////////////////////// 
+  protected setValue(event: any, params: string, day?: string, moment?: string): void{
+    if(params === 'category'){
+      this.categorySelect = event;
+      const find: SelectData = event.find((element: SelectData) => element.selected === true);
+      find != null ? this.placeInfos.category = find.name : this.placeInfos.category = "";
+      this.placeInfos.category === "" ?  this.categoryError = "Le lieu doit appartenir à une catégorie" : this.categoryError = "";
+      this.initOptions(this.placeInfos.category);
+    }
+    else if(params === 'type'){
+      this.selectedTypesIds = [];
+      const find: SelectData[] = event.filter((element: SelectData) => element.selected === true);
+      if(find != null){
+        find.forEach((type: SelectData) => {
+          this.selectedTypesIds.push(type.id);
+        });
+      }
+      this.selectedTypesIds.length === 0 ?  this.typeError = "Le lieu doit avoir au moins un type" : this.typeError = "";
+    }
+    else if(params === 'prix_cocktail' || params === 'prix_coffee' || params === 'prix_pinte')   this.placeInfos[params] = Number(event.target.value);
+    else if(params === 'comment')   this.comment[params] = event.target.value;
+    else if(params === 'website' || params === 'menu' || params === 'promotion' || params === 'name' || params === 'address')   this.placeInfos[params] = event.target.value;
+    else if(params === 'quantity' || params === 'quality_price' || params === 'service' || params === 'price')  this.comment[params] = Number(event.target.value);
+    else if(params === 'tested' || params === 'visible')  this.placeInfos[params] = event;
+    else if(params === 'horaires'){
+      let find: Horaires = this.horairesAdded.find((element: Horaires) => element.day === day);
+      find[moment] = event.target.value;
+    }
+  }
+  protected setAllHoraires(event: any,moment: string): void{
+    this.globalHoraires[moment] = event.target.value;
+    this.horairesAdded.forEach((element: Horaires) => {
+      element[moment] = event.target.value;
+    });
+    this.horairesAdded = this.horairesAdded.slice();
+  }
+  protected closeDay(day: string): void{
     this.dayOpen[day] = !this.dayOpen[day];
-    let find: Horaires = this.horaires.find((horaires: Horaires) => horaires.day === day);
+    let find: Horaires = this.horairesAdded.find((horairesAdded: Horaires) => horairesAdded.day === day);
     if(this.dayOpen[day]){
       find.ouverture = this.globalHoraires.ouverture;
       find.fermeture_midi = this.globalHoraires.fermeture_midi;
@@ -250,405 +237,88 @@ export class AddComponent {
       find.ouverture_soir = '';
       find.fermeture = '';  
     }
-    this.horaires = this.horaires.slice();
+    this.horairesAdded = this.horairesAdded.slice();
   }
-  protected restaurantsTypesSelect: SelectData[] = [];
-  protected typesSelect: SelectData[] = [];
-  initOptions(category: string): void{
-    this.autocompleteName = [];
-    Data.forEach((type: TypePicture) => {
-      if(type.place === category) {
-        const selectValue: SelectData = {
-          id: type.type,
-          name: type.type
-        }
-        if(this.placeInfo.type === selectValue.id)  selectValue.selected = true;
-        this.restaurantsTypesSelect.push(selectValue);
-      }
-    });
-    this.restaurantsTypesSelect = [...this.restaurantsTypesSelect];
-    if(category === '')  this.typesSelect = [{id: "res", name: "Restaurant",selected: false}];
-    switch (category){
-      case  'Restaurant':
-        this.databaseService.getAllRestaurants().subscribe((res: Restaurant[]) => {
-          this.allPlaces = res;
-          res.forEach((element: Restaurant) => {
-            this.autocompleteAddress.push({
-              id: element.id,
-              name: element.address,
-              subtitle: element.name,
-              selected: false
-            });
-            this.autocompleteName.push({
-              id: element.id,
-              name: element.name,
-              subtitle: element.address,
-              selected: false
-            });
-          });
+  private initOptions(category: string): void{
+    if(category !== ''){
+      this.databaseService.getAllTypes().subscribe((types: Type[]) => {
+        types.forEach((type: Type) => {
+          if(type.category === category) {
+            const selectValue: SelectData = {
+              id: type.id,
+              name: type.name
+            }
+            this.typeSelect.push(selectValue);
+          }
         });
-      break;
-      case '':
-        this.databaseService.getAllRestaurants().subscribe((res: Restaurant[]) => {
-          this.allPlaces = res;
-          res.forEach((element: Restaurant) => {
-            this.autocompleteAddress.push({
-              id: element.id,
-              name: element.address,
-              subtitle: element.name,
-              selected: false
-            });
-            this.autocompleteName.push({
-              id: element.id,
-              name: element.name,
-              subtitle: element.address,
-              selected: false
-            });
-          });
-        });
-      break;
+        this.typeSelect = [...this.typeSelect];
+      });
+    } else{
+      this.categorySelect = [
+        {id: "res", name: "Restaurant",selected: false},
+        {id: "bar", name: "Bar",selected: false},
+        {id: "loi", name: "Loisir",selected: false},
+        {id: "mag", name: "Magasin",selected: false},
+        {id: "ser", name: "Service",selected: false},
+        {id: "aut", name: "Autre",selected: false},
+      ];
+      this.typeSelect = [];
     }
-  }
-  protected checkIcon: IconDefinition = faCheck;
-  protected validName() : boolean{
-    if(this.placeInfo.name.length > 2){
-      this.nameError = ""
-      return true;
-    }
-    this.nameError = "Le nom doit faire plus de deux caractères.";
-    return false;
   }
   protected canSubmit() : boolean{
-    if(this.validName() && this.validAddress && this.placeInfo.category !== '' && this.placeInfo.type !== ''){
-      return true;
+    if(this.placeInfos.name.length > 2 && this.isValidAddress && this.placeInfos.category !== ''){
+      if(this.placeInfos.category === "Autre") return true;
+      else if(this.selectedTypesIds.length !== 0) return true;
     }
     return false;
   }
-  fillForm(id: string): void{
-    this.placeInfo = this.allPlaces.find((element: Restaurant) => element.id === id);
-    this.databaseService.getPicturesOfPlaceByUser(id, localStorage.getItem("id")).subscribe((res: Pictures[]) => {
-      if(res != null){
-        this.pictures = res;
-      }
-      else this.pictures = [];
-    });
-    this.databaseService.getCommentOfPlaceByUser(this.placeInfo.id,localStorage.getItem("id"),this.placeInfo.category).subscribe((res: Comment) => {
-      if(res != null) this.comment = res;
-      else this.comment = {
-        id_place: "",
-        id_user: "",
-        comment: "",
-      }
-    });
-    this.stations = [];
-    this.databaseService.getStationOfPlace(this.placeInfo.id).subscribe((station: Station[]) => {
-      this.stations = station;
-      let counter: number = 0;
-      this.stations.forEach((element:Station) => {
-        element.lignes = [];
-        this.databaseService.getLignesOfStation(element.id).subscribe((lignes: Ligne[]) => {
-          counter++;
-          lignes.sort((a: Ligne, b: Ligne) => {
-            if(a.name < b.name) return -1;
-              return 1;
-          });
-          lignes.forEach((ligne: Ligne) => {
-            element.lignes.push(ligne.name)
-          });
-          element.reg = lignes[0].reg;
-          if(counter === this.stations.length){
-            this.stations.sort((a:Station, b:Station) => {
-              if(a.name < b.name) return -1;
-              return 1;
-            });
-          }
-        });
-      });
-    });
-    this.databaseService.getHorairesOfPlace(id, localStorage.getItem("id")).subscribe((res: Horaires[]) => {
-      if(res.length > 0){
-        this.horaires = res;
-        if(res[0].id_user === 'google') this.googleHoraires = res;  
-      }
-    });
-
-    this.validAddress = true;
-    this.addressError = "";
-    this.typesSelect.forEach((element: SelectData) => {
-      if(element.name === this.placeInfo.category) element.selected = true;
-      else element.selected = false;
-    });
-    this.initOptions(this.placeInfo.category);
-    
-  }
-
-//////////////////////////////////////////////  Comment  //////////////////////////////////////////////
-  protected comment: RestaurantsGrades = {
-    id_place: "",
-    id_user: "",
-    comment: "",
-  }
-
-//////////////////////////////////////////////  Horaires  //////////////////////////////////////////////
-  setSecondLine(index: number) : void{
-    this.horaires[index].secondLine = !this.horaires[index].secondLine;
-  }
-
-  
-  
-
-  protected validAddress: boolean = false;
-  protected stations: Station[] = [];
-  protected googleHoraires: Horaires[] = [];
-  protected horaires: Horaires[] = [{
-    day: "Lundi",
-    ouverture: "",
-    fermeture_midi: "",
-    ouverture_soir: "",
-    fermeture: "",
-    id_place: "",
-    secondLine: false
-  },
-  {
-    day: "Mardi",
-    ouverture: "",
-    fermeture_midi: "",
-    ouverture_soir: "",
-    fermeture: "",
-    id_place: "",
-    secondLine: false
-  },
-  {
-    day: "Mercredi",
-    ouverture: "",
-    fermeture_midi: "",
-    ouverture_soir: "",
-    fermeture: "",
-    id_place: "",
-    secondLine: false
-  },
-  {
-    day: "Jeudi",
-    ouverture: "",
-    fermeture_midi: "",
-    ouverture_soir: "",
-    fermeture: "",
-    id_place: "",
-    secondLine: false
-  },
-  {
-    day: "Vendredi",
-    ouverture: "",
-    fermeture_midi: "",
-    ouverture_soir: "",
-    fermeture: "",
-    id_place: "",
-    secondLine: false
-  },
-  {
-    day: "Samedi",
-    ouverture: "",
-    fermeture_midi: "",
-    ouverture_soir: "",
-    fermeture: "",
-    id_place: "",
-    secondLine: false
-  },
-  {
-    day: "Dimanche",
-    ouverture: "",
-    fermeture_midi: "",
-    ouverture_soir: "",
-    fermeture: "",
-    id_place: "",
-    secondLine: false
-  }
-  ];
-
   protected nameFilled(): void{
-    if(this.placeInfo.id === '' && this.placeInfo.address !== '') this.checkAddress();
+    if(this.placeInfos.address !== '') this.checkAddress();
   }
-
   protected checkAddress(): void{
-    this.stations = [];
+    this.stationsAdded = [];
     let geocoder = new google.maps.Geocoder();
+    const fullAddress: string = this.placeInfos.name + ", " + this.placeInfos.address;
     geocoder.geocode({
-      'address': this.placeInfo.name + ", " + this.placeInfo.address
+      'address': fullAddress
     }, (results, status) => {
         if (status == google.maps.GeocoderStatus.OK) {
-          if(results[0].types[0] !== 'street_address'){
-            this.databaseService.getPlaceDetails(results[0].place_id).subscribe((res:any) => {
-              this.horaires = [];
-              this.placeInfo.delivery = res.delivery;
-              this.placeInfo.google_note = res.google_note;
-              this.placeInfo.total_google_note = res.total_ratings;
-              this.placeInfo.website = res.website;
-              this.placeInfo.vegetarian = res.vegetarian;
-              
-              let monday: Horaires = {
-                day: "Lundi",
-                ouverture: "",
-                fermeture_midi: "",
-                ouverture_soir: "",
-                fermeture: "",
-                id_place: "",
-                secondLine: false
-              }
-              let tuesday: Horaires = {
-                day: "Mardi",
-                ouverture: "",
-                fermeture_midi: "",
-                ouverture_soir: "",
-                fermeture: "",
-                id_place: "",
-                secondLine: false
-              }
-              let wednesday: Horaires = {
-                day: "Mercredi",
-                ouverture: "",
-                fermeture_midi: "",
-                ouverture_soir: "",
-                fermeture: "",
-                id_place: "",
-                secondLine: false
-              }
-              let thursday: Horaires = {
-                day: "Jeudi",
-                ouverture: "",
-                fermeture_midi: "",
-                ouverture_soir: "",
-                fermeture: "",
-                id_place: "",
-                secondLine: false
-              }
-              let friday: Horaires = {
-                day: "Vendredi",
-                ouverture: "",
-                fermeture_midi: "",
-                ouverture_soir: "",
-                fermeture: "",
-                id_place: "",
-                secondLine: false
-              }
-              let saturday: Horaires = {
-                day: "Samedi",
-                ouverture: "",
-                fermeture_midi: "",
-                ouverture_soir: "",
-                fermeture: "",
-                id_place: "",
-                secondLine: false
-              }
-              let sunday: Horaires = {
-                day: "Dimanche",
-                ouverture: "",
-                fermeture_midi: "",
-                ouverture_soir: "",
-                fermeture: "",
-                id_place: "",
-                secondLine: false
-              }
-  
-              res.horaires.forEach((element: any) => {
-                switch(element.open.day){
-                  case 0 : 
-                    if(sunday.ouverture !== ""){
-                      sunday.ouverture_soir = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      sunday.fermeture = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                      sunday.secondLine = true;
-                    } else{
-                      sunday.ouverture = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      sunday.fermeture_midi = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                    }
-                  break;
-                  case 1 : 
-                    if(monday.ouverture !== ""){
-                      monday.ouverture_soir = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      monday.fermeture = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                      monday.secondLine = true;
-                    } else{
-                      monday.ouverture = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      monday.fermeture_midi = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                    }
-                  break;
-                  case 2 : 
-                    if(tuesday.ouverture !== ""){
-                      tuesday.ouverture_soir = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      tuesday.fermeture = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                      tuesday.secondLine = true;
-                    } else{
-                      tuesday.ouverture = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      tuesday.fermeture_midi = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                    }
-                  break;
-                  case 3 : 
-                    if(wednesday.ouverture !== ""){
-                      wednesday.ouverture_soir = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      wednesday.fermeture = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                      wednesday.secondLine = true;
-                    } else{
-                      wednesday.ouverture = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      wednesday.fermeture_midi = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                    }
-                  break;
-                  case 4 : 
-                    if(thursday.ouverture !== ""){
-                      thursday.ouverture_soir = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      thursday.fermeture = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                      thursday.secondLine = true;
-                    } else{
-                      thursday.ouverture = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      thursday.fermeture_midi = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                    }
-                  break;
-                  case 5 : 
-                    if(friday.ouverture !== ""){
-                      friday.ouverture_soir = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      friday.fermeture = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                      friday.secondLine = true;
-                    } else{
-                      friday.ouverture = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      friday.fermeture_midi = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                    }
-                  break;
-                  case 6 : 
-                    if(saturday.ouverture !== ""){
-                      saturday.ouverture_soir = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      saturday.fermeture = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                      saturday.secondLine = true;
-                    } else{
-                      saturday.ouverture = element.open.time.substring(0,2) + ":" + element.open.time.substring(2);
-                      saturday.fermeture_midi = element.close.time.substring(0,2) + ":" + element.close.time.substring(2);
-                    }
-                  break;
-                }
+          results[0].address_components.forEach((element: google.maps.GeocoderAddressComponent) => {
+            if(element.types[0] === 'locality') this.cityOfPlace.name = element.long_name;
+            else if(element.types[0] === 'administrative_area_level_2') this.cityOfPlace.department = element.long_name;
+            else if(element.types[0] === 'administrative_area_level_1') this.cityOfPlace.reg = element.long_name;
+            else if(element.types[0] === 'country') this.cityOfPlace.land = element.long_name;
+            else if(element.types[0] === 'postal_code') this.placeInfos.postal = element.long_name;
+          });
+          this.databaseService.getCityIdByProperties(this.cityOfPlace).subscribe((city: City) => {
+            if(city.id != null) this.cityOfPlace.id = city.id;
+            else{
+              this.cityOfPlace.id = this.placesService.setId();
+              this.databaseService.addCity(this.cityOfPlace).subscribe((message: Message) => {
+                console.log(message);
               });
-  
-              this.horaires.push(monday,tuesday,wednesday,thursday,friday,saturday,sunday);
-              this.googleHoraires = this.horaires.slice();
-            });
-          }
-          
+            }
+          });
           this.databaseService.getStationOfPlaceByCoords({
             lat: results[0].geometry.location.lat(),
             lng: results[0].geometry.location.lng()
-          }).subscribe((res: Station[]) => {
-            this.stations = res;
+          }).subscribe((stationsOfPlace: Station[]) => {
+            this.stationsAdded = this.placesService.getCopyOfElement(stationsOfPlace);
             let counter: number = 0;
-            this.stations.forEach((element:Station) => {
+            this.stationsAdded.forEach((element:Station) => {
               element.lignes = [];
-              this.databaseService.getLignesOfStation(element.id).subscribe((lignes: Ligne[]) => {
+              this.databaseService.getLignesOfStation(element.id).subscribe((lignesOfStation: Ligne[]) => {
                 counter++;
-                lignes.sort((a: Ligne, b: Ligne) => {
+                lignesOfStation.sort((a: Ligne, b: Ligne) => {
                   if(a.name < b.name) return -1;
                     return 1;
                 });
-                lignes.forEach((ligne: Ligne) => {
-                  element.lignes.push(ligne.name)
+                lignesOfStation.forEach((ligne: Ligne) => {
+                  element.lignes.push(ligne);
                 });
-                element.reg = lignes[0].reg;
-                if(counter === this.stations.length){
-                  this.stations.sort((a:Station, b:Station) => {
+                element.reg = lignesOfStation[0].reg;
+                if(counter === this.stationsAdded.length){
+                  this.stationsAdded.sort((a:Station, b:Station) => {
                     if(a.name < b.name) return -1;
                     return 1;
                   });
@@ -656,75 +326,30 @@ export class AddComponent {
               });
             });
           });
-          this.placeInfo.lat = results[0].geometry.location.lat();
-          this.placeInfo.lng = results[0].geometry.location.lng();
-          this.placeInfo.address = results[0].formatted_address;
-          this.validAddress = true;
+          this.placeInfos.lat = results[0].geometry.location.lat();
+          this.placeInfos.lng = results[0].geometry.location.lng();
+          this.placeInfos.address = results[0].formatted_address;
+          this.isValidAddress = true;
           this.addressError = "";
         } else {
           this.addressError = "Cette addresse n'existe pas";
-          this.validAddress = false;
+          this.isValidAddress = false;
         }
     });
   }
-
-//////////////////////////////////////////////  Complement  //////////////////////////////////////////////
-  protected pictures: Pictures[] = [];
-  protected crossIcon: IconDefinition = faXmark;
-  protected uploadButtonInfos: ButtonInfos = {
-    color: 'var(--mainColor)',
-    backgroundColor: 'var(--black)'
-  }
-  facadeImage(event: string) {
+  protected addImage(event: string) {
     const image: Pictures = {
       id: this.placesService.setId(),
       src: event,
-      id_place: this.placeInfo.id,
+      id_place: this.placeInfos.id,
       id_user: localStorage.getItem("id")
     }
-    this.pictures.push(image);
-    if(this.placeInfo.id !== '') this.databaseService.addPicture(image);
+    this.picturesAdded.push(image);
   }
-  removeImage(index: number){
-    const id: string = this.pictures[index].id;
-    this.pictures.splice(index,1);
-    this.databaseService.deletePicture(id);
-  }
-
-//////////////////////////////////////////////  Error  //////////////////////////////////////////////
-  protected errorMessage: string = "";
-  protected nameError: string = "";
-  protected addressError: string = "";
-  protected categoryError: string = "";
-  protected typeError: string = "";
-
-
-//////////////////////////////////////////////  Navbar  //////////////////////////////////////////////
-  protected logoImageSrc: string = "../../assets/logo/red_logo.png";
-  protected buttonColor: ButtonInfos = {
-    color: 'var(--mainColor)',
-    colorActive: 'var(--black)',
-    backgroundColor: 'var(--black)',
-    backgroundColorActive: 'var(--mainColor)',
-    fontWeight: 1000
-  }
-//////////////////////////////////////////////  Animation  //////////////////////////////////////////////
-  protected firstSectionPosition: number = -20;
-  protected secondSectionPosition: number = -20;
-  protected gradeSectionPosition: number = 70;
-  protected horairesSectionPosition: number = 70;
-
-  @HostBinding("style.--titleColor") titleColor: string = 'var(--secondColor)';
-  @HostBinding("style.--pictureColor") pictureColor: string = 'var(--black)';
-  @HostBinding("style.--stationColor1") stationColor1: string = 'var(--black)';
-  @HostBinding("style.--stationColor2") stationColor2: string = 'var(--white)';
-  @HostBinding("style.--backgroundHeaderHoraires1") backgroundHeaderHoraires1: string = 'var(--secondColor)';
-  @HostBinding("style.--backgroundHeaderHoraires2") backgroundHeaderHoraires2: string = 'var(--black)';
-  @HostBinding("style.--colorHeaderHoraires") colorHeaderHoraires1: string = 'var(--white)';
-  @HostBinding("style.--colorBodyHoraires") colorBodyHoraires: string = 'var(--black)';
-
-
-  setColorsOnScroll(scrollPosition: number): void {
+  protected removeImage(index: number){
+    this.picturesAdded.splice(index,1);
+  }  
+  private setColorsOnScroll(): void {
     let firstSectionPosition:Position = {
       top:0,
       height: 0
@@ -781,10 +406,6 @@ export class AddComponent {
         hoverTextColor: "var(--white)",
         hoverBorderColor: "var(--thirdColor)",
       }
-      this.uploadButtonInfos = {
-        color: 'var(--mainColor)',
-        backgroundColor: 'var(--black)'
-      }
       this.pictureColor = 'var(--black)';
       this.stationColor1 = 'var(--secondColor)';
       this.stationColor2 = 'var(--mainColor)';
@@ -792,11 +413,24 @@ export class AddComponent {
       this.backgroundHeaderHoraires2 = 'var(--black)';
       this.colorHeaderHoraires1 = 'var(--white)';
       this.colorBodyHoraires = 'var(--black)';
+      this.stationButtonInfos = {
+        color: 'var(--secondColor)',
+        colorActive: 'var(--mainColor)',
+        borderColor: 'var(--secondColor)',
+        borderColorActive: 'var(--secondColor)',
+        backgroundColor: 'var(--mainColor)',
+        backgroundColorActive: 'var(--secondColor)',
+        fontSize: "16px",
+        heightIcon: "30px",
+        radius: "50%"
+    }
     }
     else if((complementSectionPosition.top > 0 && complementSectionPosition.top < complementSectionPosition.height) || (gradeSectionPosition.top > 0 && gradeSectionPosition.top < gradeSectionPosition.height)){
       this.logoImageSrc = "../../assets/logo/white_logo.png";
       this.backgroundColor = 'var(--black)';
       this.titleColor = 'var(--white)';
+      this.stationButtonInfos = blackButtonPlaceCard;
+
       this.normalInput = {
         color: "var(--white)",
         placeholderColor: "var(--white)",
@@ -807,10 +441,6 @@ export class AddComponent {
         hoverBackgroundColor: "var(--white)",
         hoverTextColor: "var(--black)",
         hoverBorderColor: "var(--white)",
-      }
-      this.uploadButtonInfos = {
-        color: 'var(--black)',
-        backgroundColor: 'var(--white)'
       }
       this.pictureColor = 'var(--white)';
       this.stationColor1 = 'var(--white)';
@@ -829,7 +459,7 @@ export class AddComponent {
       this.colorBodyHoraires = 'var(--black)';
     }
   }
-  moveTitle(scrollPosition: number): void {
+  private moveTitle(scrollPosition: number): void {
     if(document.getElementById("firstSection") != null){
       const firstSectionTitleEnd:number = document.getElementById("firstSection").getBoundingClientRect().height/5;    
       this.firstSectionPosition = -20 - 5 * (scrollPosition/firstSectionTitleEnd);  
@@ -850,123 +480,77 @@ export class AddComponent {
       this.horairesSectionPosition = 70 - 5 * (scrollPosition/horairesSectionTitleEnd);  
     }
   }
-//////////////////////////////////////////////  Background Page  //////////////////////////////////////////////
-  protected backgroundColor: string = 'var(--mainColor)';
-
-//////////////////////////////////////////////  Life cycle  //////////////////////////////////////////////
-  protected device: string = "";
-  protected allPlaces: Place[] = [];
-  protected autocompleteName: SelectData[] = [];
-  protected autocompleteAddress: SelectData[] = [];
-
-  ngOnInit(){
+  private ngOnInit(): void{
     this.device = sessionStorage.getItem("device");
     this.initOptions("");
   }
-  ngAfterViewInit(){
+  private ngAfterContentInit(): void{
     window.addEventListener("wheel", () => {
       this.moveTitle(window.scrollY);
+      this.setColorsOnScroll();
     });    
     window.addEventListener("scroll", () => {
       this.moveTitle(window.scrollY);
-      this.setColorsOnScroll(window.scrollY);
+      this.setColorsOnScroll();
     });
   }
-  ngOnDestroy(){
-    this.themeSubscriber.unsubscribe();
-  }
-  test(e: any){
+  protected test(e: any): void{
     console.log(e)
   }
-  add(){
+  protected add(): void{
     const idUser: string = localStorage.getItem("id");
     if(this.canSubmit()){
       this.errorMessage = "";
-      this.databaseService.verifyExistingRestaurant(this.placeInfo.name,this.placeInfo.address).subscribe((res: Restaurant) => {
-        if(res != null){
-          this.placeInfo.id = res.id;
-          this.databaseService.updateRestaurant(this.placeInfo);
-          this.errorMessage = "Le " + this.placeInfo.category + " a été modifié !";
-          if(this.googleHoraires.length > 0){
-            this.databaseService.getHorairesOfPlace(this.placeInfo.id, 'google').subscribe((hor: Horaires[]) => {
-              if(hor.length === 0){
-                this.googleHoraires.forEach((element: Horaires) => {
-                  element.id_place = this.placeInfo.id;
-                  element.id_user = "google";
-                  this.databaseService.updateHoraires(element);
-                });
-              }
-            });
-          } else{
-            this.googleHoraires.forEach((element: Horaires) => {
-              element.id_place = this.placeInfo.id;
-              element.id_user = "google";
-              this.databaseService.addHoraires(element);
-            });
-          }
-          if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
-            this.databaseService.getHorairesOfPlace(this.placeInfo.id, localStorage.getItem("id")).subscribe((hor: Horaires[]) => {
-              if(hor.length === 0 || hor[0].id_user === 'google'){
-                this.horaires.forEach((element: Horaires) => {
-                  element.id_place = this.placeInfo.id;
-                  element.id_user = localStorage.getItem("id");
-                  this.databaseService.addHoraires(element);
-                });
-              }
-            });
-          } 
-          this.databaseService.getHorairesOfPlace(this.placeInfo.id, 'google').subscribe((hor: Horaires[]) => {
-            if(hor.length === 0){
-              this.googleHoraires.forEach((element: Horaires) => {
-                element.id_place = this.placeInfo.id;
-                element.id_user = "google";
-                this.databaseService.addHoraires(element);
-              });
-            }
-          });
-          const placeOfUser: PlaceOfUser = {idPlace: this.placeInfo.id,idUser: localStorage.getItem("id")};
-          this.databaseService.verifyPlaceOfUser(placeOfUser).subscribe((verify: boolean) => {
-            if(!verify) this.databaseService.addPlaceOfUser(placeOfUser);
-          });
+      this.databaseService.verifyExistingPlace(this.placeInfos).subscribe((res: boolean) => {
+        if(res){
+          this.errorMessage = "Ce " + this.placeInfos.category + "  existe déjà";
         } else{
-          this.placeInfo.id = this.placesService.setId();
-          const placeOfUser: PlaceOfUser = {idPlace: this.placeInfo.id,idUser: localStorage.getItem("id")};
+          this.placeInfos.id = this.placesService.setId();
+          this.placeInfos.id_creator = localStorage.getItem("id");
+          this.placeInfos.creation = this.placesService.convertDateToString(new Date());
+          this.placeInfos.id_city = this.cityOfPlace.id;
+          const placeOfUser: PlaceOfUser = {idPlace: this.placeInfos.id,idUser: localStorage.getItem("id")};
           this.databaseService.addPlaceOfUser(placeOfUser);
-          this.databaseService.addRestaurant(this.placeInfo);
-          this.pictures.forEach((element: Pictures) => {
-            element.id_user = this.placeInfo.id;
-            this.databaseService.addPicture(element);
-          }); 
-          this.stations.forEach((element: Station) => {
-            const name: string = element.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
-            this.databaseService.addStationOfPlace(this.placeInfo.id, element.id);
+          this.databaseService.addPlaceByCategory(this.placeInfos).subscribe((message: Message) => {
+            console.log(message);
           });
-          if(JSON.stringify(this.horaires) !== JSON.stringify(this.googleHoraires)){
-            this.horaires.forEach((element: Horaires) => {
-              element.id_place = this.placeInfo.id;
-              element.id_user = localStorage.getItem("id")
-              this.databaseService.addHoraires(element);
-            });
+          if(this.comment.tested){
+            this.comment.id_place = this.placeInfos.id;
+            this.comment.id_user = idUser;
+            this.databaseService.addComment(this.comment, this.placeInfos.category).subscribe((message: Message) => {
+              console.log(message);
+            }); 
           }
-          this.googleHoraires.forEach((element: Horaires) => {
-            element.id_place = this.placeInfo.id;
-            element.id_user = "google";
-            this.databaseService.addHoraires(element);
+          this.selectedTypesIds.forEach((type: string) => {
+            const typeOfPlace: TypeOfPlace = {id_type: type,id_place: this.placeInfos.id};
+            this.databaseService.addTypeOfPlace(typeOfPlace).subscribe((message: Message) => {
+              console.log(message);
+            }); 
           });
-          this.errorMessage = "Le " + this.placeInfo.category + " a été ajouté !";
+          this.picturesAdded.forEach((element: Pictures) => {
+            element.id_user = this.placeInfos.id;
+            this.databaseService.addPicture(element).subscribe((message: Message) => {
+              console.log(message);
+            }); 
+          }); 
+          this.stationsAdded.forEach((element: Station) => {
+            this.databaseService.addStationOfPlace(this.placeInfos.id, element.id).subscribe((message: Message) => {
+              console.log(message);
+            }); 
+          });
+          this.horairesAdded.forEach((element: Horaires) => {
+            element.id_place = this.placeInfos.id;
+            element.id_user = localStorage.getItem("id")
+            this.databaseService.addHoraires(element).subscribe((message: Message) => {
+              // console.log(message);
+            }); 
+          });
+          this.errorMessage = "Le "+ this.placeInfos.category + " a été ajouté";
+          setTimeout(() => {
+            if(sessionStorage.getItem("lastPage") != null)  this.router.navigate([sessionStorage.getItem("lastPage")]);
+            else  window.location.reload();
+          }, 3000);
         }
-        
-        
-        if(this.comment.id_place === '' || this.comment.id_user === ''){
-          this.comment.id_place = this.placeInfo.id;
-          this.comment.id_user = idUser;
-          this.databaseService.addCommentRestaurants(this.comment);  
-        } else {
-          this.databaseService.updateCommentRestaurants(this.comment);
-        }
-        setTimeout(() => {
-          this.router.navigate([sessionStorage.getItem("lastPage")]);
-        }, 3000);
       });
     } else{
       this.errorMessage = "Le formulaire n'est pas complet";
@@ -977,9 +561,9 @@ export class AddComponent {
     
     
   }
-  
 }
-interface DayOpen{
+
+interface isDayOpen{
   Lundi: boolean,
   Mardi: boolean,
   Mercredi: boolean,
@@ -988,7 +572,7 @@ interface DayOpen{
   Samedi: boolean,
   Dimanche: boolean
 }
-interface Position{
+export interface Position{
   top: number,
   height: number
 }

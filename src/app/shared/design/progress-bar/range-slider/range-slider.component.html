@@ -1,0 +1,18 @@
+<div class="range" id="range">
+    <div class="values">
+        <span id="right" class="sliderValue center" [ngStyle]="{'left.%': positionDialogRight,'opacity': showRight ? '1' : '0'}" *ngIf="valueOfRight < infos.maxValue">{{infos.legendText}}{{valueOfRight}}{{infos.unit}}</span>
+        <span id="right" class="sliderValue center" [ngStyle]="{'left.%': positionDialogRight,'opacity': showRight ? '1' : '0'}" *ngIf="valueOfRight === infos.maxValue">{{infos.maxValueText}}{{valueOfRight}}{{infos.unit}}</span>
+        <span id="right" class="sliderValue center" [ngStyle]="{'left.%': positionDialogRight,'opacity': showRight ? '1' : '0'}" *ngIf="valueOfRight === 0">{{valueOfRight}}{{infos.unit}}</span>
+        <span id="left" class="sliderValue center" [ngStyle]="{'left.%': positionDialogLeft,'opacity': showLeft ? '1' : '0'}" *ngIf="convertedValueOfLeft < infos.maxValue">{{infos.legendText}}{{convertedValueOfLeft}}{{infos.unit}}</span>
+        <span id="left" class="sliderValue center" [ngStyle]="{'left.%': positionDialogLeft,'opacity': showLeft ? '1' : '0'}" *ngIf="convertedValueOfLeft === infos.maxValue">{{infos.maxValueText}}{{convertedValueOfLeft}}{{infos.unit}}</span>    
+        <span id="left" class="sliderValue center" [ngStyle]="{'left.%': positionDialogLeft,'opacity': showLeft ? '1' : '0'}" *ngIf="convertedValueOfLeft === 0">{{convertedValueOfLeft}}{{infos.unit}}</span>    
+    </div>
+
+    <div class="field center">
+        <input type="range" [min]="infos.minValue" [max]="infos.maxValue" [value]="valueOfRight" (change)="sendData()" (mouseover)="displayValue('right')" (mouseleave)="displayValue('right')" (input)="getValue($event,'max')"/>
+        <input id="min" type="range" [min]="infos.minValue" [max]="infos.maxValue" [value]="valueOfLeft" (change)="sendData()" (mouseover)="displayValue('left')" (mouseleave)="displayValue('left')" (input)="getValue($event,'min')"/>
+        <div *ngIf="positionRight + positionLeft <= 100" class="selected" [ngStyle]="{'left.%': positionLeft, 'right.%': positionRight}"></div>
+        <div *ngIf="positionRight + positionLeft > 100" class="selected" [ngStyle]="{'right.%': 100 - positionLeft, 'left.%': 100 - positionRight}"></div>
+        <div class="unselected"></div>
+    </div>
+</div>

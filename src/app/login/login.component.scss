@@ -1,46 +1,34 @@
 .title{
+    flex-direction: column;
+    justify-content: flex-start;
     position: absolute;
     top: 10vh;
     left: 52vw;
     display: flex;
     -webkit-box-reflect: below 0px linear-gradient(transparent, rgba(0,0,0,.2));
+    overflow: hidden;
+    height: 80px;
     h1{
         font-size: 75px;
-        animation: color-animation 15s linear infinite;
+        line-height: 90px;
+        animation: circle-animation 10s infinite;
+        margin-bottom: 10px;
     }
     .first{
-        --color-0: var(--white);
-        --color-1: var(--black);
-        --color-2: var(--secondColor);
-        --color-3: var(--mainColor);
+        color: var(--black);
     }
     .second{
-        --color-0: var(--white);
-        --color-1: var(--mainColor);
-        --color-2: var(--black);
-        --color-3: var(--secondColor);
+        color: var(--secondColor);
     }
     .third{
-        --color-0: var(--white);
-        --color-1: var(--secondColor);
-        --color-2: var(--mainColor);
-        --color-3: var(--black);
+        color: white;
     }
 }
-@keyframes color-animation {
-    0%    {color: var(--color-1)}
-    11%   {color: var(--color-1)}
-    17%   {color: var(--color-0)}
-    23%   {color: var(--color-0)}
-    33%   {color: var(--color-2)}
-    44%   {color: var(--color-2)}
-    50%   {color: var(--color-0)}
-    56%   {color: var(--color-0)}
-    67%   {color: var(--color-3)}
-    78%   {color: var(--color-3)}
-    83%   {color: var(--color-0)}
-    89%   {color: var(--color-0)}
-    100%   {color: var(--color-1)}
+@keyframes circle-animation {
+    0%    {transform: translateY(0px)}
+    33%   {transform: translateY(-100px)}
+    66%   {transform: translateY(-200px)}
+    100%   {transform: translateY(-300px)}
 }
 .form{
     display: flex;
@@ -71,7 +59,7 @@ app-input{
     display: flex;
     height: 100vh;
     width: 100vw;
-    background-color: var(--white);
+    background: linear-gradient(45deg, white,var(--white), var(--mainColor));
 }
 .img{
     flex-direction: column;
@@ -84,6 +72,12 @@ app-input{
         padding-bottom: 5vh;
     }
 }
+#connexion{
+    display: block;
+}
+#phoneButton{
+    display: none;
+}
 
 message{
     height: 0;
@@ -92,7 +86,38 @@ message{
 }
 
 @media screen and (max-width: 600px){
-    .form{
-        width: 70vw;
+    #phoneButton{
+        display: flex;
+        height: 50%;
+        width: 100%;
+        flex-direction: column;
+    }
+    #connexion{
+        display: none;
+    }
+    .background{
+        flex-direction: column;
+        .img{
+            display: none;
+        }
+        .title{
+            left: 0;
+            top: 5vh;
+            height: 50px;
+            width: 100%;
+            h1{
+                margin-bottom: 50px;
+                font-size: 50px;
+                line-height: 50px;
+            }
+        }
+        .login{
+            width: 100%;
+        }
+    }
+    round-button{
+        display: block;
+        width: 50vw;
+        margin: 2vh 0;
     }
 }
