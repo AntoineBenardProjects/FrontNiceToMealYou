@@ -21,8 +21,8 @@ export class DatabaseService {
 
 
   private localUrl = "http://localhost:3000";
-
   private serverUrl = this.localUrl;
+  
   private header: any = {
     'Access-Control-Allow-Origin': '*',
     'Accept': 'application/json',
@@ -473,6 +473,10 @@ export class DatabaseService {
     const url: string = this.stationUrl + "/ligne/" + encodeURIComponent(JSON.stringify(params));
     return this.get(url);
   }
+  setDemoPlaces(){
+    const url: string = this.databaseUrl + "/demo/places";
+    return this.add(url,null);
+  }
   getPlacesByStationAndUser(station: Station, id_user: string){
     const params = {
       station: station,
@@ -624,8 +628,5 @@ export class DatabaseService {
     const url: string = this.databaseUrl + "/type_of_place"
     return this.add(url,null);
   }
-  setDemoPlaces(){
-    const url: string = this.databaseUrl + "/demo/places";
-    return this.add(url,null);
-  }
+  
 }
