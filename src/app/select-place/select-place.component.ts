@@ -33,7 +33,7 @@ export class SelectPlaceComponent {
   protected selectedPlace: string = "";
 
   ngOnInit(): void{
-    this.databaseService.getAllVisiblePlaces().subscribe((visiblePlaces: Place[]) => {
+    this.databaseService.getAllVisiblePlacesOfUser(localStorage.getItem("id")).subscribe((visiblePlaces: Place[]) => {
       visiblePlaces.forEach((place: Place) => {
         this.autocompletePlaces.push({
           id: place.id,

@@ -78,6 +78,7 @@ export const selectInfosTypeUserComponent: SelectInfos = {
   hoverBackgroundColor: 'var(--black)',
   hoverTextColor: 'var(--white)',
   borderColor: 'var(--black)',
+  animationWidth: false,
   width: 10
 }
 export const selectInfosRegionUserComponent: SelectInfos = {
@@ -90,20 +91,22 @@ export const selectInfosRegionUserComponent: SelectInfos = {
   hoverBackgroundColor: 'var(--black)',
   hoverTextColor: 'var(--white)',
   borderColor: 'var(--black)',
+  animationWidth: false,
   width: 10
 }
 export const normalSelectInfosUserComponent: SelectInfos = {
-  backgroundColor: 'var(--mainColor)',
-  textColor: 'var(--black)',
-  optionTextColor: 'var(--black)',
-  optionBackgroundColor: 'var(--mainColor)',
-  hoverBackgroundColor: 'var(--black)',
-  hoverTextColor: 'var(--white)',
-  borderColor: 'var(--black)',
+  backgroundColor: 'var(--black)',
+  textColor: 'var(--white)',
+  optionTextColor: 'var(--white)',
+  optionBackgroundColor: 'var(--black)',
+  hoverBackgroundColor: 'var(--white)',
+  hoverTextColor: 'var(--black)',
+  borderColor: 'var(--white)',
   width: 10,
-  topHoverBackgroundColor: "var(--black)",
-  topHoverColor: "var(--white)",
-  topHoverBorderColor: "var(--black)"
+  topHoverBackgroundColor: "var(--white)",
+  topHoverColor: "var(--black)",
+  topHoverBorderColor: "var(--white)",
+  animationWidth: false
 }
 export const validSelectInfosUserComponent: SelectInfos = {
   backgroundColor: 'var(--white)',

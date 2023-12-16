@@ -1,3 +1,53 @@
+.navigate{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px;
+    width: 90%;
+    padding: 0 5%;
+    position: absolute;
+    top: 0;
+    transition: .5s;
+    z-index: 3;
+    .nav{
+        display: flex;
+        align-items: center;
+        height: 100%;
+        overflow: hidden;
+        p{
+            -webkit-user-select: none;  
+            -moz-user-select: none;    
+            -ms-user-select: none;      
+            user-select: none;
+            position: relative;
+            cursor: pointer;
+            font-size: 16px;
+            height: 20px;
+            margin-left: 3vw !important;
+            color: var(--secondColor);
+            transition: 2s cubic-bezier(.27,.88,.52,.95);
+            &:hover{
+                &::before{
+                    width: 100%;
+                }
+            }
+            &::before{
+                content: '';
+                position: absolute;
+                bottom: -5px;
+                height: 2px;
+                width: 0;
+                background: var(--secondColor);
+                transition: all 400ms;
+            }
+        }
+    }
+    img{
+        cursor: pointer;
+        height: 100px;
+    }
+    
+}
 .body{
     position: relative;
     transition: all 400ms ;
@@ -7,47 +57,6 @@
     width: 100vw;
     background: transparent;
     min-height: 80vh;
-    .topbarContainer{
-        position: absolute;
-        height: 100px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        left: 0;
-        top: 0;
-        .navbar{
-            position: fixed;
-            height: 100px;
-            width: 100vw;
-            left: 0;
-            top: 0;
-            .container{
-                position: relative;
-                height: 100%;
-                #logo{
-                    position: absolute;
-                    top: 0;
-                    left: 1vw;
-                    width: 100px;
-                    transition: all 400ms;
-                    z-index: 100;
-                }
-                #mainLink{
-                    position: absolute;
-                    top: 0;
-                    bottom: 0;
-                    margin: auto;
-                    right: 2vw;
-                    text-align: center;
-                    width: 10vw;
-                    height: 40%;
-                    z-index: 100;
-                }
-            }
-        }
-        
-    }
     .subtitles{
         display: flex;
         position: relative;
@@ -406,7 +415,6 @@ input[type="time"]{
     opacity: 0; 
 }
 app-input{width: fit-content;}
-#restaurantType{width: 15vw;}
 round-select{width: 10vw;}
 app-textfield{width: 70%;}
 

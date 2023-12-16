@@ -1,0 +1,72 @@
+<div class="navigate" [ngStyle]="{'opacity' : opacityBody}">
+    <img src="../../assets/logo/black_logo.png" routerLink="/home">
+  
+    <div class="nav">
+      <p (click)="navigate('/add')">Créer un lieu</p>
+      <p (click)="navigate('/follow')">Relations</p>
+      <p (click)="navigate('/user')">Mon compte</p>
+      <p (click)="navigate('/filter')">Ma carte</p>
+    </div>
+</div>
+  
+<div class="body">
+    <p class="clipboard center" [ngClass]="copied ? 'show' : ''">Adresse mail copiée dans le presse-papier</p>
+    <div class="img" [ngStyle]="{'transform' : 'translateX('+translatePicture+'px)', 'opacity': opacityPicture}"></div>
+    <div class="background" [ngStyle]="{'width.%' : widthBackground, 'opacity': opacityBackground}"></div>
+    <div class="why" [ngStyle]="{'opacity' : opacityBody}">
+        <div class="paragraph" id="first">
+            <h1 class="title">Qui suis-je ?</h1>
+            <div class="infos">
+                <span>25 ans</span>
+                <span>/</span>
+                <span>Fresnes</span>
+                <span>/</span>
+                <span>Île de France</span>
+            </div>
+            <p>Je m'appelle Antoine Bénard et je suis développeur web Angular depuis plus de deux ans. Je suis diplômé de l'école d'ingénieur ECE Paris, endroit où j'ai découvert les technologies webs en 2020. Appréciant le côté visuel, je me suis plongé dans ce domaine que je perfectionne maintenant chaque jour via mes projets.</p>
+        </div>
+        <div class="competences">
+            <div class="comp center">
+                <h2>Angular</h2>
+                <div class="bar">
+                    <div class="fill" [ngStyle]="{'width.%': valuesProperties[0]}"></div>
+                </div>
+            </div>
+            <div class="comp center">
+                <h2>Nodejs</h2>
+                <div class="bar">
+                    <div class="fill" [ngStyle]="{'width.%': valuesProperties[1]}"></div>
+                </div>
+            </div>
+            <div class="comp center">
+                <h2>HTML/CSS</h2>
+                <div class="bar">
+                    <div class="fill" [ngStyle]="{'width.%': valuesProperties[3]}"></div>
+                </div>
+            </div>
+            <div class="comp center">
+                <h2>Typescript</h2>
+                <div class="bar">
+                    <div class="fill" [ngStyle]="{'width.%': valuesProperties[4]}"></div>
+                </div>
+            </div>
+            <div class="comp center">
+                <h2>Sql</h2>
+                <div class="bar">
+                    <div class="fill" [ngStyle]="{'width.%': valuesProperties[2]}"></div>
+                </div>
+            </div>
+            <div class="comp center">
+                <h2>AWS</h2>
+                <div class="bar">
+                    <div class="fill" [ngStyle]="{'width.%': valuesProperties[2]}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="contact">
+            <round-button [icon]="linkedInIcon" [styleInfos]="iconsInfos" (click)="openInBrowser('https://www.linkedin.com/in/antoine-benard-265a7717b/')"></round-button> 
+            <round-button [icon]="mailIcon" [styleInfos]="iconsInfos" (click)="copy()"></round-button> 
+            <round-button text="CV" [styleInfos]="iconsInfos" (click)="openInBrowser('https://cv-antoine-benard.web.app/')"></round-button> 
+        </div>
+    </div>
+</div>

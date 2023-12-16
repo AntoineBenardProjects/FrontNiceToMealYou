@@ -1,13 +1,16 @@
+<div class="navigate">
+  <img src="../../assets/logo/red_logo.png" routerLink="/home">
+
+  <div class="nav">
+    <p (click)="navigate('/follow')">Relations</p>
+    <p (click)="navigate('/user')">Mon compte</p>
+    <p (click)="navigate('/filter')">Ma carte</p>
+    <p (click)="navigate('/about')">Développeur</p>
+  </div>
+</div>
+
 <div class="body" [ngStyle]="{'background' : backgroundColor}">
   <div class="first">
-    <div class="topbarContainer">
-      <div class="navbar">
-          <div class="container">
-              <img id="logo" [src]="logoImageSrc" routerLink="/home">
-              <round-button id="mainLink" text="Mes lieux" [styleInfos]="myPlacesButtonInfos" routerLink="/filter"></round-button>         
-          </div>
-      </div>
-    </div>
     <div class="section" id="firstSection">
       <div class="subtitles" [ngStyle]="{'left.vw': firstSectionPosition}">
         <h1 class="subtitle">InfosEssentielles</h1>
@@ -59,6 +62,7 @@
         <app-input [value]="comment.quality_price" class="number" text="Rapport qualité/prix" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quality_price')"></app-input>
         <app-input [value]="comment.quantity" class="number" text="Quantité" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quantity')"></app-input>
         <app-input [value]="comment.service" class="number" text="Qualité du service" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'service')"></app-input>    
+        <app-input [value]="comment.price" class="number" text="Prix payé" type="number" [styleInfo]="normalInput" (input)="setValue($event,'price')"></app-input>    
       </div>
       <div class="grades" *ngIf="placeInfos.category === 'Bar'">
         <app-input [value]="comment.quality_price" class="number" text="Qualité" type="grade" [styleInfo]="normalInput" (input)="setValue($event,'quality_price')"></app-input>

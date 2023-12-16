@@ -88,6 +88,10 @@ export class AdminComponent {
   protected newRegion: string = "";
   protected errorMessage: string = "";
   protected error: boolean = false;
+  protected allPlaces: Place[] = [];
+  protected placesFiltered: Place[] = [];
+
+  protected placesToDelete: Place[] = [];
 
   //////////////////////////////////////////////  Get Data  //////////////////////////////////////////////
   private ngOnInit(): void{
@@ -133,6 +137,7 @@ export class AdminComponent {
       password: "",
       role: "",
       img: "",
+      couv: ""
     }]
   }
   private getData():void{
@@ -149,6 +154,17 @@ export class AdminComponent {
     this.databaseService.getAllUsers().subscribe((res: User[]) => {
       this.usersToShow = res;
     });
+    this.databaseService.getAllPlacesName().subscribe((res: Place[]) => {
+      this.allPlaces = res;
+      this.placesFiltered = res;
+    })
+  }
+  protected search(table: string,params: string,event: any){
+    const value: string = event.target.value.toLowerCase();
+    this.placesFiltered = this[table].filter(element => {
+      if(element[params].toLowerCase().includes(value)) return true;
+      return false;
+    }).slice();
   }
   protected setPreferenceGeo(event: any, params: string): void{
     if(params === 'reg'){
@@ -297,6 +313,7 @@ export class AdminComponent {
           password: "",
           role: "",
           img: "",
+          couv: ''
         });
       break;
     }
@@ -319,6 +336,9 @@ export class AdminComponent {
   }
   protected delete(params: string, id: string): void{
     switch(params){
+      case 'Places':
+        if(this.placesToDelete.find((place: Place) => place.id === id) == null) this.placesToDelete.push(this.placesFiltered.find((place: Place) => place.id === id));
+      break;
       case 'Lignes':
         if(this.lignesToDelete.find((ligne: Ligne) => ligne.id === id) == null) this.lignesToDelete.push(this.lignesToShow.find((ligne: Ligne) => ligne.id === id));
       break;
@@ -335,6 +355,9 @@ export class AdminComponent {
   }
   protected cancelDelete(params: string, id: string): void{
     switch(params){
+      case 'Places':
+        this.placesToDelete = this.placesToDelete.filter((place: Place) => place.id !== id);
+      break;
       case 'Lignes':
         this.lignesToDelete = this.lignesToDelete.filter((ligne: Ligne) => ligne.id !== id);
       break;
@@ -693,6 +716,12 @@ export class AdminComponent {
         newNavigateBackground = 'var(--black)';
         newNavigateColor = 'var(--mainColor)';
       }
+      if(this.divToShow !== 'places' && divName === 'places'){
+        this.animationChange = "places";
+        newBackgroundColor = 'var(--white)';
+        newNavigateBackground = 'var(--secondColor)';
+        newNavigateColor = 'var(--white)';
+      }
       if(this.divToShow !== 'types' && divName === 'types'){
         this.animationChange = "types";
         newBackgroundColor = 'var(--white)';
@@ -796,6 +825,17 @@ export class AdminComponent {
         this.errorMessage = "";
       },3000);
     });
+    if(params === "Places"){
+      if(action === "Delete"){
+        let ids: string[] = [];
+        this.placesToDelete.forEach((place: Place) => {
+          ids.push(place.id)
+        });
+        this.databaseService.deletePlaces(ids).subscribe((res) => {
+          changeBDD.next(res);
+        });
+      }
+    }
     if(params === "Lignes"){
       if(action === "Add"){
         if(!this.checkLigne(this.lignesToAdd)){

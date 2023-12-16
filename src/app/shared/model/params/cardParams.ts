@@ -34,5 +34,6 @@ export interface UserCardParams{
     id: string,
     width: number,
     height: number,
+    small?: boolean,
     accessToCard: boolean
 }

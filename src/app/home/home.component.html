@@ -1,6 +1,6 @@
 <div class="body" *ngIf="showSuggestion" [ngStyle]="{'background' : backgroundColor}">
     <div class="first center">
-        <div class="topbarContainer" [ngStyle]="{'opacity': opacityNavbar, 'z-index': opacityNavbar === 0 ? '-1' : '1000'}">
+        <div class="topbarContainer" [ngStyle]="{'opacity': opacityNavbar, 'z-index': opacityNavbar <= 0 ? '-1' : '1000'}">
             <div class="navbar">
                 <div class="container">
                     <img id="logo" [src]="logoImageSrc">
@@ -8,31 +8,33 @@
                 </div>
             </div>
             <div class="topbar">
-                <p class="link" (click)="navigate('user')">Mon compte</p>
-                <p class="link" (click)="navigate('add')">Créer un lieu</p>
-                <p class="link" (click)="navigate('follow')">Relations</p>
-                <p class="link" (click)="navigate('admin')" *ngIf="isAdmin">Admin</p>
-                <p class="link" (click)="navigate('admin')" *ngIf="!isAdmin">Ton avis</p>
+                <p class="link" (click)="navigate('user')" [ngStyle]="{'transform': 'translateY('+transformLinks[0]+'px)'}">Mon compte</p>
+                <p class="link" (click)="navigate('add')" [ngStyle]="{'transform': 'translateY('+transformLinks[1]+'px)'}">Créer un lieu</p>
+                <p class="link" (click)="navigate('follow')" [ngStyle]="{'transform': 'translateY('+transformLinks[2]+'px)'}">Relations</p>
+                <p class="link" (click)="navigate('admin')" [ngStyle]="{'transform': 'translateY('+transformLinks[3]+'px)'}" *ngIf="isAdmin">Admin</p>
+                <p class="link" (click)="navigate('about')" [ngStyle]="{'transform': 'translateY('+transformLinks[3]+'px)'}" *ngIf="!isAdmin">Développeur</p>
             </div>
         </div>
-        <h1 *ngFor="let style of styleTypes" [ngStyle]="{'opacity': style.opacity,'font-family': style.font,'left': style.left != null ? style.left+'vw' : 'auto','right': style.right != null ? style.right+'vw' : 'auto','top': style.top != null ? style.top+'vh' : 'auto','bottom': style.bottom != null ? style.bottom+'vh' : 'auto'}">{{style.text}}</h1>
-        <div class="types" [ngStyle]="{'scale': scaleTypes}"></div>
+        <h1 *ngFor="let style of styleTypes" [ngStyle]="{'opacity': style.opacity,'font-family': style.font,'left': style.left != null ? style.left+'vw' : 'auto','right': style.right != null ? style.right+'vw' : 'auto','top': style.top != null ? style.top+'vh' : 'auto','bottom': style.bottom != null ? style.bottom+'vh' : 'auto','transition-duration': textTransitionDuration + 's'}">{{style.text}}</h1>
+        <div class="types" [ngStyle]="{'scale': scaleTypes, 'opacity': typesOpacity}"></div>
         <link-card [ngStyle]="{'opacity': opacityCards[0], 'cursor': opacityCards[0] > 0 ? 'pointer' : 'default'}" src="../../assets//common/map.jpg" text="La carte" [styleInfos]="linkCardInfos"  (click)="navigate('filter',opacityCards[0])"></link-card>
         <link-card [ngStyle]="{'opacity': opacityCards[1], 'cursor': opacityCards[1] > 0 ? 'pointer' : 'default'}" src="../../assets//common/add.jpg" text="Ajouter un lieu" [styleInfos]="linkCardInfos"   (click)="navigate('add',opacityCards[1])"></link-card>
-        <link-card [ngStyle]="{'opacity': opacityCards[2], 'cursor': opacityCards[2] > 0 ? 'pointer' : 'default'}" src="../../assets//common/help.jpg" text="Ajouter des gens" [styleInfos]="linkCardInfos" (click)="navigate('follow',opacityCards[2])"></link-card>    
+        <link-card [ngStyle]="{'opacity': opacityCards[2], 'cursor': opacityCards[2] > 0 ? 'pointer' : 'default'}" src="../../assets//common/help.jpg" text="Relation" [styleInfos]="linkCardInfos" (click)="navigate('follow',opacityCards[2])"></link-card>    
         <link-card [ngStyle]="{'opacity': opacityCards[3], 'cursor': opacityCards[3] > 0 ? 'pointer' : 'default'}" src="../../assets//common/profile.jpg" text="Mon compte" [styleInfos]="linkCardInfos" (click)="navigate('user',opacityCards[3])"></link-card>    
         <link-card [ngStyle]="{'opacity': opacityCards[4], 'cursor': opacityCards[4] > 0 ? 'pointer' : 'default'}" src="../../assets//common/admin.jpg" text="Admin" [styleInfos]="linkCardInfos" (click)="navigate('admin',opacityCards[4])" *ngIf="isAdmin"></link-card>    
+        <link-card [ngStyle]="{'opacity': opacityCards[4], 'cursor': opacityCards[4] > 0 ? 'pointer' : 'default'}" src="../../assets//common/about.jpg" text="Développeur" [styleInfos]="linkCardInfos" (click)="navigate('about',opacityCards[4])" *ngIf="!isAdmin"></link-card>    
+
         <h1 *ngFor="let style of styleFirst" [ngStyle]="{'opacity': style.opacity,'font-family': style.font,'color': style.color,'background-image': style.backgroundImage,'left': style.left != null ? style.left+'vw' : 'auto','right': style.right != null ? style.right+'vw' : 'auto','top': style.top != null ? style.top+'vh' : 'auto','bottom': style.bottom != null ? style.bottom+'vh' : 'auto'}">{{style.text}}</h1>
-        <div class="allSuggestions" id="suggestions" [ngStyle]="{'top.vh': topSuggestions, 'overflow-y': overflow}">
+        <div class="allSuggestions" id="suggestions" [ngStyle]="{'top.vh': topSuggestions}">
             <div class="suggestions" [id]="suggestion.name_station" *ngFor="let suggestion of favoritesStations">
                 <h2 class="subtitle top" [ngStyle]="{'left.vw': suggestion.titlePosition,'opacity': suggestion.titleOpacity}">{{suggestion.name_station}}</h2>
                 <div class="infos">
-                    <div class="line center" *ngFor="let category of suggestion.categories" [ngStyle]="{'opacity': category.percent}">
-                        <h2 *ngIf="category.counter < 2">{{category.counter}} {{category.value}}</h2>
-                        <h2 *ngIf="category.counter > 1">{{category.counter}} {{category.value}}s</h2>
+                    <div class="line center" *ngFor="let category of suggestion.categories">
+                        <h2 [ngStyle]="{'transform': 'translateY('+category.percent+'px)'}" *ngIf="category.counter < 2">{{category.counter}} {{category.value}}</h2>
+                        <h2 [ngStyle]="{'transform': 'translateY('+category.percent+'px)'}" *ngIf="category.counter > 1">{{category.counter}} {{category.value}}s</h2>
                     </div>
                 </div>
-                <div class="cardsBody" [ngStyle]="{'opacity': suggestion.titleOpacity, 'pointer-events': suggestion.titleOpacity === 1 ? 'all' : 'none'}">
+                <div class="cardsBody" [ngStyle]="{'opacity': suggestion.elementOpacity, 'pointer-events': suggestion.elementOpacity === 1 ? 'all' : 'none'}">
                     <round-button [icon]="leftIcon" [styleInfos]="iconsCarouselInfos" (click)="moveCarousel('left',suggestion.name_station)"></round-button> 
                     <div class="suggestion center">
                         <div class="cards" [ngStyle]="{'transform': 'translateX('+suggestion.transform+'px)'}">
@@ -43,6 +45,19 @@
                     </div>
                     <round-button [icon]="rightIcon" [styleInfos]="iconsCarouselInfos" (click)="moveCarousel('right',suggestion.name_station)"></round-button> 
                 </div>
+                <div class="phoneCardsBody" [ngStyle]="{'opacity': suggestion.elementOpacity, 'pointer-events': suggestion.elementOpacity === 1 ? 'all' : 'none'}">
+                    <div class="suggestion center">
+                        <div class="cards" [ngStyle]="{'transform': 'translateX('+suggestion.transform+'px)'}">
+                            <div class="card" *ngFor="let params of suggestion.cards">
+                                <place-card (add)="addPlace($event)" [infos]="params" (onClose)="closeCard(params.place.id)"></place-card>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="moveButtons">
+                        <round-button [icon]="leftIcon" [styleInfos]="iconsCarouselInfos" (click)="moveCarousel('left',suggestion.name_station)"></round-button> 
+                        <round-button [icon]="rightIcon" [styleInfos]="iconsCarouselInfos" (click)="moveCarousel('right',suggestion.name_station)"></round-button>     
+                    </div>
+                </div>
                 <h2 class="subtitle bottom" [ngStyle]="{'right.vw': suggestion.titlePosition,'opacity': suggestion.titleOpacity}">{{suggestion.name_station}}</h2>
             </div>
         </div>
@@ -52,4 +67,4 @@
     
 </div>
 
-<loading [percent]="loadingValue"></loading>
+<loading [percent]="loadingValue" (show)="init()"></loading>

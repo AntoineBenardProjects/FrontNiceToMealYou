@@ -9,17 +9,18 @@ import { faCameraRetro, faChartSimple, faMeteor, faPowerOff, faTrainSubway, faUs
 import { Subject, Subscription } from 'rxjs';
 import { Place } from '../shared/model/table/places';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Ligne, Station } from '../shared/model/table/transports';
-import { StationCardParams, TypeCardParams } from '../shared/model/params/cardParams';
+import { Ligne, Station, StationStats } from '../shared/model/table/transports';
+import { TypeCardParams } from '../shared/model/params/cardParams';
 import { faWpforms } from '@fortawesome/free-brands-svg-icons';
 import { ColorPalette, Palettes } from 'src/assets/style-infos/palettes';
 import { ThemeService } from '../services/theme.service';
 import { Router } from '@angular/router';
 import { invalidInputUserComponent, normalInputUserComponent, validInputUserComponent } from '../shared/model/design/inputsDesign';
 import { invalidSelectInfosUserComponent, normalSelectInfosUserComponent, selectInfosRegionUserComponent, selectInfosTypeUserComponent, validSelectInfosUserComponent } from '../shared/model/design/selectsDesign';
-import { invalidButtonUserComponent, normalButtonUserComponent, uploadButtonUserComponent, validButtonUserComponent } from '../shared/model/design/buttonsDesign';
-import { Type } from '../shared/model/table/type';
+import { blackLignesUserComponent, invalidButtonUserComponent, normalButtonUserComponent, uploadButtonUserComponent, validButtonUserComponent, whiteButtonPlaceCard } from '../shared/model/design/buttonsDesign';
+import { Type, TypeStatistics } from '../shared/model/table/type';
 import { categories } from '../shared/data';
+import { MovingText } from '../cards/user-card/user-card.component';
 
 @Component({
   selector: 'app-user-page',
@@ -86,7 +87,9 @@ export class UserPageComponent {
   protected invalidButton: ButtonInfos = invalidButtonUserComponent;
   protected uploadButton: ButtonInfos = uploadButtonUserComponent;
   protected selectInfosRegion: SelectInfos = selectInfosRegionUserComponent;
-  protected selectInfosType: SelectInfos = selectInfosTypeUserComponent
+  protected selectInfosType: SelectInfos = selectInfosTypeUserComponent;
+  protected lignesButtonInfos: ButtonInfos = blackLignesUserComponent;
+  protected categoriesButtonInfos: ButtonInfos = blackLignesUserComponent;
 /*  Icon  */
   protected userIcon: IconDefinition = faUser;
   protected crossIcon: IconDefinition = faXmark;
@@ -98,14 +101,38 @@ export class UserPageComponent {
   protected powerIcon: IconDefinition = faPowerOff;
 /*  Css  */
   @HostBinding('style.--titleBackground') titleBackground: string = "";
-  @HostBinding('style.--loginAndPasswordBackground') loginAndPasswordBackground: string = "";
-  @HostBinding('style.--typeBackground') typeBackground: string = "";
+  @HostBinding('style.--loginAndPasswordBackground') loginAndPasswordBackground: string = "var(--white)";
+  @HostBinding('style.--typeBackground') typeBackground: string = "var(--white)";
+  @HostBinding('style.--stationsBackground') stationsBackground: string = "var(--white)";
   @HostBinding('style.--navigateBackground') navigateBackground: string = "var(--black)";
   @HostBinding('style.--navigateColor') navigateColor: string = "var(--mainColor)";
   protected logoImageSrc: string = "../../assets/logo/white_logo.png";
   private white: string = '';
   private mainColor: string = '';
   protected backgroundColor: string = "var(--mainColor)";
+  protected translatePicture: string = "translateX(-60px)";
+  protected opacityPicture: number = 0;
+  protected opacityNbPlace: number = 0;
+  protected heightNavigate: number = 0;
+  protected opacityNavigate: number = 0;
+  protected widthBackgroundStats: number = 0;
+  protected opacityMainInfo: number = 0;
+  protected widthBackgroundTitle: number = 0;
+  protected heightBackgroundStation: number = 0;
+  protected widthBackgroundType: number = 0;
+  protected translateYStationPicture: number = -10;
+  protected translateXStationPicture: number = -10;
+  protected translateLyonText: number = 30;
+  protected translateParisStationText: number = 30;
+  protected translateYTypePicture: number = -10;
+  protected translateXTypePicture: number = -10;
+  protected translateToulouseText: number = 30;
+  protected translateParisTypeText: number = 30;
+  protected showStationsList: boolean = false;
+  protected showTypesList: boolean = false;
+  protected showLoginInput: boolean = false;
+  protected showPassword1Input: boolean = false;
+  protected showPassword2Input: boolean = false;
 /*  Selects  */
   protected regionSelect: SelectData[] = [];
   protected transportSelect: SelectData[] = [];
@@ -131,12 +158,14 @@ export class UserPageComponent {
   protected typeSelect: SelectData[] = [];
   protected types: SelectData[] = [];
 /*  Algo  */
+  protected isAdmin: string = "";
   protected region: string = "";
-  protected stationsCardInfos: StationCardParams[] = [];
+  protected stationInfos: StationInfo;
   protected paletteName: string = 'Default';
   private themeSubscriber: Subscription;
   private id: string = localStorage.getItem("id");
   protected img: string = localStorage.getItem("img");
+  protected couv: string = localStorage.getItem("couv");
   protected login: string = localStorage.getItem("login");
   private selected: string[] = [];
   protected userForm: UserForm = {
@@ -150,67 +179,83 @@ export class UserPageComponent {
   protected nbPlaceOfUser: number = 0;
   protected stats: Statistics;
   protected graphs: Graph[] = [];
+  protected stationsList: Station[] = [];
   private stationsOfUser: Station[] = [];
+  protected typesList: Type[] = [];
   private typesOfUser: Type[] = [];
-  protected divToShow = "infos";
   protected animationChange: string = "";
-  protected typesCardInfos: TypeCardParams[] = [];
+  protected typeInfos: TypeInfo;
   protected statsToShow = "";
   protected passwordChecked: boolean = false;
   protected loginChecked: boolean = false;
   protected loadingValue: number = 0;
-  protected showPage: boolean = false;
+  protected loginArray: MovingText[] = [];
+  protected sizeOfTitle: number = 0;
+  protected counter: number = 0;
+  protected animationNumber: boolean = false;
 
   private ngOnInit(): void{
-    this.data.getPlacesOfUser(this.id).subscribe((places:Place[]) => {
-      this.nbPlaceOfUser = places.length;
-      this.data.getStatistics(this.id).subscribe((stats: Statistics) => {
-        this.stats = stats;
-        categories.forEach((category: string) => {
-          this.graphs.push({
-            category: category,
-            counter: [],
-          });
-        });
-        this.stats.typeStats.sort((a:Counter,b:Counter) => {
-          if(a.counter > b.counter) return 1;
-          return -1;
-        });
-        this.stats.typeStats.forEach((element:Counter) => {
-          let findGraphAdded: Graph = this.graphs.find((graph: Graph) => graph.category === element.category);
-          let findStat: CategoryStat = stats.categoriesStats.find((stat: CategoryStat) => stat.category === element.category);
-          delete element.category;
-          element.animationFinished = true;
-          findGraphAdded.counter.push(element);
-          if(findStat.count > 0){
-            findGraphAdded.counter.forEach((count: Counter) => {
-              count.percent = Math.round((count.counter/findStat.count) * 1000)/10;
-            });
-            findGraphAdded.counter.sort((a: Counter,b:Counter) => {
-              if(a.percent > b.percent) return -1;
-              return 1;          
-            });
-          }          
-        });
-        this.stats.typeStatsTested.forEach((element:Counter) => {
-          let findGraphTested: Graph = this.graphs.find((graph: Graph) => graph.category === element.category);
-          let findCounter: Counter = findGraphTested.counter.find((count: Counter) =>{
-            count.value === element.value
-          });
-          if(findCounter != null) findCounter.tested = element.counter;       
-        });
-        this.graphs.forEach((graph: Graph) => {
-          if(graph.counter.length === 0){
-            this.statsSelects = this.statsSelects.filter((option: SelectData) => {
-              if(option.id === graph.category)  return false;
-              return true;
-            });
-          }  else if(graph.counter.length > 10){
-            graph.counter.splice(10,graph.counter.length - 10);
-          }
-        });
-        this.loadingValue += 25;
+    this.data.isAdmin(localStorage.getItem("id")).subscribe((isAdmin) => {
+      this.isAdmin = isAdmin;
+    });
+    for(let i = 0; i < this.login.length; i++){
+      this.loginArray.push({
+        text: this.login[i],
+        translate: -30
       });
+    }
+    this.data.getStatistics(this.id).subscribe((stats: Statistics) => {
+      this.nbPlaceOfUser = stats.place;
+      this.stats = stats;
+      categories.forEach((category: string) => {
+        this.graphs.push({
+          category: category,
+          counter: [],
+        });
+      });
+      this.stats.typeStats.sort((a:Counter,b:Counter) => {
+        if(a.counter > b.counter) return 1;
+        return -1;
+      });
+      this.stats.typeStats.forEach((element:Counter) => {
+        let findGraphAdded: Graph = this.graphs.find((graph: Graph) => graph.category === element.category);
+        let findStat: CategoryStat = stats.categoriesStats.find((stat: CategoryStat) => stat.category === element.category);
+        delete element.category;
+        element.animationFinished = true;
+        findGraphAdded.counter.push(element);
+        if(findStat.count > 0){
+          findGraphAdded.counter.forEach((count: Counter) => {
+            count.percent = Math.round((count.counter/findStat.count) * 1000)/10;
+          });
+          findGraphAdded.counter.sort((a: Counter,b:Counter) => {
+            if(a.percent > b.percent) return -1;
+            return 1;          
+          });
+        }          
+      });
+      this.stats.categoriesStats.forEach((categoryStat: CategoryStat) => {
+        categoryStat.height = 0;
+        categoryStat.background = "";
+        categoryStat.opacity = 0;
+      });
+      this.stats.typeStatsTested.forEach((element:Counter) => {
+        let findGraphTested: Graph = this.graphs.find((graph: Graph) => graph.category === element.category);
+        let findCounter: Counter = findGraphTested.counter.find((count: Counter) =>{
+          count.value === element.value
+        });
+        if(findCounter != null) findCounter.tested = Number(element.counter);       
+      });
+      this.graphs.forEach((graph: Graph) => {
+        if(graph.counter.length === 0){
+          this.statsSelects = this.statsSelects.filter((option: SelectData) => {
+            if(option.id === graph.category)  return false;
+            return true;
+          });
+        }  else if(graph.counter.length > 10){
+          graph.counter.splice(10,graph.counter.length - 10);
+        }
+      });
+      this.loadingValue += 25;
     });
     this.data.getAllRegion().subscribe((res: string[]) => {
       res.forEach((element: string) => {
@@ -226,14 +271,15 @@ export class UserPageComponent {
     this.data.getStationsOfUser(this.id).subscribe((stations: Station[]) => {
       this.stationsOfUser = this.placesService.getCopyOfElement(stations);
       this.stationsOfUser.forEach((userStation: Station) => {
-        this.stationsCardInfos.push({
-          station: {
+        this.data.getLignesOfStation(userStation.id).subscribe((lignes: Ligne[]) => {
+          this.stationsList.push({
             id: userStation.id,
-            name: userStation.name
-          },
-          width: sessionStorage.getItem('device') === 'computer' ? 20 : 80,
-          height: 450,
+            name: userStation.name,
+            reg: lignes[0].reg,
+            lignes: lignes
+          })
         });
+
         this.stations.push({
           id: userStation.id,
           name: userStation.name,
@@ -244,12 +290,11 @@ export class UserPageComponent {
     });
     this.data.getTypesOfUser(this.id).subscribe((types: Type[]) => {
       this.typesOfUser = this.placesService.getCopyOfElement(types);
+      types.forEach((type: Type) =>{
+        type.faIcon = this.placesService.getIconFromName(type.icon);
+      });
+      this.typesList = this.placesService.getCopyOfElement(types);
       this.typesOfUser.forEach((userType: Type) => {
-        this.typesCardInfos.push({
-          type: userType,
-          width: sessionStorage.getItem('device') === 'computer' ? 20 : 80,
-          height: 400,
-        });
         this.types.push({
           id: userType.id,
           name: userType.name,
@@ -260,50 +305,153 @@ export class UserPageComponent {
       this.loadingValue += 25;
     });
     this.titleBackground = this.placesService.shadeColor(this.mainColor, 6);
-    this.loginAndPasswordBackground = this.placesService.shadeColor(this.mainColor, 12);
-    this.normalInput.backgroundColor = this.loginAndPasswordBackground;
-    this.normalInput.hoverTextColor = this.loginAndPasswordBackground;
-    this.validInput.backgroundColor = this.loginAndPasswordBackground;
-    this.validInput.hoverTextColor = this.loginAndPasswordBackground;
-    this.invalidInput.backgroundColor = this.loginAndPasswordBackground;
-    this.invalidInput.hoverTextColor = this.loginAndPasswordBackground;
-    this.validButton.backgroundColorActive = this.loginAndPasswordBackground;
-    this.validButton.color = this.loginAndPasswordBackground;
-    this.invalidButton.backgroundColorActive = this.loginAndPasswordBackground;
-    this.invalidButton.color = this.loginAndPasswordBackground;
     this.normalButton.backgroundColor = this.titleBackground;
     this.normalButton.colorActive = this.titleBackground;
-    this.typeBackground = this.placesService.shadeColor(this.white, -6);
-    this.selectInfosType.backgroundColor = this.typeBackground;
-    this.selectInfosType.topHoverColor = this.typeBackground;
-    this.selectInfosType.optionBackgroundColor = this.typeBackground;
-    this.selectInfosType.hoverTextColor = this.typeBackground;
+    const colorLoginAndPassword = this.placesService.shadeColor(this.mainColor, 12);
+    this.normalInput.backgroundColor = colorLoginAndPassword;
+    this.normalInput.hoverTextColor = colorLoginAndPassword;
+    this.validInput.backgroundColor = colorLoginAndPassword;
+    this.validInput.hoverTextColor = colorLoginAndPassword;
+    this.invalidInput.backgroundColor = colorLoginAndPassword;
+    this.invalidInput.hoverTextColor = colorLoginAndPassword;
+    this.validButton.backgroundColorActive = colorLoginAndPassword;
+    this.validButton.color = colorLoginAndPassword;
+    this.invalidButton.backgroundColorActive = colorLoginAndPassword;
+    this.invalidButton.color = colorLoginAndPassword;
+
   }
-  protected navigate(divName: string): void{
-    if(this.divToShow !== divName){
-      let newBackgroundColor: string = "";
-      let newNavigateBackground: string = "";
-      let newNavigateColor: string = "";
-      if(this.divToShow !== 'infos' && divName === 'infos'){
-        this.animationChange = "infos";
-        newBackgroundColor = 'var(--mainColor)';
-        newNavigateBackground = 'var(--black)';
-        newNavigateColor = 'var(--mainColor)';
+  private ngAfterViewInit(): void{
+    setTimeout(() => {
+      this.setAnimation();
+    }, 500);
+    window.addEventListener("wheel", this.animationOnScroll.bind(this));    
+    window.addEventListener("scroll", this.animationOnScroll.bind(this));
+  }
+  private setAnimation(): void{
+    this.translatePicture = 'translateX(0)';
+    setTimeout(() => {
+      this.opacityNavigate = 1;
+      this.widthBackgroundTitle = 100;
+      this.normalButton.animationWidth = true;
+      this.normalButton = this.placesService.getCopyOfElement(this.normalButton);
+    }, 600);
+    this.opacityPicture = 1;
+    let counter: number = 0;
+    this.heightNavigate = 100;
+    let interval = setInterval(() => {
+      this.loginArray[counter].translate = 0;
+      counter += 1;
+      if(counter === this.loginArray.length) clearInterval(interval);
+    }, 100);
+    setTimeout(() => {
+      this.opacityNbPlace = 1;
+    }, 500);
+  }
+  private animationOnScroll(): void{
+    if(document.getElementById("stats") != null)
+    {
+      const statsElementTop: number = document.getElementById("stats").getBoundingClientRect().top;
+      const offsetAnimationActivationStats: number = 400;
+      if(statsElementTop + offsetAnimationActivationStats - window.innerHeight <= 0){
+        this.widthBackgroundStats = 100;
+        setTimeout(() => {
+          this.opacityMainInfo = 1;
+        }, 200);
       }
-      if(this.divToShow !== 'preferences' && divName === 'preferences'){
-        this.animationChange = "preferences";
-        newBackgroundColor = 'var(--white)';
-        newNavigateBackground = 'var(--secondColor)';
-        newNavigateColor = 'var(--white)';
+      this.stats.categoriesStats.forEach((stat: CategoryStat,index: number) => {
+        const categoryElement: HTMLElement = document.getElementById(stat.category);
+        if(categoryElement != null){
+          const elementTop = categoryElement.getBoundingClientRect().top;
+          const offsetAnimationActivationCategory: number = window.innerWidth * .025 * index + 100;
+          if(elementTop + offsetAnimationActivationCategory - window.innerHeight <= 0){
+            sessionStorage.getItem("device") === 'desktop' ? stat.height = 25 : stat.height = 55;
+            stat.background = 'url(../../assets/common/'+stat.category+'.jpg)';
+            if(!this.animationNumber) this.setNumberAnimation();
+            setTimeout(() => {
+              stat.opacity = 1;
+            }, 300);
+          }
+        }
+      });
+
+      const selectStatsElementTop: number = document.getElementById("selectStats").getBoundingClientRect().top;
+      const offsetAnimationActivationSelectStats: number = 100;
+      if(selectStatsElementTop + offsetAnimationActivationSelectStats - window.innerHeight <= 0){
+        this.normalSelectInfos.animationWidth = true;
+        this.normalSelectInfos = this.placesService.getCopyOfElement(this.normalSelectInfos);
       }
-      setTimeout(() => {
-        this.divToShow = divName;
-        this.backgroundColor = newBackgroundColor;
-        this.navigateBackground = newNavigateBackground;
-        this.navigateColor = newNavigateColor;
-        this.animationChange = '';
-      }, 400);
-    } 
+
+      const stationsElementTop: number = document.getElementById("stations").getBoundingClientRect().top;
+      const offsetAnimationActivationStations: number = 100;
+      if(stationsElementTop + offsetAnimationActivationStations - window.innerHeight <= 0){
+        this.heightBackgroundStation = 100;
+        setTimeout(() => {
+          this.translateXStationPicture = 0;
+          this.translateYStationPicture = 0;
+          this.showStationsList = true;
+          setTimeout(() => {
+            this.translateParisStationText = 0;
+            setTimeout(() => {
+              this.translateLyonText = 0;
+            }, 200);
+          }, 300);
+          this.selectInfosRegion.animationWidth = true;
+          this.selectInfosRegion = this.placesService.getCopyOfElement(this.selectInfosRegion);
+        }, 500);
+      }
+
+      const typesElementTop: number = document.getElementById("types").getBoundingClientRect().top;
+      const offsetAnimationActivationTypes: number = 200;
+      if(typesElementTop + offsetAnimationActivationTypes - window.innerHeight <= 0){
+        this.selectInfosType.backgroundColor = this.typeBackground;
+        this.selectInfosType.topHoverColor = this.typeBackground;
+        this.selectInfosType.optionBackgroundColor = this.typeBackground;
+        this.selectInfosType.hoverTextColor = this.typeBackground;
+        this.widthBackgroundType = 100;
+        setTimeout(() => {
+          this.translateXTypePicture = 0;
+          this.translateYTypePicture = 0;
+          this.showTypesList = true;
+          setTimeout(() => {
+            this.translateParisTypeText = 0;
+            setTimeout(() => {
+              this.translateToulouseText = 0;
+            }, 200);
+          }, 300);
+            this.selectInfosType.animationWidth = true;
+            this.selectInfosType = this.placesService.getCopyOfElement(this.selectInfosType);
+          }, 500);
+      }
+
+      const loginAndPasswordElementTop: number = document.getElementById("loginAndPassword").getBoundingClientRect().top;
+      const offsetAnimationActivationLoginAndPassword: number = 200;
+      if(loginAndPasswordElementTop + offsetAnimationActivationLoginAndPassword - window.innerHeight <= 0){
+        this.loginAndPasswordBackground = this.placesService.shadeColor(this.mainColor, 12);
+        this.invalidButton.animationWidth = true;
+        this.invalidButton = this.placesService.getCopyOfElement(this.invalidButton);
+        setTimeout(() => {
+          this.showLoginInput = true;
+          this.showPassword1Input = true;
+          setTimeout(() => {
+            this.showPassword2Input = true;
+          }, 100);
+        }, 200);
+      }
+    }
+  }
+  private setNumberAnimation(): void{
+    this.animationNumber = true;
+    this.counter = 0;
+    let endValue: number = Number(this.nbPlaceOfUser);
+    let counter = setInterval(() => {
+      this.counter += 1;
+      if(this.counter === endValue){
+        clearInterval(counter);
+      }
+    }, 20);
+  }
+  protected navigate(url: string): void{
+      this.router.navigate([url]);
   }
   protected setPreferenceGeo(event: any, params: string): void{
     if(params === 'reg'){
@@ -361,17 +509,15 @@ export class UserPageComponent {
       if(filter.length > 0) {
         this.data.getLignesOfStation(filter[0].id).subscribe((lignes: Ligne[]) => {
           filter.originalData = lignes;
-        });
-        this.stations.push(filter[0]);
-        this.stationsCardInfos.push({
-          station: {
-            id: filter[0].id,
+          this.stationsList.push({
+            id:filter[0].id,
+            lignes: lignes,
+            reg: this.region,
             name: filter[0].name
-          },
-          width: sessionStorage.getItem('device') === 'computer' ? 20 : 80,
-          height: 450,
+          });
+          this.stations.push(filter[0]);
+          this.stations = this.stations.slice();          
         });
-        this.stations = this.stations.slice();
       }
       else{
         filter = event.filter((station: SelectData) => {
@@ -384,24 +530,40 @@ export class UserPageComponent {
           if(station.id === idToSuppress) return false;
           return true;
         }).slice();
-        this.stationsCardInfos = this.stationsCardInfos.filter((params: StationCardParams) => {
-          if(params.station.id === idToSuppress) return false;
+        this.stationsList = this.stationsList.filter((station: Station) => {
+          if(station.id === idToSuppress) return false;
           return true;
         }).slice();
       }
     }
   }
   protected removeStation(id: string): void{
+    this.stationInfos = null;
     let option: SelectData = this.stationSelect.find((station: SelectData) => station.id === id);
     option.selected = false;
     this.stations = this.stations.filter((station: SelectData) => {
       if(station.id === id) return false;
       return true;
     }).slice();
-    this.stationsCardInfos = this.stationsCardInfos.filter((params: StationCardParams) => {
-      if(params.station.id === id) return false;
+    this.stationsList = this.stationsList.filter((station: Station) => {
+      if(station.id === id) return false;
       return true;
     }).slice();
+  }
+  protected selectStation(station: Station): void{
+    this.data.getStatisticsOfStation(station.id).subscribe((stats: StationStats[]) => {
+      this.stationInfos = {
+        station: {
+          id: station.id,
+          name: station.name
+        },
+        stats: stats
+      }
+    });
+    
+  }
+  protected getIconOfCategory(category: string): IconDefinition{
+    return this.placesService.getIconOfCategory(category);
   }
   protected setPreferenceType(event: any, params: string): void{
     if(params === 'cat'){
@@ -429,11 +591,8 @@ export class UserPageComponent {
       });
       if(filter.length > 0){
         this.types.push(filter[0]);
-        this.typesCardInfos.push({
-          type: filter[0].originalData,
-          width: sessionStorage.getItem('device') === 'computer' ? 20 : 80,
-          height: 400
-        });
+        filter[0].originalData.faIcon = this.placesService.getIconFromName(filter[0].originalData.icon);
+        this.typesList.push(filter[0].originalData);
       }
       else{
         filter = event.filter((type: SelectData) => {
@@ -446,23 +605,31 @@ export class UserPageComponent {
           if(type.id === idToSuppress) return false;
           return true;
         }).slice();
-        this.typesCardInfos = this.typesCardInfos.filter((infos: TypeCardParams) => {
-          if(infos.type.id === idToSuppress) return false;
+        this.typesList = this.typesList.filter((type: Type) => {
+          if(type.id === idToSuppress) return false;
           return true;
         }).slice();
       }
     }
   }
+  protected selectType(type: Type): void{
+    this.data.getStatsOfType(type).subscribe((stats: TypeStatistics) => {
+      this.typeInfos = {
+        type: type,
+        stats: stats
+      }
+    });
+    
+  }
   protected removeType(id: string): void{
-
     let option: SelectData = this.typeSelect.find((type: SelectData) => type.id === id);
     if(option != null)  option.selected = false;
-    this.types = this.types.filter((station: SelectData) => {
-      if(station.id === id) return false;
+    this.types = this.types.filter((type: SelectData) => {
+      if(type.id === id) return false;
       return true;
     }).slice();
-    this.typesCardInfos = this.typesCardInfos.filter((params: TypeCardParams) => {
-      if(params.type.id === id) return false;
+    this.typesList = this.typesList.filter((type: Type) => {
+      if(type.id === id) return false;
       return true;
     }).slice();
   }
@@ -492,6 +659,24 @@ export class UserPageComponent {
       }
     });
   }
+  protected getCouv(event: any): void{
+    if (event.target.files && event.target.files[0]) {
+      const reader = new FileReader();
+
+      reader.onload = (_event: any) => {
+        if(_event.target.result.length != null){
+          this.data.setCouv(this.id, _event.target.result).subscribe((res:Message) => {
+            if(!res.error){
+              this.couv = _event.target.result;
+              localStorage.setItem("couv", _event.target.result);
+            }
+          });
+        }
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+    
+  }
   protected getFile(event: string): void{
     if(event.length != null){
       this.data.setImage(this.id, event).subscribe((res:Message) => {
@@ -511,6 +696,7 @@ export class UserPageComponent {
       password: this.userForm.password,
       login: this.login,
       role: '',
+      couv: "",
       img: ""
     }
     let checkPassword: Subject<boolean> = new Subject();
@@ -606,18 +792,12 @@ export class UserPageComponent {
   }
   protected getSizeOfLegend(stat: Counter,index: number, category: string){
     let findGraph: Graph = this.graphs.find((graph: Graph) => graph.category === category);
-    if(findGraph.counter[index].animationFinished){
-      if(stat == null){
-        findGraph.counter[index].animationFinished = false;
-        findGraph.counter[index].legendWidth = 0;
-        setTimeout(() => {
-          findGraph.counter[index].animationFinished = true;
-          findGraph.counter[index].legend = "";
-        },300);
-      } else{
-        category !== "Autre" ? findGraph.counter[index].legend = findGraph.counter[index].percent + "% des " + category.toLocaleLowerCase() + "s" : findGraph.counter[index].legend = findGraph.counter[index].percent + "% des lieux autres"
-        findGraph.counter[index].legendWidth = findGraph.counter[index].legend.length * 12;
-      }
+    if(stat == null){
+      setTimeout(() => {
+        findGraph.counter[index].legend = "";
+      },300);
+    } else{
+      findGraph.counter[index].legend = findGraph.counter[index].percent + "%";
     }
   }
   protected deconnect(): void{
@@ -630,10 +810,10 @@ export class UserPageComponent {
   protected changePage(): void{
     this.router.navigate(['/follow'])
   }
-  protected getShowPage(): void{
-    this.showPage = true;
-  }
+  
   private ngOnDestroy(): void{
+    window.removeAllListeners("wheel");    
+    window.removeAllListeners("scroll");    
     this.stationsOfUser.forEach((userStation: Station) => {
       if(this.stations.find((station: SelectData) => station.id === userStation.id) == null){
         this.data.deleteStationOfUser(this.id,userStation.id);
@@ -656,6 +836,14 @@ export class UserPageComponent {
       }
     });
   }
+}
+interface TypeInfo{
+  type: Type,
+  stats: TypeStatistics
+}
+interface StationInfo{
+  station: Station,
+  stats: StationStats[]
 }
 interface Graph{
   category: string,

@@ -21,10 +21,11 @@ import { EditModule } from './edit/edit.module';
 import { AdminModule } from './admin/admin.module';
 import { DatabaseService } from './services/database.service';
 import { FollowModule } from './follow/follow.module';
+import { AboutModule } from './about/about.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +44,8 @@ import { FollowModule } from './follow/follow.module';
     EditModule,
     FirstPageModule,
     AdminModule,
-    FollowModule
+    FollowModule,
+    AboutModule
   ],
   providers: [PlacesService, ThemeService, DatabaseService],
   bootstrap: [AppComponent]

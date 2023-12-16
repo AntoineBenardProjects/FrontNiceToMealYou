@@ -3,7 +3,16 @@
     height: 100vh;
     width: 100vw;
     background: var(--white);
-    transition: transform 1s ease-in, width 0s, height 0s;
+    transition: transform 1s cubic-bezier(1,-0.01,.6,.72), width 0s, height .5s;
+    overflow: hidden;
+}
+.background{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0;
+    background: var(--black);
+    transition: .5s;
 }
 .loaderContainer{
     position: relative;
@@ -24,7 +33,7 @@ h1{
     left: 2px;
     background: var(--thirdColor);
     border-radius: 3px;
-    transition: 1s;
+    transition: 1s ease-in;
 }
 .end,.start{
     position: absolute;

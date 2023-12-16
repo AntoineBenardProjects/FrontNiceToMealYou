@@ -231,7 +231,8 @@ export class EditComponent {
     else if(params === 'comment')   this.comment[params] = event.target.value;
     else if(params === 'website' || params === 'menu' || params === 'promotion' || params === 'name' || params === 'address')   this.placeInfos[params] = event.target.value;
     else if(params === 'price')  this.comment[params] = Number(event.target.value);
-    else if(params === 'quantity' || params === 'service' ||params === 'tested' || params === 'visible' || params === 'quality_price')  this.placeInfos[params] = event;
+    else if(params === 'tested')  this.comment[params] = event;
+    else if(params === 'quantity' || params === 'service' || params === 'visible' || params === 'quality_price')  this.placeInfos[params] = event;
     else if(params === 'horaires'){
       let find: Horaires = this.horairesAdded.find((element: Horaires) => element.day === day);
       find[moment] = event.target.value;
@@ -748,6 +749,9 @@ export class EditComponent {
     }
     
     
+  }
+  protected navigate(url: string): void{
+    this.router.navigate([url]);
   }
 }
 

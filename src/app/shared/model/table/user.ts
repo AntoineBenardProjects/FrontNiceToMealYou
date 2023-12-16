@@ -5,6 +5,7 @@ export interface User{
     login: string,
     password: string,
     role: string,
+    couv: string,
     img: string
 }
 export interface Follow{
@@ -30,6 +31,10 @@ export interface Statistics{
 
 export interface CategoryStat{
     category: string,
+    height?: number,
+    background?: string,
+    opacity?: number,
+    icon: IconDefinition,
     open?: number,
     count: number,
     tested: number

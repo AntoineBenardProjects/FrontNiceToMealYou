@@ -1,19 +1,24 @@
-<div class="navigate">
-    <img [src]="logoImageSrc" routerLink="/home">
+<div class="navigate" [ngStyle]="{'opacity': opacityNavbar, 'z-index': opacityNavbar <= 0 ? '0' : '1000'}">
+  <img [src]="logoImageSrc" routerLink="/home">
 
-    <div class="nav">
-      <p (click)="navigate('/filter')">Ma carte</p>
-      <p (click)="navigate('/user')">Mon compte</p>  
-    </div>
+  <div class="nav">
+    <p (click)="navigate('/filter')" [ngStyle]="{'transform': 'translateY('+translateLinks[0]+'px)'}">Ma carte</p>
+    <p (click)="navigate('/user')" [ngStyle]="{'transform': 'translateY('+translateLinks[1]+'px)'}">Mon compte</p>  
+    <p (click)="navigate('/add')" [ngStyle]="{'transform': 'translateY('+translateLinks[2]+'px)'}">Créer un lieu</p>
+    <p (click)="navigate('/about')" [ngStyle]="{'transform': 'translateY('+translateLinks[3]+'px)'}">Développeur</p>
+
   </div>
-<div class="body">
-    <div class="background"></div>
+</div>
+<div class="body" id="body" [ngStyle]="{'position': positionBody}">
+  <div id="search">
     <app-input (input)="setValue($event)" (selectAutocomplete)="searchUser($event)" [autocompleteInfos]="autocompleteInfos" [autocomplete]="autocompleteLogins" [value]="searchLogin" text="Recherchez un utilisateur" [styleInfo]="searchInputInfos"></app-input>
-    <div class="resultSearch center" [ngStyle]="{'height.vh' : searchedCardParams != null ? '30' : '0'}">
+    <div class="resultSearch center" [ngStyle]="{'height.vh' : searchedCardParams != null ? '50' : '0'}">
         <user-card *ngIf="searchedCardParams != null" [infos]="searchedCardParams"></user-card>
     </div>
+  </div>
+    
     <div class="request center" id="request" *ngIf="requestCardsParams.length > 0" [ngStyle]="{'display': requestCardsParams.length > 1 ? 'grid' : 'flex'}">
-        <div class="subtitles" [ngStyle]="{'right.vw': titlePosition}">
+        <div class="subtitles">
             <h1 class="subtitle">Demande</h1>
             <h1 class="subtitle">Demande</h1>
             <h1 class="subtitle">Demande</h1>  
@@ -26,8 +31,9 @@
           </div>
         <user-card (acceptRelation)="modifyRelation($event)" (addRelation)="modifyRelation($event)" *ngFor="let params of requestCardsParams" [infos]="params"></user-card>
     </div>
-    <div class="suggestion" id="suggestion">
-        <div class="subtitles" [ngStyle]="{'right.vw': titlePosition}">
+    <div id="allCards" [ngStyle]="{'top.vh': topSuggestion}">
+      <div class="suggestion" id="suggestion">
+        <div class="subtitles center">
             <h1 class="subtitle">Suggestions</h1>
             <h1 class="subtitle">Suggestions</h1>
             <h1 class="subtitle">Suggestions</h1>  
@@ -37,7 +43,60 @@
             <h1 class="subtitle">Suggestions</h1>
             <h1 class="subtitle">Suggestions</h1>
             <h1 class="subtitle">Suggestions</h1> 
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1> 
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1>
+            <h1 class="subtitle">Suggestions</h1> 
           </div>
-        <user-card *ngFor="let params of suggestedCardsParams" [infos]="params"></user-card>
+          <div class="cards center" *ngFor="let params of suggestedCardsParams">
+            <user-card [infos]="params"></user-card>
+          </div>
+      </div>
+      <div class="friends" id="friends" [ngStyle]="{'top.vh': topSuggestion}">
+        <div class="subtitles center">
+          <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>  
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>  
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>  
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>  
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1>
+            <h1 class="subtitle">Amis</h1> 
+          </div>
+          <div class="center" *ngFor="let params of friendsCardsParams">
+            <user-card [infos]="params"></user-card>
+          </div>
+      </div>
     </div>
+    
 </div>

@@ -167,7 +167,6 @@ export class PlaceCardFaceComponent {
     return toReturn;
   }
   private initStyle(): void{
-    console.log(this.infos)
     this.background = "linear-gradient(0.1turn,";
     this.category = this.infos.place.category;
     this.categoryIcon = this.placesService.getIconOfCategory(this.category);
@@ -307,6 +306,12 @@ export class PlaceCardFaceComponent {
       editable: this.infos.user ? true : false
     }
   }
+  protected setComment(event: any): void{
+    this.grades.comment = event.target.textContent;
+    this.databaseService.updateComment(this.grades,this.infos.place.category).subscribe((message: Message) => {
+      console.log(message);
+    });
+  }
   protected getStyleNotes(note: number): WidthAndColor{
     let styleNote: WidthAndColor;
     if(note > 9)  styleNote = {
@@ -370,13 +375,13 @@ export class PlaceCardFaceComponent {
         editable: this.infos.user ? true : false
       }
     } else if(category === "Restaurant"){
-      this.restaurantRoundProgressBars[params] = {
+      params === "price" ? this.restaurantRoundProgressBars[params] = this.grades.price : this.restaurantRoundProgressBars[params] = {
         color: this.getStyleNotes(this.grades[params]).color,
         width: this.getStyleNotes(this.grades[params]).width,
         textColor: this.noteColor,
         note: this.grades[params],
         editable: this.infos.user ? true : false
-      }
+      };
     } else{
       this.commonRoundProgressBars = {
         color: this.getStyleNotes(this.grades[params]).color,

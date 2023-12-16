@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostBinding, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, Output, SimpleChanges } from '@angular/core';
 import { IconDefinition, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { StationCardParams } from 'src/app/shared/model/params/cardParams';
@@ -46,29 +46,47 @@ export class StationCardComponent {
   
 
   private ngOnInit(): void{
-    this.databaseService.getLignesOfStation(this.infos.station.id).subscribe((lignesOfStation: Ligne[]) => {
-      this.lignes = this.placesService.getCopyOfElement(lignesOfStation);
-      this.lignes.forEach((ligne: Ligne) => {
-        ligne.buttonInfos = {
-          color: ligne.color,
-          colorActive: this.placesService.isColorLight(ligne.color) ? 'var(--black)' : 'white',
-          borderColor: ligne.color,
-          borderColorActive: ligne.color,
-          backgroundColor: 'transparent',
-          backgroundColorActive: ligne.color,
-          fontSize: "16px",
-          heightIcon: "30px",
-          radius: "50%"
-        }        
+    if(this.infos != null){
+      this.databaseService.getLignesOfStation(this.infos.station.id).subscribe((lignesOfStation: Ligne[]) => {
+        this.lignes = this.placesService.getCopyOfElement(lignesOfStation);
+        this.lignes.forEach((ligne: Ligne) => {
+          ligne.buttonInfos = {
+            color: ligne.color,
+            colorActive: this.placesService.isColorLight(ligne.color) ? 'var(--black)' : 'white',
+            borderColor: ligne.color,
+            borderColorActive: ligne.color,
+            backgroundColor: 'transparent',
+            backgroundColorActive: ligne.color,
+            fontSize: "16px",
+            heightIcon: "30px",
+            radius: "50%"
+          }        
+        });
+        this.color = "var(--black)";
+        this.imgSrc = lignesOfStation[0].picture;
+        this.textColor = "white";
+        this.gradient += this.placesService.hexToRgba(this.black,0.5) + "," + this.placesService.hexToRgba(this.black,0.3) + "," + this.placesService.hexToRgba(this.black,0.5) + ")";
       });
-      this.color = "var(--black)";
-      this.imgSrc = lignesOfStation[0].picture;
-      this.textColor = "white";
-      this.gradient += this.placesService.hexToRgba(this.black,0.5) + "," + this.placesService.hexToRgba(this.black,0.3) + "," + this.placesService.hexToRgba(this.black,0.5) + ")";
-    });
-    this.databaseService.getStatisticsOfStation(this.infos.station.id).subscribe((statsOfStation: StationStats) => {
-      this.stats = this.placesService.getCopyOfElement(statsOfStation);
-    });
+      this.databaseService.getStatisticsOfStation(this.infos.station.id).subscribe((statsOfStation: StationStats) => {
+        this.stats = this.placesService.getCopyOfElement(statsOfStation);
+      });
+    }
+  }
+
+  private ngOnChanges(changes: SimpleChanges): void{
+    for (const propName in changes) {
+      if (changes.hasOwnProperty(propName)) {
+        switch (propName) {
+          case 'infos': {
+            if(changes[propName].currentValue === changes[propName].previousValue){
+              console.log(changes[propName].previousValue)
+            }
+            this.ngOnInit();
+          }
+          break;
+        }
+      }
+    }
   }
 
   protected getButtonInfos(nbOpen: number): ButtonInfos{

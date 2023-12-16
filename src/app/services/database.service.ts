@@ -20,7 +20,7 @@ export class DatabaseService {
   constructor(private httpClient: HttpClient,private router: Router,private placesService: PlacesService) { }
 
 
-  private serverUrl = "http://localhost:3000";
+  private serverUrl = "http://ec2-35-181-155-218.eu-west-3.compute.amazonaws.com:3000";
 
   private header: any = {
     'Access-Control-Allow-Origin': '*',
@@ -103,7 +103,10 @@ export class DatabaseService {
   private stationUrl: string = "/station";
   private databaseUrl: string = "/database";
   private followUrl: string = "/follow";
-
+  getAllPlacesName(){
+    let url: string = this.placeUrl + "/all";
+    return this.get(url);
+  }
   getAllPlacesByCategory(category: string){
     let url: string = "";
     switch(category){
@@ -131,8 +134,8 @@ export class DatabaseService {
     }
     return this.get(url);
   }
-  getAllVisiblePlaces(){
-    let url: string = this.placeUrl + "/visible";
+  getAllVisiblePlacesOfUser(id_user: string){
+    let url: string = this.placeUrl + "/visible/" + id_user;
     return this.get(url);
   }
   getPlacesOfUser(id_user: string){
@@ -215,6 +218,10 @@ export class DatabaseService {
   getPlacesSuggestionsOfUser(id: string){
     const url: string = this.placeUrl + "/suggestion/place/" + id;
     return this.get(url);
+  }
+  deletePlaces(ids: string[]){
+    const url: string = this.placeUrl + "/multiple/" + encodeURIComponent(JSON.stringify(ids));
+    return this.delete(url);
   }
   ////////////////////////////////////////  City  ////////////////////////////////////////
   getAllCities(){
@@ -337,12 +344,24 @@ export class DatabaseService {
     return this.add(url,place);
   }
   getImage(idUser: string){
-    let toReturn: Subject<string> = new Subject();
+    let toReturn: Subject<string[]> = new Subject();
     const url: string = this.connectionUrl +"/image/"+idUser;
     this.get(url).subscribe((img: any) => {
-      toReturn.next(img.img)
+      toReturn.next([img.img,img.couv])
     });
     return toReturn;
+  }
+  isAdmin(id: string){
+    const url: string = this.connectionUrl + "/admin/" +id;
+    return this.get(url);
+  }
+  setCouv(idUser: string,couv: string){
+    const params = {
+      id: idUser,
+      couv: couv
+    }
+    const url: string = this.connectionUrl +"/couv";
+    return this.update(url,params);
   }
   setImage(idUser: string,img: string){
     const params = {
@@ -581,8 +600,8 @@ export class DatabaseService {
     const url: string = this.followUrl + "/request/" + id;
     return this.get(url);
   }
-  getFriends(follow: Follow){
-    const url: string = this.followUrl + "/friends/" + encodeURIComponent(JSON.stringify(follow));
+  getFriends(id: string){
+    const url: string = this.followUrl + "/friends/" + id;
     return this.get(url);
   }
   getCommonFriends(follow: Follow){

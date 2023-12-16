@@ -210,7 +210,8 @@ export class AddComponent {
     else if(params === 'comment')   this.comment[params] = event.target.value;
     else if(params === 'website' || params === 'menu' || params === 'promotion' || params === 'name' || params === 'address')   this.placeInfos[params] = event.target.value;
     else if(params === 'quantity' || params === 'quality_price' || params === 'service' || params === 'price')  this.comment[params] = Number(event.target.value);
-    else if(params === 'tested' || params === 'visible')  this.placeInfos[params] = event;
+    else if(params === 'visible')  this.placeInfos[params] = event;
+    else if(params === 'tested')  this.comment[params] = event;
     else if(params === 'horaires'){
       let find: Horaires = this.horairesAdded.find((element: Horaires) => element.day === day);
       find[moment] = event.target.value;
@@ -560,6 +561,9 @@ export class AddComponent {
     }
     
     
+  }
+  protected navigate(url: string): void{
+    this.router.navigate([url]);
   }
 }
 

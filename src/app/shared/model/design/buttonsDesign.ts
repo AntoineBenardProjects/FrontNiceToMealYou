@@ -43,7 +43,8 @@ export const myPlacesButtonInfosHomeComponent: ButtonInfos = {
     colorActive: 'var(--mainColor)',
     backgroundColor: 'var(--mainColor)',
     backgroundColorActive: 'var(--black)',
-    fontWeight: 1000
+    fontWeight: 1000,
+    animationWidth: true
 }
 export const myPlacesButtonInfosHomeComponent2: ButtonInfos = {
     color: 'var(--black)',
@@ -195,7 +196,20 @@ export const normalButtonUserComponent: ButtonInfos = {
     borderColorActive: 'var(--black)',
     backgroundColor: 'var(--mainColor)',
     backgroundColorActive: 'var(--black)',
+    animationWidth: false,
     fontWeight: 1000
+}
+export const blackLignesUserComponent: ButtonInfos = {
+    color: 'var(--white)',
+    colorActive: 'var(--black)',
+    borderColor: 'var(--black)',
+    borderColorActive: 'var(--black)',
+    backgroundColor: 'var(--black)',
+    backgroundColorActive: 'var(--white)',
+    fontSize: "16px",
+    heightIcon: "30px",
+    cursor: 'default',
+    radius: "50%"
 }
 export const validButtonUserComponent: ButtonInfos = {
     color: 'transparent',
@@ -209,6 +223,7 @@ export const invalidButtonUserComponent: ButtonInfos = {
     colorActive: 'var(--secondColor)',
     backgroundColor: 'var(--secondColor)',
     backgroundColorActive: 'transparent',
+    animationWidth: false,
     fontWeight: 1000
 }
 export const uploadButtonUserComponent: ButtonInfos = {
@@ -234,7 +249,14 @@ export const connexionButtonColorLoginComponent: ButtonInfos = {
     colorActive: 'var(--white)',
     backgroundColorActive: 'var(--black)'
 }
-
+export const demoButtonColorLoginComponent: ButtonInfos = {
+    color: 'var(--white)',
+    backgroundColor: 'var(--secondColor)',
+    borderColor: 'var(--secondColor)',
+    borderColorActive: 'var(--secondColor)',
+    colorActive: 'var(--secondColor)',
+    backgroundColorActive: 'var(--white)'
+}
 export const buttonColorRegisterComponent: ButtonInfos = {
     color: 'var(--white)',
     borderColor: 'var(--white)',
@@ -270,6 +292,25 @@ export const buttonColorTypeRegisterComponent: ButtonInfos = {
 export const uploadButtonInfosRegisterComponent: ButtonInfos = {
     color: 'var(--black)',
     backgroundColor: 'var(--white)'
+}
+export const iconsInfosRegisterComponent: ButtonInfos = {
+    color: 'var(--white)',
+    colorActive: 'var(--black)',
+    borderColor: 'var(--black)',
+    borderColorActive: 'var(--black)',
+    backgroundColor: 'var(--black)',
+    backgroundColorActive: 'var(--white)',
+    fontSize: "16px",
+    heightIcon: "30px",
+    radius: "50%"
+}
+export const buttonPhoneInfosRegisterComponent: ButtonInfos = {
+    color: 'var(--black)',
+    borderColor: 'var(--black)',
+    borderColorActive: 'var(--black)',
+    colorActive: 'var(--white)',
+    backgroundColor: 'transparent',
+    backgroundColorActive: 'var(--black)'
 }
 
 
@@ -376,4 +417,50 @@ export const categoryButtonUserCard: ButtonInfos = {
     heightIcon: "30px",
     radius: "50%",
     cursor: "default"
+}
+export const iconsUserCard: ButtonInfos = {
+    color: 'var(--white)',
+    colorActive: 'var(--black)',
+    borderColor: 'var(--black)',
+    borderColorActive: 'var(--black)',
+    backgroundColor: 'var(--black)',
+    backgroundColorActive: 'var(--white)',
+    fontSize: "22px",
+    heightIcon: "50px",
+    radius: "50%"
+}
+export const iconsFriendsUserCard: ButtonInfos = {
+    color: 'var(--white)',
+    colorActive: 'var(--thirdColor)',
+    borderColor: 'var(--thirdColor)',
+    borderColorActive: 'var(--thirdColor)',
+    backgroundColor: 'var(--thirdColor)',
+    backgroundColorActive: 'var(--white)',
+    fontSize: "22px",
+    heightIcon: "50px",
+    radius: "50%"
+}
+export const iconsAddUserCard: ButtonInfos = {
+    color: 'var(--black)',
+    colorActive: 'var(--white)',
+    borderColor: 'var(--white)',
+    borderColorActive: 'var(--white)',
+    backgroundColor: 'var(--white)',
+    backgroundColorActive: 'var(--black)',
+    fontSize: "22px",
+    heightIcon: "50px",
+    radius: "50%"
+}
+
+export const iconsAboutComponent: ButtonInfos = {
+    color: 'var(--black)',
+    colorActive: 'var(--white)',
+    borderColor: 'var(--black)',
+    borderColorActive: 'var(--black)',
+    backgroundColor: 'var(--white)',
+    backgroundColorActive: 'var(--black)',
+    fontSize: "16px",
+    cursor: "pointer",
+    heightIcon: "30px",
+    radius: "50%"
 }

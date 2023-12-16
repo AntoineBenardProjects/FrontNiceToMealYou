@@ -54,7 +54,7 @@ export class PlaceCardComponent {
     this.transition = "height .5s, width .5s, transform 1s, overflow .5s";
     if(this.infos != null && !this.infos.startAnimation){
       this.transition = "0s";
-      this.width = 500;
+      sessionStorage.getItem("device") === "desktop" ?  this.width = 500 : this.width = 370;
       this.height = 195 + this.infos.types.length * 40;
       this.overflow = "inherit";
       this.displayed.next(true);
@@ -62,7 +62,7 @@ export class PlaceCardComponent {
     if(this.infos != null && !this.setAnimation && this.infos.startAnimation){
       this.setAnimation = true;
       setTimeout(() => {
-        this.width = 500;
+        sessionStorage.getItem("device") === "desktop" ?  this.width = 500 : this.width = 370;
         setTimeout(() => {
           this.height = 195 + this.infos.types.length * 40;
           setTimeout(() => {

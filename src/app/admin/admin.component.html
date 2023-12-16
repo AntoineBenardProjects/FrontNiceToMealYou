@@ -3,12 +3,84 @@
         <img [src]="logoImageSrc" routerLink="/home">
 
         <div class="nav">
+            <p (click)="navigate('places')">Lieux</p>
             <p (click)="navigate('lignes')">Lignes</p>
             <p (click)="navigate('stations')">Stations</p>
             <p (click)="navigate('types')">Types</p>  
             <p (click)="navigate('users')">Utilisateurs</p>
             <p (click)="navigate('database')">BDD</p>
-            <upload-button [styleInfos]="uploadButton" type="file" (json)="getPlaces($event)"></upload-button>
+        </div>
+    </div>
+    <div class="places" *ngIf="divToShow === 'places'">
+        <div class="subtitles">
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>  
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1> 
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1> 
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1> 
+        </div>
+        <upload-button id="import" [styleInfos]="uploadButton" type="file" (json)="getPlaces($event)"></upload-button>
+        <div class="lignes suppress" [ngStyle]="{'height': placesFiltered.length > 0 ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos" (input)="search('allPlaces','name',$event)"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Postal</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let place of placesFiltered" (dblclick)="delete('Places',place.id)">
+                    <div class="container">
+                        <p>{{place.id}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{place.name}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{place.postal}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="toSuppress" [ngStyle]="{'height' : placesToDelete.length > 0 ? '600px' : '0','padding' : placesToDelete.length > 0 ? '30px' : '0'}">
+                <h3>À supprimer</h3>
+                <div class="element" *ngFor="let place of placesToDelete">
+                    <p>{{place.name}}</p>
+                    <p>{{place.postal}}</p>
+                    <round-button [icon]="crossIcon" [styleInfos]="iconsInfos" (click)="cancelDelete('Places',place.id)"></round-button>     
+                </div>
+            </div>
+            <round-button id="add" text="Supprimer les lieux" (click)="save('Places','Delete')" [styleInfos]="classicButtonColorInfos"></round-button>         
         </div>
     </div>
     <div class="transport" *ngIf="divToShow === 'lignes'">
@@ -981,6 +1053,7 @@
     <div style="background: var(--secondColor);" [ngStyle]="{'height.%' : animationChange === 'types' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'types' ? '0' : 'auto','width.%' : animationChange === 'types' ? '100' : '0', 'left' : animationChange === '' ? '0' : 'auto', 'right' : animationChange === 'types' ? '0' : 'auto'}" class="transition"></div>
     <div style="background: var(--mainColor);" [ngStyle]="{'height.%' : animationChange === 'users' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'users' ? '0' : 'auto','width.%' : animationChange === 'users' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'users' ? '0' : 'auto'}" class="transition"></div>
     <div style="background: var(--thirdColor);" [ngStyle]="{'height.%' : animationChange === 'database' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'database' ? '0' : 'auto','width.%' : animationChange === 'database' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'database' ? '0' : 'auto'}" class="transition"></div>
+    <div style="background: var(--thirdColor);" [ngStyle]="{'height.%' : animationChange === 'places' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'places' ? '0' : 'auto','width.%' : animationChange === 'places' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'places' ? '0' : 'auto'}" class="transition"></div>
 
     <div class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '10vh' : '0','background' : error ? 'var(--secondColor)' : 'var(--thirdColor)'}">
         <p>{{errorMessage}}</p>

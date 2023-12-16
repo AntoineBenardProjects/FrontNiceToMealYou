@@ -6,11 +6,11 @@ button{
     height: var(--heightCssVariable);
     padding: 1vh 0;
     border: 2px solid;
-    width: var(--heightCssVariable);
+    width: var(--width);
     background: var(--backgroundColor);
     color: var(--textColor);
     z-index: 1;
-    transition: all 400ms;
+    transition: all 1s cubic-bezier(.27,.88,.52,.95);
     &:hover{
         color: var(--textColorHover);
         opacity: 1 !important;

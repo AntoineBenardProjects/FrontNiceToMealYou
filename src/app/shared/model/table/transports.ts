@@ -32,6 +32,14 @@ export interface Coords{
 }
 
 export interface StationStats{
-    categoriesStats: CategoryStat[],
-    favType?: Counter[],
+    category: string,
+    count: number,
+    open: number,
+    type: TypeStationStats[]
+}
+export interface TypeStationStats{
+    counter: number,
+    open: number,
+    value: string,
+    id: string
 }

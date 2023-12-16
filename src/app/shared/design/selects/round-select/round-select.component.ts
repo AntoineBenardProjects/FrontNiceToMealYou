@@ -43,6 +43,8 @@ export class RoundSelectComponent {
   @HostBinding('style.--topHoverBackgroundColor') topHoverBackgroundColor: string = '';
   @HostBinding('style.--topHoverTextColor') topHoverTextColor: string = '';
   @HostBinding('style.--topHoverBorderColor') topHoverBorderColor: string = '';
+  @HostBinding('style.--width') width: string = '100%';
+  @HostBinding('style.--opacity') opacity: string = '1';
 
   protected idDropdown: string = "";
   protected idOptions: string = "";
@@ -77,6 +79,10 @@ export class RoundSelectComponent {
     if(this.infos.topHoverBackgroundColor != null) this.topHoverBackgroundColor = this.infos.topHoverBackgroundColor;
     if(this.infos.topHoverBorderColor != null) this.topHoverBorderColor = this.infos.topHoverBorderColor;
     if(this.infos.topHoverColor != null) this.topHoverTextColor = this.infos.topHoverColor;
+    if(this.infos.animationWidth === false){
+      this.width = "0%";
+      this.opacity = "0";
+    }
     this.data.forEach((element: SelectData) => {
       if(!element.selected)  element.selected = false;
     });
@@ -123,6 +129,10 @@ export class RoundSelectComponent {
               if(this.infos.topHoverBackgroundColor != null) this.topHoverBackgroundColor = this.infos.topHoverBackgroundColor;
               if(this.infos.topHoverBorderColor != null) this.topHoverBorderColor = this.infos.topHoverBorderColor;
               if(this.infos.topHoverColor != null) this.topHoverTextColor = this.infos.topHoverColor;
+              if(this.infos.animationWidth){
+                this.width = "100%";
+                this.opacity = "1";
+              }
             }
           }
           break;

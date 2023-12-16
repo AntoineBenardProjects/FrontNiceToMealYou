@@ -9,7 +9,7 @@ user-card{
     position: absolute;
     right: 3vw;
     bottom: 10vh;
-    z-index: 1001;
+    z-index: 1000;
 }
 .infosFilterBar{
     display: flex;
@@ -167,7 +167,7 @@ user-card{
         backdrop-filter: blur(5px);  
         transition: .4s;
         height: 50px;
-        z-index: 1000;
+        z-index: 1002;
         box-shadow: 0 0 .5em 0 var(--black);
     }
 }
@@ -234,7 +234,9 @@ app-input{
     bottom: 0;
     margin: auto;
     right: 10vw; 
-    z-index: 1000;
+    place-card{
+        z-index: 1000;
+    }
 }
 
 
@@ -264,5 +266,8 @@ select-place{
         range-slider{
             width: 75vw;
         }
+    }
+    .placeCard{
+        inset: 0;
     }
 }

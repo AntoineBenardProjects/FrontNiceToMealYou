@@ -126,16 +126,19 @@
             <round-progress-bar [infos]="barRoundProgressBars.quality_price" (noteChange)="changeNote($event,'Bar','quality_price')"></round-progress-bar>
             <p>Qualité</p>
         </div>
-        <div class="price center" id="prix_pinte" *ngIf="barRoundProgressBars.prix_pinte != null">
-            <h3>{{barRoundProgressBars.prix_pinte}}€</h3>
+        <div class="price center" id="prix_pinte">
+            <h3 *ngIf="barRoundProgressBars.prix_pinte != null">{{barRoundProgressBars.prix_pinte}}€</h3>
+            <h3 *ngIf="barRoundProgressBars.prix_pinte == null">- €</h3>
             <p>Pinte</p>
         </div>
-        <div class="price center" id="prix_cocktail" *ngIf="barRoundProgressBars.prix_cocktail != null">
-            <h3>{{barRoundProgressBars.prix_cocktail}}€</h3>
+        <div class="price center" id="prix_cocktail">
+            <h3 *ngIf="barRoundProgressBars.prix_cocktail != null">{{barRoundProgressBars.prix_cocktail}}€</h3>
+            <h3 *ngIf="barRoundProgressBars.prix_cocktail == null">- €</h3> 
             <p>Cocktail</p>
         </div>
-        <div class="price center" id="prix_coffee" *ngIf="barRoundProgressBars.prix_coffee != null">
-            <h3>{{barRoundProgressBars.prix_coffee}}€</h3>
+        <div class="price center" id="prix_coffee">
+            <h3 *ngIf="barRoundProgressBars.prix_coffee != null">{{barRoundProgressBars.prix_coffee}}€</h3>
+            <h3 *ngIf="barRoundProgressBars.prix_coffee == null">- €</h3>
             <p>Café</p>
         </div>
     </div>
@@ -145,7 +148,7 @@
             <p>Qualité</p>
         </div>
     </div>
-    <div contenteditable class="comment" *ngIf="grades.tested">
+    <p contenteditable class="comment" *ngIf="grades.tested" (input)="setComment($event)">
         {{comment}}
-    </div>
+    </p>
 </div>
