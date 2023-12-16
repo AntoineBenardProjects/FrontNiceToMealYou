@@ -756,6 +756,9 @@ export class AdminComponent {
   protected cleanTypeOfPlace(): void{
     this.databaseService.cleanTypeOfPlace();
   }
+  protected setDemoPlaces(): void{
+    this.databaseService.setDemoPlaces();
+  }
   protected save(params: string, action: string): void{
     let changeBDD: Subject<Message> = new Subject<Message>();
     changeBDD.subscribe((res:Message) => {

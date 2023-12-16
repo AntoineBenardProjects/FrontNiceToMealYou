@@ -1044,6 +1044,7 @@
     </div>
     <div class="database" *ngIf="divToShow === 'database'">
         <div class="buttons">
+            <round-button text="Remplir les places de la démo" [styleInfos]="classicButtonColorInfos" (click)="setDemoPlaces()"></round-button> 
             <round-button text="Recalculer les stations proche des lieux" [styleInfos]="classicButtonColorInfos" (click)="setStationsNearPlace()"></round-button> 
             <round-button text="Retirer les faux ids de type_of_place" [styleInfos]="classicButtonColorInfos" (click)="cleanTypeOfPlace()"></round-button> 
         </div>

@@ -20,8 +20,9 @@ export class DatabaseService {
   constructor(private httpClient: HttpClient,private router: Router,private placesService: PlacesService) { }
 
 
-  private serverUrl = "http://ec2-35-181-155-218.eu-west-3.compute.amazonaws.com:3000";
+  private localUrl = "http://localhost:3000";
 
+  private serverUrl = this.localUrl;
   private header: any = {
     'Access-Control-Allow-Origin': '*',
     'Accept': 'application/json',
@@ -623,5 +624,8 @@ export class DatabaseService {
     const url: string = this.databaseUrl + "/type_of_place"
     return this.add(url,null);
   }
-  
+  setDemoPlaces(){
+    const url: string = this.databaseUrl + "/demo/places";
+    return this.add(url,null);
+  }
 }
