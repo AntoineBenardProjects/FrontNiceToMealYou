@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { DatabaseService } from '../services/database.service';
 import { PlacesService } from '../services/places.service';
 import { AutocompleteInfos, InputInfos, SelectData } from '../shared/model/designs';
@@ -20,6 +20,13 @@ export class FollowComponent {
 /*  Infos style  */
   protected searchInputInfos: InputInfos = searchInputFilter;
   protected autocompleteInfos: AutocompleteInfos = autocompleteInfosFilter;
+/*  Css  */
+  @HostBinding("style.--navbarTextColor") navbarTextColor: string = 'var(--black)';
+  protected topSuggestion: number = 100;
+  protected rightFriends: number = 100;
+  protected opacityNavbar: number = 1;
+  protected positionBody: string = "fixed";
+  protected translateLinks: number[] = [100,100,100,100];
 /*  Selects  */
   protected autocompleteLogins: SelectData[] = [];
 /*  Algos  */
@@ -27,8 +34,11 @@ export class FollowComponent {
   protected searchedCardParams: UserCardParams;
   protected suggestedCardsParams: UserCardParams[] = [];
   protected requestCardsParams: UserCardParams[] = [];
-  protected titlePosition: number = -20;
-  protected logoImageSrc: string = "../../assets/logo/white_logo.png";
+  protected friendsCardsParams: UserCardParams[] = [];
+  protected logoImageSrc: string = "../../assets/logo/black_logo.png";
+  private scroll: number = 0;
+  private stopScrolling: boolean = false;
+  private device: string = sessionStorage.getItem("device");
 
   private ngOnInit(): void{
     this.databaseService.getAllUsersLogin().subscribe((logins: User[]) => {
@@ -40,18 +50,28 @@ export class FollowComponent {
           });
           this.suggestedCardsParams.push({
             id: user.id,
-            width: 80,
+            width: this.device === 'desktop' ? 30 : 80,
             height: 30,
             accessToCard: true
           });
         } 
       });
     });
+    this.databaseService.getFriends(localStorage.getItem("id")).subscribe((ids: string[]) => {
+      ids.forEach((id: string) => {
+        this.friendsCardsParams.push({
+          id: id,
+          width: this.device === 'desktop' ? 30 : 80,
+          height: 30,
+          accessToCard: true
+        });
+      });
+    });
     this.databaseService.getRequestsOfRelation(localStorage.getItem("id")).subscribe((ids: Follow[]) => {
       ids.forEach((id: Follow) => {
         this.requestCardsParams.push({
           id: id.id_user,
-          width: 80,
+          width: this.device === 'desktop' ? 30 : 80,
           height: 30,
           accessToCard: true
         });
@@ -59,11 +79,13 @@ export class FollowComponent {
     });
   }
   private ngAfterViewInit(): void{
-    window.addEventListener("wheel", () => {
-      this.setTitlePosition(window.scrollY);
+    this.setStartingAnimation();
+    
+    window.addEventListener("wheel", (event) => {
+      this.setScroll(event);
     });    
-    window.addEventListener("scroll", () => {
-      this.setTitlePosition(window.scrollY);
+    window.addEventListener("scroll", (event) => {
+      this.setScroll(event);
     });
   }
   protected setValue(event: any): void{
@@ -75,24 +97,18 @@ export class FollowComponent {
       setTimeout(() => {
         this.searchedCardParams = {
           id: id,
-          width: 80,
+          width: this.device === 'desktop' ? 30 : 80,
           height: 30,
           accessToCard: true
         }
-      }, 300);
+      }, 700);
     } else if(this.searchedCardParams == null){
       this.searchedCardParams = {
         id: id,
-        width: 80,
+        width: this.device === 'desktop' ? 30 : 80,
         height: 30,
         accessToCard: true
       }
-    }
-  }
-  private setTitlePosition(scrollPosition: number){
-    if(document.getElementById("suggestion")!=null){
-      const titlePositionEnd:number = document.getElementById("suggestion").getBoundingClientRect().height/5;    
-      this.titlePosition = -20 - 5 * (scrollPosition/titlePositionEnd);  
     }
   }
   protected modifyRelation(id: string): void{
@@ -103,7 +119,7 @@ export class FollowComponent {
         if(user.id !== localStorage.getItem("id")){
           this.suggestedCardsParams.push({
             id: user.id,
-            width: 80,
+            width: this.device === 'desktop' ? 30 : 80,
             height: 30,
             accessToCard: true
           });
@@ -114,15 +130,52 @@ export class FollowComponent {
       ids.forEach((id: Follow) => {
         this.requestCardsParams.push({
           id: id.id_user,
-          width: 80,
+          width: this.device === 'desktop' ? 30 : 80,
           height: 30,
           accessToCard: true
         });
       });
     });  
   }
+  private setScroll(event: any): void{
+    if(event.wheelDelta < 0 && !this.stopScrolling) this.scroll++;
+    if(event.wheelDelta > 0 && this.scroll > 0) this.scroll--;
+    const topSuggestionMaxScroll: number = 100 - (this.scroll*3);
+    topSuggestionMaxScroll < 0 ? this.topSuggestion = 0 : this.topSuggestion = topSuggestionMaxScroll;
+    
+    const startStoppingNavbarOpacity: number = 20;
+    const speedNavbarOpacityChanging: number = 10;
+    if(this.scroll >= startStoppingNavbarOpacity){
+      this.opacityNavbar = 1 - (this.scroll - startStoppingNavbarOpacity)/speedNavbarOpacityChanging;
+    }
 
+    const startNormalScrolling: number = 34;
+    this.scroll >= startNormalScrolling ? this.positionBody = "relative" : this.positionBody = "fixed";
+    
+    const scrollTopSuggestionElement: number = document.getElementById("allCards")?.getBoundingClientRect().top;
+    scrollTopSuggestionElement <= 0 ?  this.positionBody = "relative" : this.positionBody = "fixed";
+    scrollTopSuggestionElement <= 0 ?  this.scroll = startNormalScrolling : this.scroll = this.scroll;
+
+  }
+  private setStartingAnimation(): void{
+    setTimeout(() => {
+      this.translateLinks[0] = 0;
+      setTimeout(() => {
+        this.translateLinks[1] = 0;
+        setTimeout(() => {
+          this.translateLinks[2] = 0;
+          setTimeout(() => {
+            this.translateLinks[3] = 0;
+          },200);
+        },200);
+      },200);
+    },100);
+  }
   protected navigate(url: string): void{
     this.router.navigate([url]);
+  }
+  private ngOnDestroy(): void{
+    window.removeAllListeners("wheel");    
+    window.removeAllListeners("scroll");    
   }
 }

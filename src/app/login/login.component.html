@@ -16,11 +16,15 @@
                 <app-input [styleInfo]="inputInfos" text="Login" (input)="setValue($event,'Login')"></app-input>
                 <app-input [styleInfo]="inputInfos" type="password" text="Mot de passe" (input)="setValue($event,'Password')"></app-input>
             </div>
-            <round-button id="connexion" type="submit" [styleInfos]='connexionButtonColor' text="Se connecter"></round-button>
+            <div id="desktopButton">
+                <round-button id="connexion" type="submit" [styleInfos]='connexionButtonColor' text="Se connecter"></round-button>
+                <round-button id="connexion" [styleInfos]='demoButtonColor' text="Démo" (click)="demoConnexion()"></round-button>    
+            </div>
 
             <div id="phoneButton" class="center">
                 <round-button type="submit" [styleInfos]='connexionButtonColor' text="Se connecter"></round-button>
                 <round-button [styleInfos]='connexionButtonColor' text="S'inscrire" (click)="navigateToRegister()"></round-button>
+                <round-button id="connexion" [styleInfos]='demoButtonColor' text="Démo"></round-button>    
             </div>
         </form>    
     </div>

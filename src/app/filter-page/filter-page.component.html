@@ -1,5 +1,6 @@
 <div class="body">
-    <div class="links center" *ngIf="device === 'computer'">
+
+    <div class="links center" *ngIf="device === 'desktop'">
         <div class="container">
             <round-button class="bottomText" [icon]="addIcon" [styleInfos]="toolbarButtonsInfos" routerLink="/add" data-text="Créer un nouveau lieu"></round-button> 
             <round-button class="bottomText" data-text="Accueil" [icon]="homeIcon" [styleInfos]="toolbarButtonsInfos" routerLink="/home"></round-button> 
@@ -62,7 +63,7 @@
         </div>
     </div>
     <div id="map"></div>
-    <div class="placeCard center">
+    <div class="placeCard center" [ngStyle]="{'pointer-events' : placeCards != null ? 'all' : 'none'}">
         <place-card [infos]="placeCards" (onClose)="closeCard()"></place-card>
     </div>
     <div class="toolbar center">

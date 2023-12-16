@@ -16,7 +16,8 @@ export interface InputInfos{
     hoverTransition?: string,
     hoverBorderColor?: string,
     bottomOnly?: boolean,
-    noPadding?:boolean
+    noPadding?:boolean,
+    animationWidth?: boolean
 }
 export interface CheckboxInfos{
     color: string,
@@ -43,7 +44,8 @@ export interface ButtonInfos{
     borderColorActive?: string,
     radius?: string,
     cursor?: string,
-    heightIcon?: string
+    heightIcon?: string,
+    animationWidth?: boolean
 }
 export interface LinkCardInfos{
     color: string;
@@ -66,7 +68,8 @@ export interface SelectInfos{
     height?: number,
     topHoverBackgroundColor?: string,
     topHoverColor?: string,
-    topHoverBorderColor?: string
+    topHoverBorderColor?: string,
+    animationWidth?: boolean
 }
 export interface AutocompleteInfos{
     textColor?: string,

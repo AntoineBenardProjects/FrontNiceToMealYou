@@ -57,7 +57,6 @@ export class CheckboxComponent {
         }
       }
     }
-    // this.setValue();
   }
 
   setValue(){

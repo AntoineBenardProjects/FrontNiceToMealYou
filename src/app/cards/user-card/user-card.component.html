@@ -1,20 +1,40 @@
-<div class="container" [ngStyle]="{'height.vh': infos.height, 'width.vw': infos.width}" *ngIf="data != null">
-    <div class="top">
+<div class="container center" [ngStyle]="{'width.vw': infos.width}" *ngIf="data != null && !infos.small">
+    <div class="couv" [id]="idCouv" [ngStyle]="{'background': background,'opacity': opacityBackground}"></div>
+    <div class="background"></div>
+    <div class="top center" [ngStyle]="{'height.vh': infos.height}">
         <div class="infos" [ngStyle]="{'justify-content': infos.accessToCard ? 'flex-start': 'center','width': infos.accessToCard ? 'fit-content': '100%'}">
-            <div class="picture" *ngIf="data.img !== ''" [ngStyle]="{'background': 'url('+data.img+')'}"></div>
-            <fa-icon *ngIf="data.img === ''" class="center" [icon]="userIcon"></fa-icon>
-            <div class="texts center" [ngStyle]="{'margin-left': infos.accessToCard ? '20px !important': '0'}">
-                <h3 [ngStyle]="{'width': infos.accessToCard ? '100%': '50%'}">{{data.login}}</h3>  
-                <p [ngStyle]="{'width': infos.accessToCard ? '100%': '50%'}" *ngIf="relation === 'Aucun lien'" (click)="add()">Ajouter</p>  
-                <p [ngStyle]="{'width': infos.accessToCard ? '100%': '50%'}" *ngIf="relation !== 'Aucun lien'" (click)="accept()">{{relation}}</p>   
+            <div [id]="idPicture" class="picture" *ngIf="data.img !== ''" [ngStyle]="{'background': 'url('+data.img+')','opacity': opacityPicture}"></div>
+            <fa-icon [id]="idIcon" *ngIf="data.img === ''" class="center" [icon]="userIcon" [ngStyle]="{'opacity': opacityPicture}"></fa-icon>
+            <div [id]="idText" class="texts center" [ngStyle]="{'margin-left': infos.accessToCard ? '20px !important': '0'}">
+                <h3 *ngFor="let char of login" [ngStyle]="{'transform': 'translateY('+char.translate+'px)'}">{{char.text}}</h3>  
             </div>
         </div>
-        <round-button *ngIf="infos.accessToCard" text="Carte" [styleInfos]="addButtonInfos" (click)="openMap()"></round-button>  
+        <div class="icons">
+            <round-button [ngStyle]="{'transform': 'scale('+scaleRelation+')'}" [id]="idRelation" data-text="Amis" *ngIf="relation === 'Amis'" [icon]="friendIcon" [styleInfos]="iconFriend"></round-button> 
+            <round-button [ngStyle]="{'transform': 'scale('+scaleRelation+')'}" [id]="idRelation" data-text="Accepter" *ngIf="relation === 'Répondre à la demande'" [icon]="addIcon" [styleInfos]="iconAdd" (click)="accept()"></round-button> 
+            <round-button [ngStyle]="{'transform': 'scale('+scaleRelation+')'}" [id]="idRelation" data-text="Demande en cours" *ngIf="relation === 'Demande en cours'" [icon]="waitIcon" [styleInfos]="iconAdd"></round-button> 
+            <round-button [ngStyle]="{'transform': 'scale('+scaleRelation+')'}" [id]="idRelation" data-text="Ajouter" *ngIf="relation === 'Aucun lien'" [icon]="askIcon" [styleInfos]="iconAdd" (click)="add()"></round-button> 
+            <round-button [ngStyle]="{'transform': 'scale('+scaleMap+')'}" [id]="idMap" id="mapIcon" data-text="Carte" *ngIf="infos.accessToCard" [icon]="mapIcon" [styleInfos]="iconMap" (click)="openMap()"></round-button>     
+        </div>
     </div>
-    <div class="body center">
-        <div class="icon center" *ngFor="let category of categoriesIcon">
-            <h1>{{category.counter}}</h1>
-            <round-button [attr.data-text]="category.category" [icon]="category.icon" [styleInfos]="categoryButtonInfos"></round-button> 
+    <div class="body" *ngIf="categoriesIcon != null">
+        <div class="categories center">
+            <h1 [id]="idNumber">{{counter}}</h1>
+            <p *ngIf="categoriesIcon.counter < 2">{{categoriesIcon.category}}</p>
+            <p *ngIf="categoriesIcon.counter > 1">{{categoriesIcon.category}}s</p>
+
+            <!-- <round-button [attr.data-text]="categoriesIcon.category" [icon]="categoriesIcon.icon" [styleInfos]="categoryButtonInfos"></round-button>  -->
+        </div>
+    </div>
+</div>
+
+<div class="container center" [ngStyle]="{'width.vw': infos.width}"  *ngIf="data != null && infos.small">
+    <div class="background"></div>
+    <div class="infosSmall" [ngStyle]="{'justify-content': infos.accessToCard ? 'flex-start': 'space-evenly','width': infos.accessToCard ? 'fit-content': '100%'}">
+        <div [id]="idPicture" class="picture" *ngIf="data.img !== ''" [ngStyle]="{'background': 'url('+data.img+')','opacity': opacityPicture}"></div>
+        <fa-icon [id]="idIcon" *ngIf="data.img === ''" class="center" [icon]="userIcon" [ngStyle]="{'opacity': opacityPicture}"></fa-icon>
+        <div [id]="idText" class="texts center" [ngStyle]="{'margin-left': infos.accessToCard ? '20px !important': '0'}">
+            <h3 *ngFor="let char of login" [ngStyle]="{'transform': 'translateY('+char.translate+'px)'}">{{char.text}}</h3>  
         </div>
     </div>
 </div>

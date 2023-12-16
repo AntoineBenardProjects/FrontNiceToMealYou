@@ -1,17 +1,4 @@
-<!-- <div>
-    <h1>C</h1>
-    <h1>H</h1>
-    <h1>A</h1>
-    <h1>R</h1>
-    <h1>G</h1>
-    <h1>E</h1>
-    <h1>M</h1>
-    <h1>E</h1>
-    <h1>N</h1>
-    <h1>T</h1>
-</div> -->
-
-<div class="body center" [ngStyle]="{'transform': scale,'width.vw': size, 'height.vh': size}">
+<div class="body center" [ngStyle]="{'transform': scale,'width.vw': widthBody, 'height.vh': heightBody}">
     <div class="start center">
         <h1 [ngStyle]="{'transform': transformStart}">NiceToMealYou</h1>
     </div>
@@ -27,5 +14,6 @@
     <div class="loaderContainer">
         <div class="loader" [ngStyle]="{'width': width}"></div>
     </div>
+    <div class="background" [ngStyle]="{'height.%': heightBackground}"></div>
 </div>
 

@@ -1,4 +1,4 @@
-<button class="center" *ngIf="icon == null" [ngStyle]="{'font-weight' : styleInfos.fontWeight, 'font-size' : fontSize}">
+<button class="center" *ngIf="icon == null" [ngStyle]="{'font-weight' : styleInfos.fontWeight, 'opacity': width !== '0%' ? '1' : '0', 'font-size' : fontSize}">
     {{text}}
 </button>
 

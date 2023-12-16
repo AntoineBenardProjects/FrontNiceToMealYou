@@ -85,6 +85,10 @@ export class RangeSliderComponent {
   }
 
   getValue(event:any,prop: string){
+    if(sessionStorage.getItem("device") !== 'desktop'){
+      prop === 'min' ? this.showLeft = true : this.showRight = true;
+    }  
+
     const rangeWidth:number = document.getElementById("range").clientWidth;
     const offsetPercent: number = 22/rangeWidth * 100;
     const value: number = Number(event.target.value);
@@ -102,6 +106,10 @@ export class RangeSliderComponent {
   }
   sendData(){
     this.convertedValueOfLeft <= this.valueOfRight ? this.values.next([this.convertedValueOfLeft,this.valueOfRight]) : this.values.next([this.valueOfRight,this.convertedValueOfLeft]);
+    if(sessionStorage.getItem("device") !== 'desktop'){
+      this.showRight = false;
+      this.showLeft = false;
+    }
   }
 
 }

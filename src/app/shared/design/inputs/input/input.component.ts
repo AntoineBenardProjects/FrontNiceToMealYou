@@ -20,6 +20,9 @@ export class InputComponent {
   @Output() blur: EventEmitter<string> = new EventEmitter();
   @Output() selectAutocomplete: EventEmitter<string> = new EventEmitter();
 
+  @HostBinding('style.--width') width: string = '100%';
+  @HostBinding('style.--textOpacity') textOpacity: string = '1';
+
   @HostBinding('style.--backgroundColor') backgroundColor: string = 'var(--white)';
   @HostBinding('style.--borderColor') borderColor: string = 'var(--black)';
   @HostBinding('style.--borderColorActive') borderColorActive: string = 'var(--mainColor)';
@@ -46,10 +49,15 @@ export class InputComponent {
   protected inputClass: string = "placeholderDown";
   protected borderClass: string = "fullBorder";
   protected paddingClass: string = "normal";
+  private animationMade: boolean = false;
   constructor(){}
 
   ngOnInit(){
     if(this.styleInfo != null){
+      if(this.styleInfo.animationWidth){
+        this.width = "0%";
+        this.textOpacity = "0";
+      }
       this.backgroundColor = this.styleInfo.backgroundColor;
       this.textColor = this.styleInfo.color;
       this.placeholderColor = this.styleInfo.placeholderColor;
@@ -93,6 +101,10 @@ export class InputComponent {
   ngOnChanges(changes: SimpleChanges){
     this.autocompleteValues = [];
     if(this.styleInfo != null){
+      if(this.styleInfo.animationWidth && !this.animationMade){
+        this.width = "0%";
+        this.textOpacity = "0";
+      }
       this.backgroundColor = this.styleInfo.backgroundColor;
       this.textColor = this.styleInfo.color;
       this.placeholderColor = this.styleInfo.placeholderColor;
@@ -147,6 +159,18 @@ export class InputComponent {
       }
     }
 
+  }
+
+  ngAfterViewInit(){
+    if(this.styleInfo.animationWidth){
+      this.animationMade = true;
+      setTimeout(() => {
+        this.width = "100%";
+        setTimeout(() => {
+          this.textOpacity = "1";
+        },800)
+      }, 100)
+    }
   }
 
   checkValidGrade(event: string){

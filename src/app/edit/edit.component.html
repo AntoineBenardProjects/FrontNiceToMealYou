@@ -1,13 +1,15 @@
+<div class="navigate">
+  <img src="../../assets/logo/red_logo.png" routerLink="/home">
+
+  <div class="nav">
+    <p (click)="navigate('/follow')">Relations</p>
+    <p (click)="navigate('/user')">Mon compte</p>
+    <p (click)="navigate('/filter')">Ma carte</p>
+    <p (click)="navigate('/about')">Développeur</p>
+  </div>
+</div>
 <div class="body" [ngStyle]="{'background' : backgroundColor}" *ngIf="placeInfos != null">
     <div class="first">
-      <div class="topbarContainer">
-        <div class="navbar">
-            <div class="container">
-                <img id="logo" [src]="logoImageSrc" routerLink="/home">
-                <round-button id="mainLink" text="Mes lieux" [styleInfos]="myPlacesButtonInfos" routerLink="/filter"></round-button>         
-            </div>
-        </div>
-      </div>
       <div class="section" id="firstSection">
         <div class="subtitles" [ngStyle]="{'left.vw': firstSectionPosition}">
           <h1 class="subtitle">InfosEssentielles</h1>

@@ -6,7 +6,7 @@ import { DatabaseService } from '../services/database.service';
 import { Message } from '../shared/model/params/message';
 import { ButtonInfos, InputInfos } from '../shared/model/designs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { connexionButtonColorLoginComponent, signupButtonColorLoginComponent } from '../shared/model/design/buttonsDesign';
+import { connexionButtonColorLoginComponent, demoButtonColorLoginComponent, signupButtonColorLoginComponent } from '../shared/model/design/buttonsDesign';
 import { inputInfosLoginComonent } from '../shared/model/design/inputsDesign';
 
 @Component({
@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
 /*  Style Infos  */
   protected signupButtonColor: ButtonInfos = signupButtonColorLoginComponent;
   protected connexionButtonColor: ButtonInfos = connexionButtonColorLoginComponent;
+  protected demoButtonColor: ButtonInfos = demoButtonColorLoginComponent;
   protected inputInfos: InputInfos = inputInfosLoginComonent;
 /*  Algo  */
   protected userInfos: User = {
@@ -47,7 +48,8 @@ export class LoginComponent implements OnInit {
     login: "",
     password: "",
     role: "User",
-    img: ""
+    img: "",
+    couv: ""
   };
   protected validName: boolean = false;
   protected validPassword: boolean = false;
@@ -67,22 +69,23 @@ export class LoginComponent implements OnInit {
   protected navigateToRegister(): void{
     this.router.navigate(['/register']);
   }
-  protected connexion(): void{
+  protected demoConnexion(): void{
     const userInfo: User = {
       id: "",
-      login: this.userInfos.login,
-      password: this.userInfos.password,
+      login: "User 1",
+      password: "",
       role:"",
-      img: ""
+      img: "",
+      couv: ""
     }
     this.dataService.login(userInfo).subscribe((navigate: any) => {
       if(!navigate.error){
-        localStorage.setItem("role",navigate.params.role);
         localStorage.setItem("id",navigate.params.id);
         localStorage.setItem("login",navigate.params.login);
         localStorage.setItem("token",navigate.token);
-        this.dataService.getImage(navigate.params.id).subscribe((img: string) =>{
-          localStorage.setItem("img",img);
+        this.dataService.getImage(navigate.params.id).subscribe((pictures: string[]) =>{
+          localStorage.setItem("img",pictures[0]);
+          localStorage.setItem("couv",pictures[1]);
           this.router.navigate(['/home']);
         });
       }
@@ -93,7 +96,36 @@ export class LoginComponent implements OnInit {
           this.showMessage = "hidden";
         },2000);
       }
-    })
+    });
+  }
+  protected connexion(): void{
+    const userInfo: User = {
+      id: "",
+      login: this.userInfos.login,
+      password: this.userInfos.password,
+      role:"",
+      img: "",
+      couv: ""
+    }
+    this.dataService.login(userInfo).subscribe((navigate: any) => {
+      if(!navigate.error){
+        localStorage.setItem("id",navigate.params.id);
+        localStorage.setItem("login",navigate.params.login);
+        localStorage.setItem("token",navigate.token);
+        this.dataService.getImage(navigate.params.id).subscribe((pictures: string[]) =>{
+          localStorage.setItem("img",pictures[0]);
+          localStorage.setItem("couv",pictures[1]);
+          this.router.navigate(['/home']);
+        });
+      }
+      else{
+        this.message = navigate.message;
+        this.showMessage = "show";
+        setTimeout(() => {
+          this.showMessage = "hidden";
+        },2000);
+      }
+    });
   }
 
 }

@@ -15,26 +15,43 @@ export class LoadingComponent {
   protected transformStart: string = "translateY(15vh)";
   protected transformEnd: string = "translateY(15vh)";
   protected scale: string = "scale(1)";
-  protected size: number = 100;
+  protected heightBody: number = 100;
+  protected heightBackground: number = 0;
+  protected widthBody: number = 100;
+
+  private getRandom(): number{
+    return Math.floor(Math.random() * (2 - 1 + 1)) + 1;
+  }
   ngOnInit(){
     this.width = "calc(" + this.percent + "% - 4px)";
   }
   ngOnChanges(){
-    console.log(this.percent)
     if(this.percent >= 70){
       this.transformStart = "translateY(-15vh)";
       this.transformEnd = "translateY(0)";
     } else if(this.percent >= 20){
       this.transformStart = "translateY(0)";
     }
-    if(this.percent === 100){
-      setTimeout(() => {
-        this.scale = "scale(0)";
+    if(this.percent === 100){ 
+      if(this.getRandom() === 1){
         setTimeout(() => {
+          this.scale = "scale(0)";
           this.show.next(true);
-          this.size = 0;
-        }, 1000);
-      }, 1500);
+          setTimeout(() => {
+            this.heightBody = 0;
+            this.widthBody = 0;
+          }, 2000);
+        }, 1500);
+      } else{
+        setTimeout(() => {
+          this.heightBackground = 100;
+          setTimeout(() => {
+            this.heightBody = 0;
+            this.show.next(true);
+          }, 500);
+        }, 1500);
+      }
+      
     }
     this.width = "calc(" + this.percent + "% - 4px)";
   }

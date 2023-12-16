@@ -1,13 +1,28 @@
 .inputBox{
     position: relative;
-    width: 100%;
+    width: var(--width);
+    transition: 1s cubic-bezier(.27,.88,.52,.95);
     &:hover{
         span{color: var(--hoverTextColor);};
         opacity: 1 !important;
         &::before{
-            width: calc(100% - 3px);
+            width: calc(100% - 2px);
         }
         input,p{border-color: var(--hoverBorderColor); color: var(--hoverTextColor);}
+    }
+    &::after{
+        pointer-events: none;
+        background: var(--backgroundColor);
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        left: 1px;
+        height: calc(100% - 3px);
+        width: calc(100% - 3px);
+        z-index: 0;
+        transition: .5s;
     }
     &::before{
         pointer-events: none;
@@ -17,11 +32,10 @@
         top: 0;
         bottom: 0;
         margin: auto;
-        left: 2px;
+        left: 1px;
         height: calc(100% - 3px);
         width: 0%;
-        z-index: 3;
-        border-radius: 5px;
+        z-index: 1;
         transition: .5s;
     }
 }
@@ -42,14 +56,14 @@
     position: relative;
     border-bottom: 2px solid var(--borderColor) !important;
     outline: none;
-    background: var(--backgroundColor);
+    background: transparent;
     padding: var(--fontSize);
     border-radius: 5px;
     color: var(--textColor);
     font-size: var(--fontSize);
     transition: .5s;
     z-index: 2;
-    width: calc(100% - 34px);
+    width: calc(100% - 35px);
     overflow: auto;
     &::-webkit-scrollbar{
         display: none;
@@ -64,6 +78,7 @@
     position: absolute;
     top:0;
     left: 0;
+    opacity: var(--textOpacity);
     padding: var(--fontSizeSpan);
     pointer-events: none;
     font-size: var(--fontSize);

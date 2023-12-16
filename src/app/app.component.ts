@@ -54,11 +54,11 @@ export class AppComponent {
 
     const token: string = localStorage.getItem("token");
     this.dataService.loginByToken(token).subscribe((credentials: any) => {
-      localStorage.setItem("role",credentials.role);
       localStorage.setItem("id",credentials.id);
       localStorage.setItem("login",credentials.login);
-      this.dataService.getImage(credentials.id).subscribe((img: string) =>{
-        localStorage.setItem("img",img);
+      this.dataService.getImage(credentials.id).subscribe((pictures: string[]) =>{
+        localStorage.setItem("img",pictures[0]);
+        localStorage.setItem("couv",pictures[1]);
       });
     });
 

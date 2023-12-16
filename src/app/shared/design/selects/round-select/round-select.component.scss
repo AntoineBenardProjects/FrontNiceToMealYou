@@ -1,11 +1,14 @@
 .dropdown{
     position: relative;
     border-radius: 5px;
+    width: var(--width);
+    opacity: var(--opacity);
+    transition: width .8s cubic-bezier(.27,.88,.52,.95), opacity 1s;
     &:hover{
         .top .container .active, .arrow{color: var(--topHoverTextColor);};
         opacity: 1 !important;
         .top::before{
-            width: calc(100% - 4px);
+            width: 100%;
         }
         .top{border-color: var(--topHoverBorderColor);}
     }
@@ -15,7 +18,7 @@
     .top .container p, .arrow{color: var(--topHoverTextColor);};
     opacity: 1 !important;
     .top::before{
-        width: calc(100% - 4px);
+        width: 100%;
     }
     .top{border-color: var(--topHoverBorderColor);}
 }
@@ -46,10 +49,10 @@
         content: "";
         position: absolute;
         top: 1px;
-        left: 2px;
+        left: 0;
         height: calc(100% - 2px);
         width: 0;
-        border-radius: 2px;
+        border-radius: 5px;
         transition: .5s;
     }
     .container{

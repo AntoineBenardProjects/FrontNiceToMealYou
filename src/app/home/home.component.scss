@@ -1,5 +1,6 @@
 .body{
     transition: all 400ms ;
+    transition: .7s cubic-bezier(.96,.04,.24,.78);
 }
 
 
@@ -21,6 +22,7 @@
         justify-content: center;
         top: 0;
         z-index: 100;
+        transition: .8s ease-in-out;
         .navbar{
             position: fixed;
             height: 100px;
@@ -52,8 +54,11 @@
         .topbar{
             display: flex;
             justify-content: flex-end;
-            width: 40%;
-            margin-left: 30%;
+            align-items: center;
+            width: 60%;
+            margin-left: 10%;
+            height: 100%;
+            overflow: hidden;
             .link{
                 -webkit-user-select: none;  
                 -moz-user-select: none;    
@@ -62,8 +67,11 @@
                 position: relative;
                 cursor: pointer;
                 font-size: 16px;
+                height: 20px;
                 margin-right: 3vw !important;
                 color: var(--mainColor);
+                text-align: center;
+                transition: 2s cubic-bezier(.27,.88,.52,.95);
                 &:hover{
                     &::before{
                         width: 100%;
@@ -96,11 +104,11 @@
         height: 100vh;
         background: var(--white);
         overflow-x: hidden;
-        transition: 1s;
         padding-bottom: 20vh;
         z-index: 100;
         width: 100vw;
         color: var(--black);
+        transition: top .8s cubic-bezier(.27,.88,.52,.95);
         &::-webkit-scrollbar{
             display: none;
         }
@@ -111,17 +119,15 @@
             justify-content: space-evenly;
             min-height: 100vh;
             width: 100vw;
-            transition: .5s;
             position: absolute;
             .subtitle{
-                transition: .5s ease-out;
                 position: absolute;
-                transition: .5s;
                 font-size: 10vh;
                 font-weight: 500;
                 line-height: 10vh;
                 text-transform: uppercase;
                 font-family: 'Nunito', sans-serif !important;
+                transition: .3s cubic-bezier(.27,.88,.52,.95);
             }
             .bottom{
                 bottom: 5vh;
@@ -138,6 +144,7 @@
                 position: absolute;
                 top: 13vh;
                 left: 5vw;
+                overflow: hidden;
                 .line{
                     align-items: flex-end;
                     color: var(--black);
@@ -147,6 +154,7 @@
                     h2{
                         font-family: 'Nunito', sans-serif !important;
                         font-weight: 200;
+                        transition: 1s cubic-bezier(.27,.88,.52,.95);;
                     }
                 }
             }
@@ -155,7 +163,7 @@
                 align-items: center;
                 justify-content: space-evenly;
                 width: 100vw;
-                transition: .5s;
+                transition: 2s cubic-bezier(.27,.88,.52,.95);;
                 position: relative;
                 color: var(--white);
                 
@@ -192,10 +200,10 @@
         font-size: 10vw;
         line-height: 10vw;
         z-index: 100;
-        transition: left .2s, right .2s, color 0s;
         background-size: cover;
         background-clip: text;
         -webkit-background-clip: text;
+        transition: .8s cubic-bezier(.27,.88,.52,.95);
     }
 }
 .types{
@@ -210,10 +218,28 @@
     justify-content: center;
     height: 100vh;
     width: 100vw;
-    transition: .2s;
+    transition: scale .5s cubic-bezier(.27,.88,.52,.95), opacity .7s cubic-bezier(.96,.04,.24,.78);
 }
-
+.phoneCardsBody{
+    display: none;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    width: 100vw;
+    transition: 2s cubic-bezier(.27,.88,.52,.95);;
+    position: relative;
+    color: var(--white);  
+    .moveButtons{
+        display: flex;
+        justify-content: space-between;
+        width: 50%;
+    }
+}
 @media screen and (max-width: 600px){
+    
+    .phoneCardsBody{
+        display: flex;
+    }
     .first .topbarContainer .topbar{display: none;}
     .first .topbarContainer .navbar .container #mainLink{width: 30vw; top: 0;bottom: 0;margin: auto;}
     .first .logo{font-size: 50px;}
@@ -228,11 +254,20 @@
     .presentation .line .icon fa-icon{font-size: 50px;}
     .first .topbarContainer{z-index: 100;}
     .first .allSuggestions .suggestions{
+        .cardsBody{
+            display: none;
+        }
         .infos{
             width: 90vw;
         }
         .subtitle{
             font-size: 3vh;
+        }
+        .suggestion{
+            max-width: 380px;
+            padding: 2vh 1vw;
+            background: transparent;
+            
         }
     } 
 }

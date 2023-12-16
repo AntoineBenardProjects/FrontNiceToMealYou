@@ -13,11 +13,11 @@ import { faAdd, faCity, faHome, faLocationDot, faRankingStar, faStar, faTrainSub
 import * as L from 'leaflet';
 import {selectInfosFilterComponent} from '../shared/model/design/selectsDesign';
 import { homeButtonFilterComponent, toolbarIconsButtonFilterComponent } from '../shared/model/design/buttonsDesign';
-import { Comment, Rating } from '../shared/model/table/comment';
+import { Comment } from '../shared/model/table/comment';
 import { autocompleteInfosFilter, normalInputFilter, searchInputFilter } from '../shared/model/design/inputsDesign';
 import { checkboxInfosFilterComponent } from '../shared/model/design/checkboxesDesign';
 import { ActivatedRoute } from '@angular/router';
-import { UserInfos } from '../cards/user-card/user-card.component';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'app-filter-page',
@@ -28,6 +28,7 @@ export class FilterPageComponent {
   constructor(
     private placesService: PlacesService,
     private databaseService: DatabaseService,
+    private deviceService: DeviceDetectorService,
     private route: ActivatedRoute){}
 //////////////////////////////////////////////  Variables  //////////////////////////////////////////////
 /*  Infos style  */
@@ -121,7 +122,6 @@ export class FilterPageComponent {
   protected lignes: string[] = [];
   protected stations: SelectData[] = [];
   private placeToKeep: Place[] = [];
-  private allCities: City[] = []
   protected showSelectPlace: boolean = false;
   protected zoomLevel: number = 13;
   protected id_user: string = "";
@@ -163,7 +163,25 @@ export class FilterPageComponent {
     places.length > 0 ? averageCoords.lng = averageCoords.lng/places.length : averageCoords.lng = 2.3653517;
 
     this.placeMarkersLayer = L.layerGroup(this.placeMarkers);
+    let appearZoomLevel: number = 15;
+    const isMobile = this.deviceService.isMobile();
+    const isTablet = this.deviceService.isTablet();
+    const isDesktopDevice = this.deviceService.isDesktop();
+
+    if(isMobile){
+      appearZoomLevel = 17;
+      sessionStorage.setItem("device","mobile");
+    }
+    else if(isTablet){
+      appearZoomLevel = 15;
+      sessionStorage.setItem("device","tablet");
+    }
+    else if(isDesktopDevice){
+      sessionStorage.setItem("device","desktop");
+    }
     this.nameMarkersLayer = L.layerGroup(this.nameMarkers);
+    let params: L.Layer[] = [];
+
     let osm: L.TileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
@@ -172,10 +190,12 @@ export class FilterPageComponent {
       maxZoom: 19,
       attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
     });
+    appearZoomLevel <= 13 ? params = [osm, this.placeMarkersLayer,this.nameMarkersLayer] : params = [osm, this.placeMarkersLayer];
+
     this.map = L.map('map', {
       center: [averageCoords.lat, averageCoords.lng],
       zoom: this.zoomLevel,
-      layers: [osm, this.placeMarkersLayer,this.nameMarkersLayer]
+      layers: params
     });
 
     let baseMaps = {
@@ -187,8 +207,25 @@ export class FilterPageComponent {
   }
   private showName(): void{
     this.zoomLevel = this.map.getZoom();
-    console.log(this.nameMarkersLayer)
-    this.map.getZoom() > 12 ? this.map.addLayer(this.nameMarkersLayer) : this.map.removeLayer(this.nameMarkersLayer);
+    let appearZoomLevel: number = 15;
+    const isMobile = this.deviceService.isMobile();
+    const isTablet = this.deviceService.isTablet();
+    const isDesktopDevice = this.deviceService.isDesktop();
+
+    if(isMobile){
+      appearZoomLevel = 17;
+      sessionStorage.setItem("device","mobile");
+    }
+    else if(isTablet){
+      appearZoomLevel = 15;
+      sessionStorage.setItem("device","tablet");
+    }
+    else if(isDesktopDevice){
+      sessionStorage.setItem("device","desktop");
+    }
+
+    console.log(this.map.getZoom(), appearZoomLevel)
+    this.map.getZoom() >= appearZoomLevel ? this.map.addLayer(this.nameMarkersLayer) : this.map.removeLayer(this.nameMarkersLayer);
   }
   private showPlaceCard(e): void{
     const id: string = e.target.options.alt;
@@ -515,7 +552,7 @@ export class FilterPageComponent {
     });
     if(this.category !== ''){
       this.placeToKeep = this.placeToKeep.filter((place: Place) => place.category === this.category);
-      if(this.type != null){
+      if(this.type != null && this.type.length > 0){
         let counter: number = 0;
         let newPlaceToKeep: Place[] = [];
         this.placeToKeep.forEach((place: Place) => {
@@ -591,6 +628,7 @@ export class FilterPageComponent {
     this.route.snapshot.paramMap.get('id') != null ? this.id_user = this.route.snapshot.paramMap.get('id') : this.id_user = localStorage.getItem("id");
     if(this.route.snapshot.paramMap.get('id') != null)  this.otherUserCardParams = {
       id: this.id_user,
+      small: true,
       width: 20,
       height: 30,
       accessToCard: false
@@ -606,7 +644,6 @@ export class FilterPageComponent {
       });
     });
     this.databaseService.getAllCities().subscribe((cities: City[]) => {
-      this.allCities = cities;
       cities.forEach((city: City) => {
         this.autocompleteCities.push({
           id: city.id,

@@ -35,38 +35,9 @@
             </div>
         </form>    
     </div>
-    <div class="region" [@region]="regionAnimation">
-        <form class="selection">
-            <div class="line">
-                <round-select [infos]="selectInfosRegion" [data]="regionSelect" [selectAll]="false" [multiselect]="false" text="Région" (selectionChange)="setPreferenceGeo($event,'reg')"></round-select>
-                <round-select [ngStyle]="{'height' : transportSelect.length >= 1 ? 'fit-content' : '0','padding-left' : transportSelect.length >= 1 ? '10vw' : '0','opacity' : transportSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="transportSelect" [selectAll]="false" [multiselect]="false" text="Transport" (selectionChange)="setPreferenceGeo($event,'trans')"></round-select>
-                <round-select [ngStyle]="{'height' : ligneSelect.length >= 1 ? 'fit-content' : '0','padding-left' : ligneSelect.length >= 1 ? '10vw' : '0','opacity' : ligneSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="ligneSelect" [selectAll]="false" [multiselect]="false" text="Lignes" (selectionChange)="setPreferenceGeo($event,'lig')"></round-select>
-                <round-select [ngStyle]="{'height' : stationSelect.length >= 1 ? 'fit-content' : '0','padding-left' : stationSelect.length >= 1 ? '10vw' : '0','opacity' : stationSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="stationSelect" [selectAll]="true" [multiselect]="true" text="Stations" (selectionChange)="setPreferenceGeo($event,'stat')"></round-select>
-            </div>
-            <div class="line" id="list">
-                <station-card *ngFor="let params of stationsCardInfos" [infos]="params" (onClose)="removeStation($event)"></station-card>
-            </div>
-        </form>    
-    </div>
-    <div class="taste" [@type]="typeAnimation">
-        <form class="selection">
-            <div class="line">
-                <round-select [infos]="selectInfosType" [data]="categorySelect" [selectAll]="false" [multiselect]="false" text="Catégorie" (selectionChange)="setPreferenceType($event,'cat')"></round-select>
-                <round-select [ngStyle]="{'height' : typeSelect.length >= 1 ? 'fit-content' : '0','padding-left' : typeSelect.length >= 1 ? '10vw' : '0','opacity' : typeSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosType" [data]="typeSelect" [selectAll]="false" [multiselect]="false" text="Type" (selectionChange)="setPreferenceType($event,'type')"></round-select>
-            </div>
-            <div class="line" id="list">
-                <type-card *ngFor="let params of typesCardInfos" [infos]="params"></type-card>
-            </div>
-        </form>  
-    </div>
-
-    <div class="navigation">
-        <round-button [ngStyle]="{'opacity' : generalAnimation === 'show' ? '0' : '1'}" style="transition: 400ms;" [styleInfos]='buttonColor' text="Retour" (click)="previousStep()"></round-button>
-        <round-button [styleInfos]='buttonColor' [text]="nextStepButtonMessage" (click)="nextStep()"></round-button>
-    </div>
 
     <div class="bottomBar">
-
+        <round-button id="connexion" [icon]="signInIcon" [styleInfos]="iconsInfos" (click)="navigateToLogin()"></round-button>     
     </div>
 </div>
 

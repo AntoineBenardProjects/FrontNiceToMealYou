@@ -48,7 +48,10 @@ export class HomeComponent {
   ];
   protected opacityCards: number[] = [0,0,0,0,0];
   protected opacityNavbar: number = 1;
-  protected overflow: string = "hidden";
+  protected transformLinks: number[] = [0,0,0,0];
+  protected typesOpacity: number = 1;
+  protected textTransitionDuration: number = .3;
+
 /*  Algo  */
   protected isAdmin: boolean = false;
   protected linkCardInfos: LinkCardInfos = {
@@ -64,20 +67,15 @@ export class HomeComponent {
   protected counterSuggestion: number = 0;
   protected favoritesStations: SuggestionShow[] = [];
 
+  protected init(): void{
+    this.showSuggestion = true;
+    if(this.scroll === 0) this.animateStart();
+  }
   protected navigate(url: string, opacity?: number) : void{
     let valid: number = 1;
     if(opacity != null) valid = opacity;
-    if(url === 'about'){
-      const aboutElement: HTMLElement = document.getElementById("about");
-      window.scrollTo({
-        top: aboutElement.offsetTop,
-        left: 0,
-        behavior: "smooth",
-      });
-    } else if(valid === 1){
-      this.router.navigate([url]);
-      sessionStorage.setItem("lastPage","/home");
-    }
+    this.router.navigate([url]);
+    sessionStorage.setItem("lastPage","/home");
   }
   protected closeCard(id: string): void{
     this.stationsPlacesCards = this.stationsPlacesCards.filter((params: PlaceCardParams) => {
@@ -86,11 +84,12 @@ export class HomeComponent {
     });
   }
   protected moveCarousel(direction: string, carousel: string): void{
+    const move: number = sessionStorage.getItem("device") !== 'desktop' ? 420 : 550;
     let find: SuggestionShow = this.favoritesStations.find((element: SuggestionShow) => element.name_station === carousel);
     if(direction === 'left' && find.transform !== 0){
-      find.transform += 550;
-    } else if(direction === 'right' && find.transform !== -(find.cards.length-1) * 550){
-      find.transform -= 550;
+      find.transform += move;
+    } else if(direction === 'right' && find.transform !== -(find.cards.length-1) * move){
+      find.transform -= move;
     }
   }
   protected addPlace(id: string): void{
@@ -99,132 +98,161 @@ export class HomeComponent {
     });
   }
   private setBackground(event: any): void {
-    if(event.wheelDelta < 0 && !this.stopScrolling) this.scroll += 10;
-    if(event.wheelDelta > 0 && this.scroll > 9) this.scroll -= 10;
-    let verifyPosition: number = 0;
-    510 - this.scroll > 0 ? verifyPosition = 510 - this.scroll : verifyPosition = 0;
-    let scrollPosition: number = this.scroll/40 - 2;  
-    if(this.isAdmin)  scrollPosition === 8.25 && (this.favoritesStations[0] == null || this.favoritesStations[0].cards.length === 0) ? this.stopScrolling = true : this.stopScrolling = false;
-    else  scrollPosition === 6.75 && (this.favoritesStations[0] == null || this.favoritesStations[0].cards.length === 0) ? this.stopScrolling = true : this.stopScrolling = false;
-    if(scrollPosition >= 9){
-      scrollPosition === 12.5 + (this.favoritesStations.length - 1)*4.5 ? this.stopScrolling = true : this.stopScrolling = false;
-      this.favoritesStations.forEach((suggestion: SuggestionShow,index: number) => {
-        if(scrollPosition === 11 + (index)*4.5){
-          suggestion.titlePosition = 8;  
-          suggestion.titleOpacity = .5;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 0.3;
-          });
-        } else if(scrollPosition === 11.25 + (index)*4.5){
-          suggestion.titlePosition = 4;  
-          suggestion.titleOpacity = .8;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 0.8;
-          });
-        } else if(scrollPosition === 11.5 + (index)*4.5){
-          suggestion.titlePosition = 2;  
-          suggestion.titleOpacity = 1;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 1;
-          });
-        }else if(scrollPosition === 14.25 + (index)*4.5){
-          suggestion.titlePosition = 2;  
-          suggestion.titleOpacity = 1;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 1;
-          });
-        } else if(scrollPosition === 14.5 + (index)*4.5){
-          suggestion.titlePosition = 4;  
-          suggestion.titleOpacity = .8;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 0.8;
-          });
-        } else if(scrollPosition === 14.75 + (index)*4.5){
-          suggestion.titlePosition = 8;  
-          suggestion.titleOpacity = .5;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 0.3;
-          });
-        } else if(scrollPosition === 15 + (index)*4.5){
-          suggestion.titlePosition = 20;  
-          suggestion.titleOpacity = 0;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 0;
-          });
-        } else if(scrollPosition < 11 + (index)*4.5){
-          suggestion.titlePosition = 20;  
-          suggestion.titleOpacity = 0;
-          suggestion.categories.forEach((category: Counter) => {
-            category.percent = 0;
-          });
-        }
-      });
-    }
-    const scale: number = 1 - this.scroll/100;
-    scale >= 0 ? this.scaleTypes = 1 - this.scroll/100 : this.scaleTypes = 0;
+    if(event.wheelDelta < 0 && !this.stopScrolling) this.scroll++;
+    if(event.wheelDelta > 0 && this.scroll > 0) this.scroll--;
+    const scaleSpeed: number = 30;
+    const minScale: number = .4
+    const scale: number = 1 - this.scroll/scaleSpeed;
+    scale >= minScale ? this.scaleTypes = scale : this.scaleTypes = minScale;
     this.styleTypes.forEach((style: StyleText, index: number) => {
-      if(index === 0 || index === 1){
-        const opacity: number = 1 - this.scroll/40;
-        opacity > 0 ? style.opacity = opacity : style.opacity = 0;
-        if(style.left != null)  opacity > 0 ? style.left = opacity*10 : style.left = 0;
-        if(style.right != null)  opacity > 0 ? style.right = opacity*10 : style.right = 0;
-      }
+      const textSpeed: number = 10;
+      const opacity: number = 1 - this.scroll/textSpeed;
+      style.opacity = opacity;
+      if(style.left != null)  style.left = opacity*10;
+      if(style.right != null)   style.right = opacity*10;
     });
+    const textFirstAppear: number = 13;
+    const opacityTextSpeed: number = 3;
+    const positionTextSpeed: number = .5;
+    const cardsAppear: number[] = [23,28,33,38,43,48];
+    if(this.scroll > cardsAppear[0]) this.scaleTypes = 0;
     this.styleFirst.forEach((style: StyleText, index: number) => {
       if(index === 0 || index === 1){
-        const opacity: number = this.scroll/40 - 2;
-        opacity > 0 ? style.opacity = opacity : style.opacity = 0;
-        if(style.left != null)  opacity > 0 ? style.left = opacity*10 : style.left = 0;
-        if(style.right != null)  opacity > 0 ? style.right = opacity*10 : style.right = 0;
-        if(opacity >= 1 && opacity < 2.5){
+        style.opacity = (this.scroll - textFirstAppear)/opacityTextSpeed - 1;
+        if(this.scroll >= textFirstAppear && this.scroll < 260){
+          if(style.left != null)  style.left = (this.scroll - textFirstAppear)/positionTextSpeed;
+          if(style.right != null)  style.right = (this.scroll - textFirstAppear)/positionTextSpeed;  
+        }
+        if(this.scroll >= textFirstAppear && this.scroll < cardsAppear[0]){
+          style.color = "var(--white)";
+          this.opacityCards = [0,0,0,0,0];
+        }
+        else if(this.scroll >= cardsAppear[0] && this.scroll < cardsAppear[1]){
           this.opacityCards = [1,0,0,0,0];
           style.backgroundImage = "url('../../assets/common/map.jpg')";
           style.color = "transparent";
         }
-        else if(opacity > 2.5 && opacity < 4){
+        else if(this.scroll >= cardsAppear[1] && this.scroll < cardsAppear[2]){
           this.opacityCards = [0,1,0,0,0];
           style.backgroundImage = "url('../../assets/common/add.jpg')";
           style.color = "transparent";
         }
-        else if(opacity > 4 && opacity < 5.5){
+        else if(this.scroll >= cardsAppear[2] && this.scroll < cardsAppear[3]){
           this.opacityCards = [0,0,1,0,0];
           style.backgroundImage = "url('../../assets/common/help.jpg')";
           style.color = "transparent";
         }
-        else if(opacity > 5.5 && opacity < 7){
+        else if(this.scroll >= cardsAppear[3] && this.scroll <= cardsAppear[4]){
           this.opacityCards = [0,0,0,1,0];
           style.backgroundImage = "url('../../assets/common/profile.jpg')";
           style.color = "transparent";
         }
-        else if(opacity > 7 && opacity < 8.5 && this.isAdmin){
+        else if(this.scroll >= cardsAppear[4] && this.scroll <= cardsAppear[5]){
           this.opacityCards = [0,0,0,0,1];
-          style.backgroundImage = "url('../../assets/common/admin.jpg')";
+          this.isAdmin ? style.backgroundImage = "url('../../assets/common/admin.jpg')" : style.backgroundImage = "url('../../assets/common/about.jpg')"
           style.color = "transparent";
         }
         else{
           this.opacityCards = [0,0,0,0,0];
         }
-        if(opacity > 9){
+        if(this.scroll > cardsAppear[5]){
           style.color = "transparent";
-          style.backgroundImage = "url('../../assets/common/profile.jpg')";
-          style.opacity = 10 - opacity;
-          this.opacityNavbar = 10 - opacity;
-        } else{
+          this.isAdmin ? style.backgroundImage = "url('../../assets/common/admin.jpg')" : style.backgroundImage = "url('../../assets/common/about.jpg')"
+          style.opacity = 50 - (this.scroll - cardsAppear[5])/50;
+          this.opacityNavbar = 1 - (this.scroll - cardsAppear[5])/10;
+        }
+        else{
           this.opacityNavbar = 1;
         }
       }
     });
-    const maxScroll: number = this.isAdmin ? 7 : 8;
-    if(scrollPosition > maxScroll){
-      verifyPosition > 0 ? this.topSuggestions = verifyPosition : this.topSuggestions = 0;
-      verifyPosition > 0 ? this.overflow = "hidden" : this.overflow = "auto";
+
+    const maxScroll: number = cardsAppear[5];
+    const verifyPosition: number = this.scroll - maxScroll;
+    if(this.scroll >= maxScroll){
+      const topSuggestionSpeed: number = 7;
+      const top: number = 100 - verifyPosition*topSuggestionSpeed;
+      top >= 0 ? this.topSuggestions = top : this.topSuggestions = 0;
     }
+    this.scroll === cardsAppear[5] && (this.favoritesStations[0] == null || this.favoritesStations[0].cards.length === 0) ? this.stopScrolling = true : this.stopScrolling = false;
+    this.scroll === this.setFavoritesStationParams() ? this.stopScrolling = true : this.stopScrolling = false;    
     sessionStorage.setItem("scroll",this.scroll.toString());
   }
+  private setFavoritesStationParams(): number{
+    const start: number = 62;
+    const offsetScroll: number = 10;
+    const coeffScroll: number = 28;
+    this.favoritesStations.forEach((suggestion: SuggestionShow,index: number) => {
+      if(this.scroll >= start + (index)*coeffScroll && this.scroll <= start + offsetScroll + (index)*coeffScroll){
+        const value: number = (this.scroll - (start + (index)*coeffScroll))/offsetScroll
+        suggestion.titlePosition = 20 - 20*value + 2;  
+        suggestion.titleOpacity = value;
+        suggestion.categories.forEach((category: Counter) => {
+          category.percent = 0;
+        });
+        suggestion.elementOpacity = 1;
+      } else if(this.scroll >= start + 2*offsetScroll + (index)*coeffScroll && this.scroll <= start + 3*offsetScroll + (index)*coeffScroll){
+        const value: number = (this.scroll - (start + 2*offsetScroll + (index)*coeffScroll))/offsetScroll;
+        suggestion.titlePosition = 20 * value + 2;  
+        suggestion.titleOpacity = 1 - value;
+        suggestion.categories.forEach((category: Counter) => {
+          category.percent = 0;
+        });
+        suggestion.elementOpacity = 1;
+        if(this.scroll === start + 3*offsetScroll + (index)*coeffScroll){
+          suggestion.elementOpacity = 0;
+          suggestion.categories.forEach((category: Counter) => {
+            category.percent = 40;
+          });
+        }
+      } else if(this.scroll < start + (index)*coeffScroll){
+        suggestion.titlePosition = 20;  
+        suggestion.titleOpacity = 0;
+        suggestion.categories.forEach((category: Counter) => {
+          category.percent = 40;
+        });
+        suggestion.elementOpacity = 0;
+      }
+    });
+    return start + offsetScroll + (this.favoritesStations.length - 1)*coeffScroll;
+  }
+  private animateStart(): void{
+    this.typesOpacity = 0;
+    this.transformLinks = [100,100,100,100];
+    this.textTransitionDuration = 2;
+    this.styleTypes.forEach((style: StyleText, index: number) => {;
+      style.opacity = 0;
+      if(style.left != null)  style.left = -10;
+      if(style.right != null)   style.right = -10;
+    });
+    setTimeout(() => {
+      this.textTransitionDuration = .3;
+    }, 2000);
+    setTimeout(() => {
+      this.styleTypes.forEach((style: StyleText, index: number) => {;
+        style.opacity = 1;
+        if(style.left != null)  style.left = 10;
+        if(style.right != null)   style.right = 10;
+      });
+      this.transformLinks[0] = 0;
+      this.typesOpacity = 1;
+      setTimeout(() => {
+        this.transformLinks[1] = 0;
+        setTimeout(() => {
+          this.transformLinks[2] = 0;
+          setTimeout(() => {
+            this.transformLinks[3] = 0;
+          }, 100);
+        }, 100);
+      }, 100);
+    }, 500);
+  }
   private ngOnInit(): void{
-    if(localStorage.getItem("role") === "Admin")  this.isAdmin = true;
+    this.databaseService.isAdmin(localStorage.getItem("id")).subscribe((isAdmin) => {
+      this.isAdmin = isAdmin;
+      this.setBackground(this.scroll);
+    });
     if(sessionStorage.getItem("scroll") != null)  this.scroll = Number(sessionStorage.getItem("scroll"));
-    this.setBackground(this.scroll);
     this.databaseService.getPlacesSuggestionsOfUser(localStorage.getItem('id')).subscribe((stationsOfUser: any) => {
       const favoritesStationsName = Array.from(new Set(stationsOfUser.near_stations.map((item) => item.name_station)));
       favoritesStationsName.forEach((name: string,index) => {        
@@ -234,6 +262,7 @@ export class HomeComponent {
           transform: 0,
           titlePosition: 10,
           titleOpacity: 0,
+          elementOpacity: 0,
           categories: []
         });
       });
@@ -246,7 +275,6 @@ export class HomeComponent {
             counter++;
             this.loadingValue = counter/stationsOfUser.near_stations.length * 100;
             if(counter === stationsOfUser.near_stations.length){
-              this.showSuggestion = true;
               this.favoritesStations.forEach((suggestion: SuggestionShow) => {
                 categories.forEach((category: string) => {
                   const counter: number = suggestion.cards.filter((element: PlaceCardParams) => element.place.category === category).length
@@ -254,69 +282,13 @@ export class HomeComponent {
                     value: category.toLocaleLowerCase(),
                     counter: counter,
                     icon: this.placesService.getIconOfCategory(category),
-                    percent: 0
+                    percent: 40
                   });
                 });
               });
               let scrollPosition: number = this.scroll/40 - 2;  
-              if(scrollPosition >= 11){
-                this.favoritesStations.forEach((suggestion: SuggestionShow,index: number) => {
-                  if(scrollPosition === 11 + (index)*4.5){
-                    suggestion.titlePosition = 8;  
-                    suggestion.titleOpacity = .5;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 0.3;
-                    });
-                  } else if(scrollPosition === 11.25 + (index)*4.5){
-                    suggestion.titlePosition = 4;  
-                    suggestion.titleOpacity = .8;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 0.8;
-                    });
-                  } else if(scrollPosition === 11.5 + (index)*4.5){
-                    suggestion.titlePosition = 2;  
-                    suggestion.titleOpacity = 1;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 1;
-                    });
-                  }else if(scrollPosition === 14.25 + (index)*4.5){
-                    suggestion.titlePosition = 2;  
-                    suggestion.titleOpacity = 1;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 1;
-                    });
-                  } else if(scrollPosition === 14.5 + (index)*4.5){
-                    suggestion.titlePosition = 4;  
-                    suggestion.titleOpacity = .8;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 0.8;
-                    });
-                  } else if(scrollPosition === 14.75 + (index)*4.5){
-                    suggestion.titlePosition = 8;  
-                    suggestion.titleOpacity = .5;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 0.3;
-                    });
-                  } else if(scrollPosition === 15 + (index)*4.5){
-                    suggestion.titlePosition = 20;  
-                    suggestion.titleOpacity = 0;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 0;
-                    });
-                  } else if(scrollPosition < 11 + (index)*4.5){
-                    suggestion.titlePosition = 20;  
-                    suggestion.titleOpacity = 0;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 0;
-                    });
-                  } else{
-                    suggestion.titlePosition = 2;  
-                    suggestion.titleOpacity = 1;
-                    suggestion.categories.forEach((category: Counter) => {
-                      category.percent = 1;
-                    });
-                  }
-                });
+              if(scrollPosition >= 360){
+                this.setFavoritesStationParams();
               }
             }
           });
@@ -324,7 +296,6 @@ export class HomeComponent {
       } else{
         this.loadingValue = 50;
         setTimeout(() => {
-          this.showSuggestion = true;
           this.loadingValue = 100;
         }, 1000);
       }
@@ -338,6 +309,10 @@ export class HomeComponent {
     window.addEventListener("scroll", (event:Event) => {
       if(this.showSuggestion) this.setBackground(event);
     });
+  }
+  private ngOnDestroy(): void{
+    window.removeAllListeners("wheel");    
+    window.removeAllListeners("scroll");    
   }
 }
 interface StyleText{
@@ -357,5 +332,6 @@ interface SuggestionShow{
   transform: number,
   titlePosition: number,
   titleOpacity: number,
+  elementOpacity: number,
   categories: Counter[]
 }

@@ -137,6 +137,7 @@ export const searchInputFilter: InputInfos = {
     hoverBackgroundColor: "var(--mainColor)",
     hoverTextColor: "var(--black)",
     hoverBorderColor: "var(--black)",
+    animationWidth: true
 }
 export const autocompleteInfosFilter: AutocompleteInfos = {
     textColor: 'var(--black)',
