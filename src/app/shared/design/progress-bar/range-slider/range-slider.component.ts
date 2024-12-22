@@ -17,8 +17,8 @@ export class RangeSliderComponent {
       this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
       this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
       this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+      this.elementRef.nativeElement.style.setProperty('--errorColor', Palette.errorColor);
+      this.elementRef.nativeElement.style.setProperty('--successColor', Palette.successColor);
     });
   }
   private themeSubscriber: Subscription = new Subscription();

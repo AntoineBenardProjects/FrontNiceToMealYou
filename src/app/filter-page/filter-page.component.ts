@@ -39,7 +39,7 @@ export class FilterPageComponent {
   protected normalInput: InputInfos = normalInputFilter;
   protected searchInputInfos: InputInfos = searchInputFilter;
   protected priceSliderInfos: RangeSliderInfos = {
-    activeColor: "var(--thirdColor)",
+    activeColor: "var(--successColor)",
     unactiveColor: "var(--white)",
     pointSize: 20,
     length: 15,
@@ -55,7 +55,7 @@ export class FilterPageComponent {
     plus: true
   }
   protected gradeSliderInfos: RangeSliderInfos = {
-    activeColor: "var(--thirdColor)",
+    activeColor: "var(--successColor)",
     unactiveColor: "var(--white)",
     pointSize: 20,
     length: 15,

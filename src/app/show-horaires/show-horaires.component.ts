@@ -1,9 +1,9 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
-import { Horaires } from '../model/horaires';
+import { Component, ElementRef, Input } from '@angular/core';
 import { PlacesService } from '../services/places.service';
 import { ColorPalette } from 'src/assets/style-infos/palettes';
 import { ThemeService } from '../services/theme.service';
 import { Subscription } from 'rxjs';
+import { Horaires } from '../shared/model/table/horaires';
 
 @Component({
   selector: 'show-horaires',
@@ -25,8 +25,8 @@ export class ShowHorairesComponent {
       this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
       this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
       this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+      this.elementRef.nativeElement.style.setProperty('--errorColor', Palette.errorColor);
+      this.elementRef.nativeElement.style.setProperty('--successColor', Palette.successColor);
     });
   }
 

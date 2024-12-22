@@ -16,6 +16,7 @@ import { blackButtonPlaceCard, iconsAddComponent, iconsFirstPageComponent, inval
 import { checkboxInfosAddComponent } from '../shared/model/design/checkboxesDesign';
 import { Type, TypeOfPlace } from '../shared/model/table/type';
 import { Message } from '../shared/model/params/message';
+import { TopHeight } from '../shared/model/displayValues/general';
 
 @Component({
   selector: 'app-add',
@@ -48,11 +49,11 @@ export class AddComponent {
   protected iconsInfos: ButtonInfos = iconsAddComponent;
 
 /*  Css  */
-  @HostBinding("style.--titleColor") titleColor: string = 'var(--secondColor)';
+  @HostBinding("style.--titleColor") titleColor: string = 'var(--errorColor)';
   @HostBinding("style.--pictureColor") pictureColor: string = 'var(--black)';
   @HostBinding("style.--stationColor1") stationColor1: string = 'var(--black)';
   @HostBinding("style.--stationColor2") stationColor2: string = 'var(--white)';
-  @HostBinding("style.--backgroundHeaderHoraires1") backgroundHeaderHoraires1: string = 'var(--secondColor)';
+  @HostBinding("style.--backgroundHeaderHoraires1") backgroundHeaderHoraires1: string = 'var(--errorColor)';
   @HostBinding("style.--backgroundHeaderHoraires2") backgroundHeaderHoraires2: string = 'var(--black)';
   @HostBinding("style.--colorHeaderHoraires") colorHeaderHoraires1: string = 'var(--white)';
   @HostBinding("style.--colorBodyHoraires") colorBodyHoraires: string = 'var(--black)';
@@ -351,19 +352,19 @@ export class AddComponent {
     this.picturesAdded.splice(index,1);
   }  
   private setColorsOnScroll(): void {
-    let firstSectionPosition:Position = {
+    let firstSectionPosition:TopHeight = {
       top:0,
       height: 0
     } 
-    let complementSectionPosition:Position = {
+    let complementSectionPosition:TopHeight = {
       top: 0,
       height:0
     };
-    let gradeSectionPosition:Position = {
+    let gradeSectionPosition:TopHeight = {
       top: 0,
       height:0
     };
-    let horairesSectionPosition:Position = {
+    let horairesSectionPosition:TopHeight = {
       top: 0,
       height:0
     };
@@ -395,32 +396,32 @@ export class AddComponent {
     if(firstSectionPosition.top > 0 && firstSectionPosition.top < firstSectionPosition.height){
       this.logoImageSrc = "../../assets/logo/red_logo.png";
       this.backgroundColor = 'var(--mainColor)';
-      this.canSubmit() ? this.titleColor = 'var(--thirdColor)' : this.titleColor = 'var(--secondColor)';
+      this.canSubmit() ? this.titleColor = 'var(--successColor)' : this.titleColor = 'var(--errorColor)';
       this.normalInput = {
         color: "var(--black)",
         placeholderColor: "var(--black)",
-        placeholderColorActive: "var(--thirdColor)",
+        placeholderColorActive: "var(--successColor)",
         backgroundColor: "var(--mainColor)",
         borderColor: "var(--black)",
-        borderColorActive: "var(--thirdColor)",
-        hoverBackgroundColor: "var(--thirdColor)",
+        borderColorActive: "var(--successColor)",
+        hoverBackgroundColor: "var(--successColor)",
         hoverTextColor: "var(--white)",
-        hoverBorderColor: "var(--thirdColor)",
+        hoverBorderColor: "var(--successColor)",
       }
       this.pictureColor = 'var(--black)';
-      this.stationColor1 = 'var(--secondColor)';
+      this.stationColor1 = 'var(--errorColor)';
       this.stationColor2 = 'var(--mainColor)';
-      this.backgroundHeaderHoraires1 = 'var(--secondColor)';
+      this.backgroundHeaderHoraires1 = 'var(--errorColor)';
       this.backgroundHeaderHoraires2 = 'var(--black)';
       this.colorHeaderHoraires1 = 'var(--white)';
       this.colorBodyHoraires = 'var(--black)';
       this.stationButtonInfos = {
-        color: 'var(--secondColor)',
+        color: 'var(--errorColor)',
         colorActive: 'var(--mainColor)',
-        borderColor: 'var(--secondColor)',
-        borderColorActive: 'var(--secondColor)',
+        borderColor: 'var(--errorColor)',
+        borderColorActive: 'var(--errorColor)',
         backgroundColor: 'var(--mainColor)',
-        backgroundColorActive: 'var(--secondColor)',
+        backgroundColorActive: 'var(--errorColor)',
         fontSize: "16px",
         heightIcon: "30px",
         radius: "50%"
@@ -455,7 +456,7 @@ export class AddComponent {
       this.titleColor = 'var(--black)';
       this.backgroundColor = 'var(--white)';
       this.backgroundHeaderHoraires1 = 'var(--black)';
-      this.backgroundHeaderHoraires2 = 'var(--secondColor)';
+      this.backgroundHeaderHoraires2 = 'var(--errorColor)';
       this.colorHeaderHoraires1 = 'var(--white)';
       this.colorBodyHoraires = 'var(--black)';
     }
@@ -576,7 +577,4 @@ interface isDayOpen{
   Samedi: boolean,
   Dimanche: boolean
 }
-export interface Position{
-  top: number,
-  height: number
-}
+

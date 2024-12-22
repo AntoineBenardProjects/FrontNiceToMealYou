@@ -2,31 +2,31 @@ import { CheckboxInfos } from "src/app/shared/model/designs";
 
 export const checkboxInfosAddComponent: CheckboxInfos = {
     color: "var(--white)",
-    backgroundColor: "var(--secondColor)",
-    borderColor: "var(--secondColor)",
+    backgroundColor: "var(--errorColor)",
+    borderColor: "var(--errorColor)",
     colorActive: "var(--white)",
-    backgroundColorActive: "var(--thirdColor)",
-    borderColorActive: "var(--thirdColor)",
+    backgroundColorActive: "var(--successColor)",
+    borderColorActive: "var(--successColor)",
     hoverBackgroundColor: "var(--mainColor)",
-    hoverBorderColor: "var(--secondColor)",
-    hoverTextColor: "var(--secondColor)",
+    hoverBorderColor: "var(--errorColor)",
+    hoverTextColor: "var(--errorColor)",
     hoverBackgroundColorValid: "var(--mainColor)",
-    hoverBorderColorValid: "var(--thirdColor)",
-    hoverTextColorValid: "var(--thirdColor)",
+    hoverBorderColorValid: "var(--successColor)",
+    hoverTextColorValid: "var(--successColor)",
 }
 export const checkboxInfosFilterComponent : CheckboxInfos = {
-    color: "var(--secondColor)",
+    color: "var(--errorColor)",
     hoverTextColor: 'var(--white)',
-    hoverBackgroundColor: 'var(--secondColor)',
-    hoverBorderColor: 'var(--secondColor)',
+    hoverBackgroundColor: 'var(--errorColor)',
+    hoverBorderColor: 'var(--errorColor)',
     hoverTextColorValid: 'var(--white)',
-    hoverBackgroundColorValid: 'var(--thirdColor)',
-    hoverBorderColorValid: 'var(--thirdColor)',
+    hoverBackgroundColorValid: 'var(--successColor)',
+    hoverBorderColorValid: 'var(--successColor)',
     backgroundColor: "transparent",
-    borderColor: "var(--secondColor)",
-    colorActive: "var(--thirdColor)",
+    borderColor: "var(--errorColor)",
+    colorActive: "var(--successColor)",
     backgroundColorActive: "var(--transparent)",
-    borderColorActive: "var(--thirdColor)"
+    borderColorActive: "var(--successColor)"
 }
 
 export const checkboxInfosPlaceCardFaceComponent: CheckboxInfos = {

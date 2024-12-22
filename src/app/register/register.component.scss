@@ -1,44 +1,5 @@
-.top{
-    position: absolute;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
-    padding: 0 5vw;
-    height: 20vh;
-    h1:first-child{
-        margin: 0;
-    }
-    .titles{
-        display: flex;
-        align-items: center;
-        height: 100%;
-        position: relative;
-        z-index: 1;
-        position: relative;
-        .title{
-            display: flex;
-            position: absolute;
-            left: 0;
-            overflow: hidden;
-            height: 0;
-        }
-    }
-}
+@import './style/animations.scss';
 
-round-button{
-    height: 5vh;
-}
-
-h1{
-    display: flex;
-    align-items: center;
-    font-size: 50px;
-    text-transform: uppercase;
-    font-family: 'Argentum' !important;
-    margin-left: 15px;
-    margin-bottom: 0;
-}
 #stroke{
     -webkit-text-stroke: 1px var(--white);
     color: transparent;
@@ -51,20 +12,18 @@ h1{
 }
 
 .form{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column;
     height: 100%;
-    width: 100%;
-    .infos{
-        flex-direction: column;
-    }
-    .column{
-        display: flex;
-        flex-direction: column;
-        height: 60%;
-        width: 40vw;
-    }
+    width: 100%;    
+}
+.infos{
+    flex-direction: column;
+}
+.column{
+    display: flex;
+    flex-direction: column;
+    height: 60%;
+    width: 40vw;
 }
 app-input{
     margin: 2vh 0;
@@ -73,9 +32,16 @@ app-input{
     position: absolute;
     height: 100%; 
     width: 100%;
-    background-color: var(--secondColor);
 }
-
+#desktopButtons{
+    display: flex;
+}
+#connexion{
+    position: absolute;
+    right: 2vw;
+    top: 5vh;
+    width: 15vw;
+}
 
 .background{
     position: relative;
@@ -83,31 +49,32 @@ app-input{
     height: 100vh;
     max-height: 100vh;
     width: 100vw;
+    transition: .4s;
 }
 .picture{
     position: relative;
-    height: 35vh;
-    width: 35vh;
+    height: var(--sizePictureRegisterPage);
+    width: var(--sizePictureRegisterPage);
     border-radius: 50%;
     background-repeat: no-repeat !important;
     background-position: center center !important;
     background-size: cover !important;
-    #noPicture{
-        color: var(--secondColor);
-        font-size: 27vh;
-    }
-    #remove{
-        width: auto;
-        height: auto;
-        position: absolute;
-        bottom: calc(calc(17vh - 32px) + (17.5vh * sin(calc((7*3.141592653589793)/ 4))));
-        right: calc(13vh + (17.5vh * cos(calc((7*3.141592653589793)/ 4))));
-    }
-    upload-button{
-        position: absolute;
-        bottom: calc(17.5vh + 17.5vh*sin(5.4977871438));
-        left: calc(13.5vh + 17.5vh*cos(5.4977871438))
-    }
+}
+#noPicture{
+    color: var(--errorColor);
+    font-size: var(--fontSizeIconRegisterPage);
+}
+#remove{
+    width: auto;
+    height: auto;
+    position: absolute;
+    bottom: calc(calc(17vh - 32px) + (17.5vh * sin(calc((7*3.141592653589793)/ 4))));
+    right: calc(13vh + (17.5vh * cos(calc((7*3.141592653589793)/ 4))));
+}
+upload-button{
+    position: absolute;
+    bottom: calc((var(--sizePictureRegisterPage) + var(--sizePictureRegisterPage)*sin(5.4977871438))/2);
+    bottom: calc((var(--sizePictureRegisterPage) + var(--sizePictureRegisterPage)*cos(5.4977871438))/2);
 }
 .bottomBar{
     position: fixed;
@@ -123,11 +90,9 @@ app-input{
     background: var(--white);
     justify-content: space-between;
     align-items: center;
-    round-button{
-        height: 4vh;
-        width: auto;
-    }
 }
+
+
 
 message{
     height: 0;
@@ -139,20 +104,20 @@ message{
     .top{
         flex-direction: column;
         height: 12vh;
-        #connexion{
-            display: none;
+    }
+    #connexion{
+        display: none;
+    }
+    .titles{
+        width: 100%;
+        .title{
+            inset: 0;
+            margin: auto;
+            justify-content: center;
         }
-        .titles{
-            width: 100%;
-            .title{
-                inset: 0;
-                margin: auto;
-                justify-content: center;
-            }
-        }
-        round-button{
-            width: 60vw;
-        }
+    }
+    round-button{
+        width: 60vw;
     }
     .form{
         flex-direction: column;
@@ -162,6 +127,10 @@ message{
     .bottomBar{
         display: flex;
         justify-content: center;
+    }
+    round-button{
+        height: 4vh;
+        width: auto;
     }
     h1{
         font-size: 25px;

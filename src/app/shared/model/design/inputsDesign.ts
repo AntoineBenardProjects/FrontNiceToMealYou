@@ -1,12 +1,14 @@
 import { AutocompleteInfos, InputInfos } from "src/app/shared/model/designs"
 
 export const inputInfosLoginComonent: InputInfos = {
-    color: 'var(--black)',
-    placeholderColor: 'var(--black)',
-    placeholderColorActive: 'var(--black)',
-    borderColor: 'var(--black)',
-    borderColorActive: 'transparent',
-    backgroundColor: 'transparent',
+    color: 'var(--white)',
+    placeholderColor: 'var(--white)',
+    placeholderColorActive: 'var(--white)',
+    borderColor: 'var(--white)',
+    borderColorActive: 'var(--white)',
+    backgroundColor: 'var(--mainColor)',
+    hoverBackgroundColor: 'var(--white)',
+    hoverTextColor: 'var(--mainColor)',
     bottomOnly: true
 }
 
@@ -14,58 +16,58 @@ export const invalidInputRegisterComponent: InputInfos = {
     color: "var(--white)",
     placeholderColor: "var(--white)",
     placeholderColorActive: "var(--white)",
-    backgroundColor: "var(--secondColor)",
+    backgroundColor: "var(--errorColor)",
     borderColor: "var(--white)",
     borderColorActive: "var(--white)",
     hoverBackgroundColor: "var(--white)",
-    hoverTextColor: "var(--secondColor)",
-    hoverBorderColor: "var(--secondColor)",
+    hoverTextColor: "var(--errorColor)",
+    hoverBorderColor: "var(--errorColor)",
 }
 export const validInputRegisterComponent: InputInfos = {
     color: "var(--white)",
     placeholderColor: "var(--white)",
-    placeholderColorActive: "var(--thirdColor)",
-    backgroundColor: "var(--secondColor)",
-    borderColor: "var(--thirdColor)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--thirdColor)",
+    placeholderColorActive: "var(--successColor)",
+    backgroundColor: "var(--errorColor)",
+    borderColor: "var(--successColor)",
+    borderColorActive: "var(--successColor)",
+    hoverBackgroundColor: "var(--successColor)",
     hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--thirdColor)",
+    hoverBorderColor: "var(--successColor)",
 }
 
 export const normalInputAddComponent: InputInfos = {
     color: "var(--black)",
     placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--thirdColor)",
+    placeholderColorActive: "var(--successColor)",
     backgroundColor: "var(--mainColor)",
     borderColor: "var(--black)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--thirdColor)",
+    borderColorActive: "var(--successColor)",
+    hoverBackgroundColor: "var(--successColor)",
     hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--thirdColor)",
+    hoverBorderColor: "var(--successColor)",
 }
 export const validInputAddComponent: InputInfos = {
     color: "var(--black)",
     placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--thirdColor)",
+    placeholderColorActive: "var(--successColor)",
     backgroundColor: "var(--mainColor)",
-    borderColor: "var(--thirdColor)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--thirdColor)",
+    borderColor: "var(--successColor)",
+    borderColorActive: "var(--successColor)",
+    hoverBackgroundColor: "var(--successColor)",
     hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--thirdColor)",
+    hoverBorderColor: "var(--successColor)",
     
 }
 export const invalidInputAddComponent: InputInfos = {
     color: "var(--black)",
     placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--secondColor)",
+    placeholderColorActive: "var(--errorColor)",
     backgroundColor: "var(--mainColor)",
-    borderColor: "var(--secondColor)",
-    borderColorActive: "var(--secondColor)",
-    hoverBackgroundColor: "var(--secondColor)",
+    borderColor: "var(--errorColor)",
+    borderColorActive: "var(--errorColor)",
+    hoverBackgroundColor: "var(--errorColor)",
     hoverTextColor: "var(--white)",
-    hoverBorderColor: "var(--secondColor)",
+    hoverBorderColor: "var(--errorColor)",
 }
 export const horairesInputAddComponent: InputInfos = {
     color: "var(--black)",
@@ -79,7 +81,7 @@ export const autocompleteInputInfosEditComponent: AutocompleteInfos = {
     textColor: 'var(--white)',
     textColorActive: 'var(--white)',
     backgroundColor: 'var(--black)',
-    backgroundColorActive: 'var(--thirdColor)'
+    backgroundColorActive: 'var(--successColor)'
 }
 
 export const normalInputUserComponent: InputInfos = {
@@ -96,24 +98,24 @@ export const normalInputUserComponent: InputInfos = {
 export const validInputUserComponent: InputInfos = {
     color: "var(--black)",
     placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--thirdColor)",
+    placeholderColorActive: "var(--successColor)",
     backgroundColor: "transparent",
-    borderColor: "var(--thirdColor)",
-    borderColorActive: "var(--thirdColor)",
-    hoverBackgroundColor: "var(--thirdColor)",
+    borderColor: "var(--successColor)",
+    borderColorActive: "var(--successColor)",
+    hoverBackgroundColor: "var(--successColor)",
     hoverTextColor: "transparent",
-    hoverBorderColor: "var(--thirdColor)",
+    hoverBorderColor: "var(--successColor)",
 }
 export const invalidInputUserComponent: InputInfos = {
     color: "var(--black)",
     placeholderColor: "var(--black)",
-    placeholderColorActive: "var(--secondColor)",
+    placeholderColorActive: "var(--errorColor)",
     backgroundColor: "transparent",
-    borderColor: "var(--secondColor)",
-    borderColorActive: "var(--secondColor)",
-    hoverBackgroundColor: "var(--secondColor)",
+    borderColor: "var(--errorColor)",
+    borderColorActive: "var(--errorColor)",
+    hoverBackgroundColor: "var(--errorColor)",
     hoverTextColor: "transparent",
-    hoverBorderColor: "var(--secondColor)",
+    hoverBorderColor: "var(--errorColor)",
 }
 
 export const normalInputFilter: InputInfos = {

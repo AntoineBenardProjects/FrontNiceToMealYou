@@ -1,7 +1,6 @@
 import { Component, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IconDefinition, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { Position } from '../add/add.component';
 import { Comment } from '../shared/model/table/comment';
 import { blackButtonPlaceCard, validButtonAddComponent, invalidButtonAddComponent, uploadButtonInfosAddComponent, myPlacesButtonInfosAddComponent } from '../shared/model/design/buttonsDesign';
 import { checkboxInfosAddComponent } from '../shared/model/design/checkboxesDesign';
@@ -17,6 +16,7 @@ import { PlacesService } from '../services/places.service';
 import { InputInfos, SelectInfos, ButtonInfos, CheckboxInfos, SelectData, AutocompleteInfos, RangeSliderInfos } from '../shared/model/designs';
 import { Message } from '../shared/model/params/message';
 import { PlaceCardParams } from '../shared/model/params/cardParams';
+import { TopHeight } from '../shared/model/displayValues/general';
 
 @Component({
   selector: 'app-edit',
@@ -45,11 +45,11 @@ export class EditComponent {
   protected autocompleteInfos: AutocompleteInfos = autocompleteInputInfosEditComponent;
   protected myPlacesButtonInfos: ButtonInfos = myPlacesButtonInfosAddComponent;
 /*  Css  */
-  @HostBinding("style.--titleColor") titleColor: string = 'var(--secondColor)';
+  @HostBinding("style.--titleColor") titleColor: string = 'var(--errorColor)';
   @HostBinding("style.--pictureColor") pictureColor: string = 'var(--black)';
   @HostBinding("style.--stationColor1") stationColor1: string = 'var(--black)';
   @HostBinding("style.--stationColor2") stationColor2: string = 'var(--white)';
-  @HostBinding("style.--backgroundHeaderHoraires1") backgroundHeaderHoraires1: string = 'var(--secondColor)';
+  @HostBinding("style.--backgroundHeaderHoraires1") backgroundHeaderHoraires1: string = 'var(--errorColor)';
   @HostBinding("style.--backgroundHeaderHoraires2") backgroundHeaderHoraires2: string = 'var(--black)';
   @HostBinding("style.--colorHeaderHoraires") colorHeaderHoraires1: string = 'var(--white)';
   @HostBinding("style.--colorBodyHoraires") colorBodyHoraires: string = 'var(--black)';
@@ -192,7 +192,7 @@ export class EditComponent {
   protected facadeName: string = "Façade";
   protected allPictures: Pictures[] = [];
   protected rangeSliderInfos: RangeSliderInfos = {
-    activeColor: "var(--thirdColor)",
+    activeColor: "var(--successColor)",
     unactiveColor: "var(--white)",
     pointSize: 20,
     length: 15,
@@ -341,7 +341,7 @@ export class EditComponent {
       'address': fullAddress
     }, (results, status) => {
         if (status == google.maps.GeocoderStatus.OK) {
-          results[0].address_components.forEach((element: google.maps.GeocoderAddressComponent) => {
+          results[0].address_components.forEach((element: google.maps.GeocoderAddressComponent): void => {
             if(element.types[0] === 'locality') this.city.name = element.long_name;
             else if(element.types[0] === 'administrative_area_level_2') this.city.department = element.long_name;
             else if(element.types[0] === 'administrative_area_level_1') this.city.reg = element.long_name;
@@ -497,22 +497,11 @@ export class EditComponent {
     });
   } 
   private setColorsOnScroll(): void {
-    let firstSectionPosition:Position = {
-      top:0,
-      height: 0
-    } 
-    let complementSectionPosition:Position = {
-      top: 0,
-      height:0
-    };
-    let gradeSectionPosition:Position = {
-      top: 0,
-      height:0
-    };
-    let horairesSectionPosition:Position = {
-      top: 0,
-      height:0
-    };
+    let firstSectionPosition:TopHeight = new TopHeight();
+    let complementSectionPosition:TopHeight = new TopHeight();
+    let gradeSectionPosition:TopHeight = new TopHeight();
+    let horairesSectionPosition:TopHeight = new TopHeight();
+    
     if(document.getElementById("firstSection") != null){
       firstSectionPosition = {
         top:document.getElementById("firstSection").getBoundingClientRect().top + document.getElementById("firstSection").getBoundingClientRect().height,
@@ -541,36 +530,36 @@ export class EditComponent {
     if(firstSectionPosition.top > 0 && firstSectionPosition.top < firstSectionPosition.height){
       this.logoImageSrc = "../../assets/logo/red_logo.png";
       this.backgroundColor = 'var(--mainColor)';
-      this.canSubmit() ? this.titleColor = 'var(--thirdColor)' : this.titleColor = 'var(--secondColor)';
+      this.canSubmit() ? this.titleColor = 'var(--successColor)' : this.titleColor = 'var(--errorColor)';
       this.normalInput = {
         color: "var(--black)",
         placeholderColor: "var(--black)",
-        placeholderColorActive: "var(--thirdColor)",
+        placeholderColorActive: "var(--successColor)",
         backgroundColor: "var(--mainColor)",
         borderColor: "var(--black)",
-        borderColorActive: "var(--thirdColor)",
-        hoverBackgroundColor: "var(--thirdColor)",
+        borderColorActive: "var(--successColor)",
+        hoverBackgroundColor: "var(--successColor)",
         hoverTextColor: "var(--white)",
-        hoverBorderColor: "var(--thirdColor)",
+        hoverBorderColor: "var(--successColor)",
       }
       this.uploadButtonInfos = {
         color: 'var(--mainColor)',
         backgroundColor: 'var(--black)'
       }
       this.pictureColor = 'var(--black)';
-      this.stationColor1 = 'var(--secondColor)';
+      this.stationColor1 = 'var(--errorColor)';
       this.stationColor2 = 'var(--mainColor)';
-      this.backgroundHeaderHoraires1 = 'var(--secondColor)';
+      this.backgroundHeaderHoraires1 = 'var(--errorColor)';
       this.backgroundHeaderHoraires2 = 'var(--black)';
       this.colorHeaderHoraires1 = 'var(--white)';
       this.colorBodyHoraires = 'var(--black)';
       this.stationButtonInfos = {
-        color: 'var(--secondColor)',
+        color: 'var(--errorColor)',
         colorActive: 'var(--mainColor)',
-        borderColor: 'var(--secondColor)',
-        borderColorActive: 'var(--secondColor)',
+        borderColor: 'var(--errorColor)',
+        borderColorActive: 'var(--errorColor)',
         backgroundColor: 'var(--mainColor)',
-        backgroundColorActive: 'var(--secondColor)',
+        backgroundColorActive: 'var(--errorColor)',
         fontSize: "16px",
         heightIcon: "30px",
         radius: "50%"
@@ -609,7 +598,7 @@ export class EditComponent {
       this.titleColor = 'var(--black)';
       this.backgroundColor = 'var(--white)';
       this.backgroundHeaderHoraires1 = 'var(--black)';
-      this.backgroundHeaderHoraires2 = 'var(--secondColor)';
+      this.backgroundHeaderHoraires2 = 'var(--errorColor)';
       this.colorHeaderHoraires1 = 'var(--white)';
       this.colorBodyHoraires = 'var(--black)';
     }

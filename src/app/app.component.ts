@@ -21,15 +21,19 @@ export class AppComponent {
       this.elementRef.nativeElement.style.setProperty('--grey', Palette.grey);
       this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
       this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
+      this.elementRef.nativeElement.style.setProperty('--errorColor', Palette.errorColor);
+      this.elementRef.nativeElement.style.setProperty('--successColor', Palette.successColor);
       this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+      this.elementRef.nativeElement.style.setProperty('--warningColor', Palette.warningColor);
 
       this.grey = Palette.grey;
       this.white = Palette.white;
       this.black = Palette.black;
       this.mainColor = Palette.mainColor;
+      this.errorColor = Palette.errorColor;
+      this.successColor = Palette.successColor;
       this.secondColor = Palette.secondColor;
-      this.thirdColor = Palette.thirdColor;
+      this.warningColor = Palette.warningColor;
     });
   }
   private themeSubscriber: Subscription;
@@ -38,8 +42,10 @@ export class AppComponent {
   @HostBinding("style.--white") white: string = '';
   @HostBinding("style.--black") black: string = '';
   @HostBinding("style.--mainColor") mainColor: string = '';
+  @HostBinding("style.--errorColor") errorColor: string = '';
+  @HostBinding("style.--successColor") successColor: string = '';
   @HostBinding("style.--secondColor") secondColor: string = '';
-  @HostBinding("style.--thirdColor") thirdColor: string = '';
+  @HostBinding("style.--warningColor") warningColor: string = '';
 
   protected paletteName: string = 'Default';
   

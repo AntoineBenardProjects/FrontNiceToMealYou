@@ -19,6 +19,7 @@ export class RoundButtonComponent {
   @HostBinding('style.--borderRadiusCssVariable') borderRadiusCssVariable = '5px';
   @HostBinding('style.--borderColor') borderColorCssVariable = 'transparent';
   @HostBinding('style.--borderColorActive') borderColorActiveCssVariable = 'transparent';
+  @HostBinding('style.--borderWidth') borderWidth = '2px';
   @HostBinding('style.--backgroundColor') backgroundColorCssVariable = 'transparent';
   @HostBinding('style.--backgroundColorActive') backgroundColorActiveCssVariable = '';
   @HostBinding('style.--textColor') textColorCssVariable = '';
@@ -60,6 +61,7 @@ export class RoundButtonComponent {
       if(this.styleInfos.fontSize != null) this.fontSize = this.styleInfos.fontSize;
       if(this.styleInfos.radius != null) this.borderRadiusCssVariable = this.styleInfos.radius;
       if(this.styleInfos.cursor != null) this.cursorCssVariable = this.styleInfos.cursor;
+      if(this.styleInfos.borderWidth != null) this.borderWidth = this.styleInfos.borderWidth;
     }
   }
 
@@ -100,6 +102,7 @@ export class RoundButtonComponent {
               if(this.styleInfos.fontSize != null) this.fontSize = this.styleInfos.fontSize;
               if(this.styleInfos.radius != null) this.borderRadiusCssVariable = this.styleInfos.radius;
               if(this.styleInfos.cursor != null) this.cursorCssVariable = this.styleInfos.cursor;        
+              if(this.styleInfos.borderWidth != null) this.borderWidth = this.styleInfos.borderWidth;
             }
           }
           break;

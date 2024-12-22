@@ -1,0 +1,106 @@
+.cardsAvantages{
+    display: grid;
+    width: 70%;
+    grid-template-columns: repeat(3,3fr);
+    border-radius: 5px;
+    overflow: hidden;
+}
+.cardAvantages{
+    position: relative;
+    width: 100%;
+    height: 40vh;
+    z-index: 2;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    color: var(--white);
+    &:hover{
+        .hoverBackgroundCardAvantages{
+            height: 100%;
+        }
+        .cardAvantagesTitle{
+            top: 50px;
+        }
+        .cardAvantagesDetails{
+            opacity: 1;
+        }
+    }
+    
+    
+}
+.cardAvantagesDetails{
+    width: 90%;
+    padding: 0 5%;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    opacity: 0;
+    transition: .4s;
+    font-size: 18px;
+    pointer-events: none;
+}
+.cardAvantagesTitle{
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: calc(50% - 15px);
+    margin: auto;
+    text-align: center;
+    font-size: 25px;
+    line-height: 30px;
+    font-weight: 900;
+    text-transform: uppercase;
+    height: fit-content;
+    pointer-events: none;
+    z-index: 1;
+    transition: .4s;
+}
+.hoverBackgroundCardAvantages{
+    position: absolute;
+    width: 100%;
+    height: 0%;
+    bottom: 0;
+    background: attr(data-color);
+    transition: .4s;
+    opacity: .9;
+}
+.backgroundCardAvantages{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    opacity: .4;
+    background: var(--black);
+    z-index: -1;
+}
+
+#fast{
+    background: url('../../../assets/common/find.jpg');
+}
+#efficient{
+    background: url('../../../assets/common/fast.jpg');
+}
+#discovery{
+    background: url('../../../assets/common/discover.jpg');
+}
+#diversity{
+    background: url('../../../assets/common/diversity.jpg');
+}
+#proximity{
+    background: url('../../../assets/common/proximity.jpg');
+}
+#share{
+    background: url('../../../assets/common/share.jpg');
+}
+
+@media screen and (max-width: 600px){
+    .cardsAvantages{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .cardAvantages{
+        margin-bottom: 40px;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+}

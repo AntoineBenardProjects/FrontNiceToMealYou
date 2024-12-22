@@ -6,6 +6,7 @@ import { InputsModule } from '../shared/design/inputs/inputs.module';
 import { ButtonsModule } from '../shared/design/buttons/buttons.module';
 import { MessageModule } from '../message/message.module';
 import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { FormsModule } from '@angular/forms';
   ],
   imports: [
     InputsModule,
+    FontAwesomeModule,
     ButtonsModule,
     BrowserModule,
     LoginRoutingModule,

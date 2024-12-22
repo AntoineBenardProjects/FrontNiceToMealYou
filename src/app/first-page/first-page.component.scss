@@ -1,428 +1,198 @@
+@import url('./style/avantages.scss');
+@import url('./style/first.scss');
+@import url('./style/objectif.scss');
+@import url('./style/principes.scss');
+
 .body{
-    transition: all 400ms ;
+    transition: .4s cubic-bezier(.27,.88,.52,.95);
+    color: var(--textColor);
+    overflow: hidden;
 }
-h1{
-    font-family: 'Arvo', sans-serif !important;
+#bigLogo{
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    opacity: 1;
 }
-.navbar{
-    position: fixed;
-    height: 100px;
-    width: 90vw;
-    z-index: 100;
-    .container{
-        position: relative;
-        height: 100%;
-        #logo{
-            position: absolute;
-            top: 0;
-            left: 1vw;
-            width: 100px;
-            transition: all 400ms;
-            z-index: 100;
+.hideLogo{
+    opacity: 0 !important;
+}
+
+.scrollClickable{
+    position: absolute;
+    bottom: 5vh;
+    left: 2vw;
+    transition: all 400ms;
+}
+
+.arrowDownIcon{
+    font-size: 20px;
+    margin-left: 15px;
+}
+.link{
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+    position: relative;
+    cursor: pointer;
+    font-size: 25px;
+    height: 30px;
+    z-index: 10;
+    text-align: center;
+    transition: all 400ms;
+    &:hover{
+        &::before{
+            width: 100%;
         }
-        .buttons{
-            display: flex;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            margin: auto;
-            right: 2vw;
-            text-align: center;
-            height: 40%;
-            round-button:nth-child(1){
-                margin-right: 20px;
-            }
-        }
+    }
+    &::before{
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        height: 2px;
+        width: 0;
+        background: var(--textColor);
+        transition: all 400ms;
     }
 }
 
-.first{
-    position: relative;
-    height: 100vh;
-    width: 90vw;
-    padding: 0 5vw;
-    background: transparent;
-    .topbarContainer{
-        position: absolute;
-        height: 100px;
-        width: 90vw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .topbar{
-            display: flex;
-            justify-content: flex-end;
-            width: 40%;
-            margin-left: 30%;
-            .link{
-                -webkit-user-select: none;  
-                -moz-user-select: none;    
-                -ms-user-select: none;      
-                user-select: none;
-                position: relative;
-                cursor: pointer;
-                font-size: 16px;
-                margin-right: 3vw !important;
-                color: var(--mainColor);
-                &:hover{
-                    &::before{
-                        width: 100%;
-                    }
-                }
-                &::before{
-                    content: '';
-                    position: absolute;
-                    bottom: -5px;
-                    height: 2px;
-                    width: 0;
-                    background: var(--mainColor);
-                    transition: all 400ms;
-                }
-            }
-        }
-    }
-    .logo{
-        position: absolute;
-        z-index: 2;
-        font-size: 175px;
-        color: var(--logoColor);
-        opacity: 0;
-        -webkit-user-select: none;  
-        -moz-user-select: none;    
-        -ms-user-select: none;      
-        user-select: none;
-    }
-    #topLogo{top: calc(50vh - 100px);}
-    #bottomLogo{top: calc(50vh + 100px);}
+.firstRectangle{
+    left: 0;
+    top: 0;
+    position: absolute;
+    height: 65vh;
+    width: 10vw;
 }
-.types{
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    .container{
-        display: flex;
-        justify-content: space-between;
-        width: 70vw;
-    }
+.secondRectangle{
+    right: 5vw;
+    top: 35vh;
+    position: absolute;
+    height: 45vh;
+    width: 35vw;
 }
+.thirdRectangle{
+    left: 5vw;
+    top: 100vh;
+    position: absolute;
+    height: 30vh;
+    width: 65vw;
+}
+.fourthRectangle{
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    height: 15vw;
+    width: 15vw;
+}
+.fifthRectangle{
+    left: 10vw;
+    bottom: 0;
+    position: absolute;
+    height: 55vh;
+    width: 10vw;
+}
+.movingBoussole{
+    animation: boussole-animation 7s linear infinite;
+}
+.animatedIconTopLine,.animatedIconReverseTopLine{
+    width:5vw;
+    right: 0;
+    position:absolute;
+}
+.inversePositionTop .animatedIconTopLine,.animatedIconReverseTopLine{
+    left: 0;
+}
+.inversePositionTop .link{
+    text-align: end;
+    margin: 0;
+}
+.animatedIconTopLine{
+    animation: animation-icon-top-line 6s linear infinite 1.5s;
+}
+.animatedIconReverseTopLine{
+    animation: reverse-animation-icon-top-line 8s linear infinite;
+}
+@keyframes boussole-animation {
+    0%    {transform: rotate(0deg)}
+    20%   {transform: rotate(5deg)}
+    22%   {transform: rotate(4deg)}
+    26%   {transform: rotate(6deg)}
+    60%   {transform: rotate(-6deg)}
+    65%   {transform: rotate(-4deg)}
+    68%   {transform: rotate(-5deg)}
+    100%   {transform: rotate(0deg)}
+}
+@keyframes reverse-animation-icon-top-line {
+    0%    {transform: rotate(0deg)}
+    21%   {transform: rotate(-94deg)}
+    25%   {transform: rotate(-90deg)}
+    23%   {transform: rotate(-86deg)}
+    46%   {transform: rotate(-184deg)}
+    50%   {transform: rotate(-180deg)}
+    48%   {transform: rotate(-176deg)}
+    71%   {transform: rotate(-274deg)}
+    75%   {transform: rotate(-270deg)}
+    73%   {transform: rotate(-266deg)}
+    96%   {transform: rotate(-364deg)}
+    100%    {transform: rotate(-360deg)}
+    98%   {transform: rotate(-356deg)}
+}
+@keyframes animation-icon-top-line {
+    0%    {transform: rotate(0deg)}
+    21%   {transform: rotate(94deg)}
+    25%   {transform: rotate(90deg)}
+    23%   {transform: rotate(86deg)}
+    46%   {transform: rotate(184deg)}
+    50%   {transform: rotate(180deg)}
+    48%   {transform: rotate(176deg)}
+    71%   {transform: rotate(274deg)}
+    75%   {transform: rotate(270deg)}
+    73%   {transform: rotate(266deg)}
+    96%   {transform: rotate(364deg)}
+    100%    {transform: rotate(360deg)}
+    98%   {transform: rotate(356deg)}
+}
+
 .presentation{
     background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 100vw;
-    .line{
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        width: 90%;
-        padding: 0 5%;
-        padding-bottom: 5vh;
-        position: relative;
-        .top{
-            position: relative;
-            width: 90%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 40vh;
-            .icon{
-                overflow: hidden;
-                position: relative;
-                height: 100%;
-                width: 20%;
-                fa-icon{
-                    font-size: 75px;
-                    color: var(--black);
-                    width: 40%;
-                    left: 0;
-                    right: 0;
-                    margin: auto;
-                    text-align: center;
-                    position:absolute;
-                }
-                .shadow{
-                    position:absolute;
-                    height: 22px;
-                    width: 75px;
-                    border-radius: 50%;
-                    transform: scale(1);
-                    left: 0;
-                    right: 0;
-                    margin: auto;
-                    bottom: 35%;
-                }
-            }
-            .title{
-                transition: .5s;
-                font-size: 75px;
-                font-weight: 700;
-                text-transform: uppercase;
-            }
-        }
-        
-        .details{
-            display: flex;
-            align-items: center;
-            justify-content: space-evenly;
-            position: relative;
-            width: 100%;
-            h1{
-                position: relative;
-                font-size: 25px;
-                width: 90%;
-                left: 5%;
-                transition: 800ms;
-                font-weight: 800;
-                text-align: center;
-                line-height: 40px;
-            }
-            .text{
-                width: 40%;
-                #firstProblem{
-                    margin-top: 50px;
-                }
-                p{
-                    border-radius: 5px;
-                    padding: 2%;
-                    position: relative;
-                    font-size: 18px;
-                    line-height: 40px;
-                    transition: 800ms;
-                }
-            }
-            .illustration{
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 40%;
-            }
-            .vennDiagram{
-                width: 450px;
-                position: relative;
-                height: 465px;
-                
-                .round{
-                    position: absolute;
-                    height: 250px;
-                    width: 250px;
-                    border-radius: 50%;
-                    p{
-                        font-size: 18px;
-                        font-weight: 800;
-                    }
-                    &::before{
-                        content: '';
-                        position: absolute;
-                        opacity: .5;
-                        width: 100%;
-                        height: 100%;
-                        border-radius: 50%;
-                        background: var(--roundBackgroundColor);
-                    }
-                }
-                .goal{
-                    p{
-                        font-size: 20px;
-                        font-weight: 800;
-                    }
-                    position: relative;
-                    z-index: 1;
-                    background: var(--white);
-                    height: 150px;
-                    width: 150px;
-                    border-radius: 50%;
-                    color: var(--white);
-                    border: 2px solid var(--centralRoundBackgroundColor);
-                    &::before{
-                        position: absolute;
-                        top: 0;
-                        bottom: 0;
-                        left: 0;
-                        right: 0;
-                        margin: auto;
-                        content: '';
-                        width: 90%;
-                        height: 90%;
-                        background: var(--centralRoundBackgroundColor);
-                        border-radius: 50%;
-                        z-index: -1;
-                    }
-                }
-                #horaires{
-                    top: 0;
-                    left: calc(50% - 125px);
-                }
-                #type{
-                    bottom: 0;
-                    left: 0;
-                }
-                #location{
-                    bottom: 0;
-                    right: 0;
-                }
-                round-button{
-                    position: absolute;
-                    width: auto !important;
-                    &:hover,&:active{
-                        &::before{
-                            width: 70px;
-                            padding: 5px 0;
-                        }
-                    }
-                    &::before{
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        overflow: hidden;
-                        width: 0;
-                        position: absolute;
-                        left: -20px;
-                        padding: 0;
-                        top: -35px;
-                        content: attr(data-text);
-                        color: var(--textColor);
-                        background: var(--backgroundColor);
-                        transition: .2s;
-                        border-radius: 5px;
-                    }
-                }
-                #pro{
-                    left: 37px;
-                    bottom: 54px;
-                }
-                #cocktail{
-                    left: 78px;
-                    top: 55px;
-                }
-                #burger{
-                    right: 50px;
-                    bottom: 34px;
-                }
-                #transport{
-                    bottom: 39px;
-                    left: 85px;
-                }
-                #city{
-                    top: 50px;
-                    right: 56px;
-                }
-
-            }
-        }
-        
-    }
-    #iconLine{
-        .icons{
-            display: flex;
-            justify-content: space-between;
-            width: 80%;
-            .column{
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 20%;
-                padding: 30px;
-                border-radius: 5px;
-                border: 2px dotted var(--black);
-                color: var(--balck);
-                h3{
-                    font-size: 25px;
-                    line-height: 40px;
-                    font-weight: 700;
-                    margin-bottom: 20px !important;
-                }
-                p{
-                    font-size: 18px;
-                    text-align: center;
-                }
-                fa-icon{
-                    font-size: 75px;
-                    margin-bottom: 20px;
-                }
-            }
-            
-        }
-    }
-    #benefits{
-        .cards{
-            display: grid;
-            width: 70%;
-            grid-template-columns: repeat(3,3fr);
-            border-radius: 5px;
-            overflow: hidden;
-            .card{
-                position: relative;
-                width: 100%;
-                height: 40vh;
-                z-index: 2;
-                background-repeat: no-repeat !important;
-                background-position: center center !important;
-                background-size: cover !important;
-                color: white;
-                .details{
-                    width: 90%;
-                    padding: 0 5%;
-                    position: absolute;
-                    text-align: center;
-                    top: 50%;
-                    opacity: 0;
-                    transition: .4s;
-                    font-size: 18px;
-                    pointer-events: none;
-                }
-                .hoverBackground{
-                    position: absolute;
-                    width: 100%;
-                    height: 0%;
-                    bottom: 0;
-                    background: attr(data-color);
-                    transition: .4s;
-                    opacity: .9;
-                }
-                &:hover{
-                    .hoverBackground{
-                        height: 100%;
-                    }
-                    h1{
-                        top: 50px;
-                    }
-                    .details{
-                        opacity: 1;
-                    }
-                }
-                h1{
-                    position: absolute;
-                    right: 0;
-                    left: 0;
-                    top: calc(50% - 15px);
-                    margin: auto;
-                    text-align: center;
-                    font-size: 25px;
-                    line-height: 30px;
-                    font-weight: 900;
-                    text-transform: uppercase;
-                    height: fit-content;
-                    pointer-events: none;
-                    z-index: 1;
-                    transition: .4s;
-                }
-                .background{
-                    position: absolute;
-                    height: 100%;
-                    width: 100%;
-                    opacity: .4;
-                    background: var(--black);
-                    z-index: -1;
-                }
-            }
-        }
-    }
+    width: 100vw; 
 }
+
+.line{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 90%;
+    padding: 0 5%;
+    padding-bottom: 5vh;
+    position: relative;
+}
+
+.top{
+    position: relative;
+    width: 96vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20vh;
+}
+.topTitle{
+    transition: .5s;
+    font-size: 75px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.topIcon{
+    position: relative;
+    height: 100%;
+    width: 20%;
+}
+
 .bottomBar{
     justify-content: space-between;
     align-items: center;
@@ -435,121 +205,61 @@ h1{
     left: 27vw;
     bottom: 10px;
     display: none;
-    round-button{
-        position: relative;
-        width: auto !important;
-        &:active,&:hover{
-            &::before{
-                width: 70px;
-                padding: 5px 0;
-            }
-        }
+}
+.buttonBottomBar{
+    position: relative;
+    width: auto !important;
+    &:active,&:hover{
         &::before{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            width: 0;
-            position: absolute;
-            left: -20px;
-            padding: 0;
-            top: -35px;
-            content: attr(data-text);
-            color: var(--textColor);
-            background: var(--backgroundColor);
-            transition: .2s;
-            border-radius: 5px;
+            width: 70px;
+            padding: 5px 0;
         }
     }
-    .background{
-        border-radius: 50px;
+    &::before{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        width: 0;
         position: absolute;
-        left: -3vw;
-        width: calc(100% + 6vw);
-        height: 100%;
-        background: white;
+        left: -20px;
+        padding: 0;
+        top: -35px;
+        content: attr(data-text);
+        color: var(--textColor);
+        background: var(--backgroundColor);
+        transition: .2s;
+        border-radius: 5px;
     }
 }
+.backgroundBottomBar{
+    border-radius: 50px;
+    position: absolute;
+    left: -3vw;
+    width: calc(100% + 6vw);
+    height: 100%;
+    background: white;
+}
+
 
 @media screen and (max-width: 600px){
-    .first .topbarContainer{display: none;}
-    .bottomBar{display: flex;}
-    .first .logo{font-size: 50px;}
-    .first{height: 50vh;}
-    .first #topLogo{top: 20vh;}
-    .first #bottomLogo{top: calc(20vh + 75px);}
-    .presentation .line .top{height: 25vh;}
-    .presentation .line .top .title{font-size: 40px;}
-    .presentation .line .top .icon{
-        fa-icon{
-            font-size: 40px;
-            width: fit-content;
-        }
-        .shadow{
-            width: 40px;
-        }
-    } 
-    .presentation .line .details{
-        flex-direction: column;
-        .text{
-            width: auto;
-        }
-        .illustration{
-            width: auto;
-            margin-top: 100px;
-        }
-        .vennDiagram{
-            width: 300px;
-            height: 330px;
-            .round{
-                width: 180px;
-                height: 180px;
-            }
-            #horaires{
-                left: calc(50% - 90px);
-            }
-            #cocktail{
-                left: 50px;
-                top: 23px;
-            }
-            #pro{
-                left: 23px;
-                bottom: 37px;
-            }
-            #burger{
-                right: 27px;
-            }
-            #city{
-                top: 25px;
-            }
-            #transport{
-                bottom: 26px;
-                right: 29px;
-            }
-            .goal{
-                width: 100px;
-                height: 100px;
-            }
-        }
-        
+    .bottomBar{display: flex; transition: 0s;}
+    .link{
+        display: none;
     }
-    #firstProblem{display: none;}
-    .presentation #iconLine .icons{
-        flex-direction: column;
-        width: 100%;
-        .column{
-            width: calc(100% - 60px);
-            margin-bottom: 40px;
-        }
+    .scrollClickable{
+        display: none;
     }
-    .presentation #benefits .cards{
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        .card{
-            margin-bottom: 40px;
-            border-radius: 5px;
-            overflow: hidden;
-        }
+    .top{height: 25vh;}
+    .topTitle{font-size: 40px;}
+    .animatedIcon{
+        font-size: 40px;
+        width: fit-content;
+    }
+    .changeColorContainer{
+        top: 5vh;
+        bottom: auto;
+        right: auto;
+        transition: 0s;
     }
 }

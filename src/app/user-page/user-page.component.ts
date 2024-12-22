@@ -691,14 +691,7 @@ export class UserPageComponent {
     console.log(e);
   }
   protected checkPassword(): void{
-    const user: User = {
-      id: this.id,
-      password: this.userForm.password,
-      login: this.login,
-      role: '',
-      couv: "",
-      img: ""
-    }
+    const user: User = new User(this.login,this.userForm.password,this.id);
     let checkPassword: Subject<boolean> = new Subject();
 
     checkPassword.subscribe((check: boolean) => {
@@ -733,7 +726,7 @@ export class UserPageComponent {
         this.loginChecked = false;
       }
     });
-    this.data.getValidName(this.userForm.newLogin).subscribe((res: boolean) => {
+    this.data.getValidLogin(this.userForm.newLogin).subscribe((res: boolean) => {
       checkLogin.next(res);
     });
   }

@@ -1,0 +1,69 @@
+
+
+#presentation{
+    margin: 20vh 0;
+}
+#firstProblem{
+    position: relative;
+    font-size: var(--bigTextSizeFirstPage);
+    text-align: center;
+    transition: 800ms;
+    font-weight: 600;
+    line-height: var(--bigTextSizeFirstPage);
+}
+.objectifsParagraphe{
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    margin-left: 2vw !important;
+}
+.objectifsTextRight,.objectifsTextLeft{
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 10vh;
+    font-size: var(--textSizeFirstPage);
+    line-height: var(--textSizeFirstPage);
+    width: 90%;
+    font-weight: 400 !important;
+    margin: 30vh 0 !important;
+    &:first-of-type{
+        margin: 0 !important;
+    }
+}
+
+.objectifsTextRight{
+    justify-content: flex-end;
+    left: 10%;
+}
+
+
+.topDetails{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.textDetails{
+    width: 60%;
+}
+
+
+
+
+@media screen and (max-width: 600px){
+    #presentation{
+        margin: 10vh 0;
+    }
+    .objectifsTextRight,.objectifsTextLeft{
+        width: 100%;
+        justify-content: center;
+        left: 0;
+        margin: 15vh 0 !important;
+    }
+    .textDetails{
+        width: auto;
+    }
+}

@@ -41,11 +41,12 @@ export interface ButtonInfos{
     fontSize?: string,
     fontWeight?: number,
     borderColor?: string,
+    borderWidth?: string,
     borderColorActive?: string,
     radius?: string,
     cursor?: string,
     heightIcon?: string,
-    animationWidth?: boolean
+    animationWidth?: boolean,
 }
 export interface LinkCardInfos{
     color: string;

@@ -45,7 +45,7 @@ button{
     position: relative;
     overflow: hidden;
     border-radius: var(--borderRadiusCssVariable);
-    border: 2px solid;
+    border: var(--borderWidth) solid;
     border-color: var(--borderColor);
     background: var(--backgroundColor);
     cursor: var(--cursorCssVariable);

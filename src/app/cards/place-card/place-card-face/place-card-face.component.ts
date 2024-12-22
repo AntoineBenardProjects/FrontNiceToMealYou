@@ -319,7 +319,7 @@ export class PlaceCardFaceComponent {
       width: 4
     }
     else if(note >= 8)  styleNote = {
-      color: "var(--thirdColor)",
+      color: "var(--successColor)",
       width: 4
     }
     else if(note > 7)  styleNote = {
@@ -331,7 +331,7 @@ export class PlaceCardFaceComponent {
       width: 4
     }
     else  styleNote = {
-      color: "var(--secondColor)",
+      color: "var(--errorColor)",
       width: 4
     }
     return styleNote;

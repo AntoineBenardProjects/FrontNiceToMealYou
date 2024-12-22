@@ -1,0 +1,8 @@
+<div class="changeColorContainer">
+    <ng-container *ngFor="let color of selectionableColors">
+        <div class="changeColorBackground" *ngIf="color.color !== backgroundColor.color" 
+        [ngStyle]="{'background': color.color, 'border-color': color.color}" (click)="changeBackgroundColor(color)">
+            <div class="hoverDivChangeColorBackground" [ngStyle]="{'background': backgroundColor.color}"></div>
+        </div>
+    </ng-container>
+</div>

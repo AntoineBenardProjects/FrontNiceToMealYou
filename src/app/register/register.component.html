@@ -1,44 +1,28 @@
-<div class="background">
-
-    <div class="top">
-        <div class="titles">
-            <div class="title" [@titleGeneral]="titleGeneralAnimation">
-                <h1 id="fill">Informations</h1>
-                <h1 id="stroke">Générales</h1>    
-            </div>
-
-            <div class="title" [@titleRegion]="titleRegionAnimation">
-                <h1 id="fill" style="color: var(--black);">Tes</h1>
-                <h1 id="stroke" style="margin-left: 15px; -webkit-text-stroke-color: var(--black);">stations</h1>    
-                <h1 id="stroke" style="margin-left: 15px; color: var(--black);">Favorites</h1>    
-            </div>
-            <div class="title" [@titleType]="titleTypeAnimation">
-                <h1 id="fill" style="color: var(--secondColor);">Tes</h1>
-                <h1 id="stroke" style="margin-left: 15px; -webkit-text-stroke-color: var(--secondColor);">Préférences</h1>    
-            </div>
-
-
+<div class="background" [ngStyle]="{'background': backgroundColor.color}">
+    <div class="glassCard cardsBackground" 
+    [ngStyle]="{'top.%': infos.top, 'width.%': infos.width, 'height.%': infos.height, 'left.%': infos.left, 'border-color': textColor}" 
+    *ngFor="let infos of infosCardsBackground">
+        <div class="glassCardBackground"
+        [ngStyle]="{'background': infos.color}"></div>
+    </div>
+    <div id="desktopsButton">
+        <round-button id="connexion" [styleInfos]='desktopButtonColorInfos' text="Se connecter" (click)="navigateToLogin()"></round-button>
+    </div>
+    <form class="form center">
+        <div class="picture center" [ngStyle]="{'background' : (userInfos.img != null && userInfos.img.length > 0) ? 'url('+userInfos.img+')' : 'var(--white)'}">
+            <fa-icon id="noPicture" [icon]="userIcon" *ngIf="(userInfos.img == null || userInfos.img.length === 0)"></fa-icon>
+            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event)"></upload-button>
+            <round-button id="remove" [icon]="crossIcon" *ngIf="(userInfos.img != null && userInfos.img.length > 0)" [styleInfos]="desktopButtonColorInfos" (click)="removeImg()"></round-button> 
         </div>
-        <round-button id="connexion" (click)="navigateToLogin()" id="connexion" [styleInfos]='buttonColor' text="CONNEXION"></round-button>
-    </div>
-
-    <div class="general" [@general]="generalAnimation">
-        <form class="form">
-            <div class="infos center">
-                <app-input [styleInfo]="validName ? validInput : invalidInput" text="Login *" (input)="setValue($event,'Login')"></app-input>
-                <app-input [styleInfo]="validPassword ? validInput : invalidInput" type="password" text="Mot de passe *" (input)="setValue($event,'Password')"></app-input>
-            </div>
-            <div class="picture center" [ngStyle]="{'background' : (userInfos.img != null && userInfos.img.length > 0) ? 'url('+userInfos.img+')' : 'var(--white)'}">
-                <fa-icon id="noPicture" [icon]="userIcon" *ngIf="(userInfos.img == null || userInfos.img.length === 0)"></fa-icon>
-                <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event)"></upload-button>
-                <round-button id="remove" [icon]="crossIcon" *ngIf="(userInfos.img != null && userInfos.img.length > 0)" [styleInfos]="crossButton" (click)="removeImg()"></round-button> 
-            </div>
-        </form>    
-    </div>
-
+        <div class="infos center">
+            <app-input [styleInfo]="validLogin ? validInput : invalidInput" text="Login *" (input)="setLoginValue($event)"></app-input>
+            <app-input [styleInfo]="validPassword ? validInput : invalidInput" type="password" text="Mot de passe *" (input)="setPasswordValue($event)"></app-input>
+        </div>
+    </form>    
     <div class="bottomBar">
         <round-button id="connexion" [icon]="signInIcon" [styleInfos]="iconsInfos" (click)="navigateToLogin()"></round-button>     
     </div>
 </div>
+<change-background-buttons (onBackgroundChange)="changeBackgroundColor($event)"></change-background-buttons>
 
 <message [@error]="showMessage" [message]="message" [valid]="valid"></message>

@@ -314,7 +314,7 @@ export class DatabaseService {
     const url: string = this.connectionUrl +"/login"+'?user='+encodeURIComponent(params);
     return this.get(url);
   }
-  getValidName(name: string){
+  getValidLogin(name: string){
     const url: string = this.connectionUrl +"/used/"+name;
     return this.get(url);
   }

@@ -1,0 +1,58 @@
+#principes{
+    margin: 20vh 0;
+}
+.cardsPrincipes{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+.cardPrincipes{
+    width: 300px;
+    height: 400px;
+    .glassCardBackground{
+        opacity: .4;
+    }
+}
+.iconCardPrincipes{
+    height: 50%;
+}
+
+.cardPrincipesDetails{
+    padding: 3% 0 !important;
+    width: 85%;
+    font-size: 16px;
+}
+
+.iconPrincipes{
+    font-size: 75px;
+    margin-bottom: 20px;
+}
+.detailsPrincipes{
+    font-size: 18px;
+    text-align: center;
+}
+.titlePrincipes{
+    font-size: 25px;
+    line-height: 40px;
+    font-weight: 700;
+    margin-bottom: 20px !important;
+}
+
+#fill{
+    background: url('../../../assets/common/find.jpg');
+}
+#analyse{
+    background: url('../../../assets/common/fast.jpg');
+}
+#filter{
+    background: url('../../../assets/common/discover.jpg');
+}
+
+@media screen and (max-width: 600px){
+    .cardsPrincipes{
+        flex-direction: column;
+        gap: 2vh;
+        width: 100%;
+        align-items: center;
+    }
+}

@@ -5,7 +5,6 @@ import { AutocompleteInfos, InputInfos, SelectData } from '../shared/model/desig
 import { Follow, User } from '../shared/model/table/user';
 import { autocompleteInfosFilter, searchInputFilter } from '../shared/model/design/inputsDesign';
 import { UserCardParams } from '../shared/model/params/cardParams';
-import { Position } from '../add/add.component';
 import { Router } from '@angular/router';
 
 @Component({

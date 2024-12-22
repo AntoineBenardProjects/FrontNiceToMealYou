@@ -31,7 +31,7 @@ h1{
     margin: auto;
     height: calc(5vh - 4px);
     left: 2px;
-    background: var(--thirdColor);
+    background: var(--successColor);
     border-radius: 3px;
     transition: 1s ease-in;
 }
@@ -41,7 +41,6 @@ h1{
     height: 12vh;
     h1{
         font-size: 10vh;
-        font-family: 'Nunito', sans-serif;
         line-height: 10vh;
         transition: 1s;
     }

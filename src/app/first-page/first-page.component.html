@@ -1,159 +1,101 @@
-<div class="body" [ngStyle]="{'background' : backgroundColor}">
-    <div class="first" id="first">
-        <div class="topbarContainer">
-            <div class="navbar">
-                <div class="container">
-                    <img id="logo" [src]="logoImageSrc">
-                    <div class="buttons">
-                        <round-button text="Se connecter" [styleInfos]="loginButtonColorInfos" (click)="navigate('/login')"></round-button>
-                        <round-button text="S'inscrire" [styleInfos]="registerButtonColorInfos" (click)="navigate('/register')"></round-button>         
-                    </div>
-                </div>
-            </div>
+<div class="body" id="page" [ngStyle]="{'background' : backgroundColor.color}">
+    <div class="navbar center">
+        <div class="navbarButtons">
+            <round-button class="navbarButton" text="Se connecter" [styleInfos]="loginButtonColorInfos" (click)="navigate('/login')"></round-button>
+            <round-button class="navbarButton" text="S'inscrire" [styleInfos]="registerButtonColorInfos" (click)="navigate('/register')"></round-button>         
         </div>
-        <h1 id="topLogo" class="logo" [@topLogo]="triggerLogoAnimation" 
-        [ngStyle]="{'left.vw': logoPosition}">NiceTo</h1>
-        <h1 id="bottomLogo" class="logo" [@bottomLogo]="triggerLogoAnimation"
-        [ngStyle]="{'right.vw': logoPosition}">MealYou</h1>
+    </div>
+    <div class="glassCard cardsBackground" 
+    [ngStyle]="{'top.%': infos.top, 'width.%': infos.width, 'height.%': infos.height, 'left.%': infos.left, 'border-color': textColor}" 
+    *ngFor="let infos of infosCardsBackground">
+        <div class="glassCardBackground"
+        [ngStyle]="{'background': infos.color}"></div>
+    </div>
+    <div class="first center" id="first">
+        <img *ngFor="let infosColors of selectionableColors" 
+        [ngClass]="[beginInfiniteAnimationBoussole ? 'movingBoussole' : '', infosColors.color === backgroundColor.color ? '' : 'hideLogo']" 
+        id="bigLogo" 
+        [src]="'../../assets/logo/' + paletteName + '/main/' + infosColors.logoToShow + '.png'" 
+        [@rotateBoussole]="rotateBoussoleState">
+
+        <div class="scrollClickable" [ngStyle]="{'opacity': opacityLinks[0] ? '1' : '0'}" (click)="goToDiv('about')">
+            <p id="firstLink" class="link">La suite <fa-icon class="arrowDownIcon" [icon]="arrowDownIcon"></fa-icon></p> 
+        </div>
+        <change-background-buttons (onBackgroundChange)="changeBackgroundColor($event)"></change-background-buttons>
     </div>
 
     <div class="presentation" id="about">
         <div class="line" id="presentation">
-            <div class="top">
-                <div class="icon">
-                    <fa-icon [ngStyle]="{'top.%' : positionPresentationIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="presentationIcon"></fa-icon>
-                    <div [ngStyle]="{'transform' : 'scale('+positionPresentationIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
+            <div class="topDetails">
+                <div class="objectifsParagraphe">
+                    <h1 class="objectifsTextLeft">
+                        L'adresse qui propose des plats que tous adorent.
+                    </h1>
+                    <h1 class="objectifsTextRight">
+                        L'adresse qui n'est pas trop loin, ou à la limite à quelques stations de métro.
+                    </h1>
+                    <h1 class="objectifsTextLeft">
+                        L'adresse bon marché, voire avec un code promo ça serait le top. 
+                    </h1>
+                    <h1 class="objectifsTextRight">
+                        L'adresse qui est surtout encore ouverte.
+                    </h1>
                 </div>
-                <h1 class="title" [ngStyle]="{'opacity': positionPresentationIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Objectif</h1>
-            </div>
-            <div class="details">
-                <div class="text">
-                    <p id="firstEntry" [ngStyle]="{'opacity': positionPresentationIcon.textOpacity ? '1' : '0', 'color': styleLine.textColor}">
-                        On aime tous sortir avec des amis, lorsque ça arrive on essaye de donner ses meilleures adresses afin d'en profiter un maximum.
-                        Cependant, il est difficile de contenter tout le monde : certains habitent loins, d'autres ont des goûts spécifiques, et le reste ont des horaires de ministre !
-                    </p>
-                    <h1 id="firstProblem" [ngStyle]="{'opacity': positionPresentationIcon.textOpacity ? '1' : '0', 'color': styleLine.titleColor}">Comment trouver rapidement l'adresse répondant à tous les critères ?</h1>
-                </div>
-                
-                <div class="illustration">
-                    <div class="vennDiagram center">
-                        <div class="round center" id="horaires">
-                            <p>Horaires</p>
-                        </div>
-                        <div class="round center" id="type">
-                            <p>Type</p>
-                            <round-button id="burger" data-text="Burger" [icon]="burgerIcon" [styleInfos]="iconsInfos"></round-button> 
-                            <round-button id="cocktail" data-text="Cocktails" [icon]="barIcon" [styleInfos]="iconsInfos"></round-button> 
-                            <round-button id="pro" data-text="Pro" [icon]="professionnalIcon" [styleInfos]="iconsInfos"></round-button> 
-                        </div>
-                        <div class="round center" id="location">
-                            <p>Location</p>
-                            <round-button id="city" data-text="Ville" [icon]="cityIcon" [styleInfos]="iconsInfos"></round-button> 
-                            <round-button id="transport" data-text="Transports" [icon]="metroIcon" [styleInfos]="iconsInfos"></round-button> 
-                        </div>
-                        <div class="goal center" id="graal">
-                            <p>Le Graal</p>
-                        </div>
-                    </div>
-                </div>
+                <h1 id="firstProblem" [ngStyle]="{'opacity': positionPresentationIcon.textOpacity ? '1' : '0'}"> 
+                    Avec NiceToMealYou, vous trouverez cette adresse en quelques minutes
+                </h1>
             </div>
         </div>
-        <div class="line" id="iconLine">
-            <div class="top">
-                <h1 class="title" [ngStyle]="{'opacity': positionLocationIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Principe</h1>
-                <div class="icon">
-                    <fa-icon [ngStyle]="{'top.%' : positionLocationIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="infosIcon"></fa-icon>
-                    <div [ngStyle]="{'transform' : 'scale('+positionLocationIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
+        <div class="line" id="principes">
+            <div class="top inversePosition">
+                <p id="secondLink" class="link" (click)="goToDiv('about')"
+                [ngStyle]="{'opacity': opacityLinks[1] ? '1' : '0'}">L'adresse qui quoi ?<fa-icon class="arrowDownIcon" [icon]="arrowUpIcon"></fa-icon></p> 
+                <div class="topIcon">
+                    <img *ngFor="let infosColors of selectionableColors" 
+                    [ngClass]="infosColors.color === backgroundColor.color ? '' : 'hideLogo'" 
+                    class="animatedIconTopLine"
+                    [ngStyle]="{'top.%' : positionLocationIcon.paddingIcon}"
+                    [src]="'../../assets/logo/' + paletteName + '/small/' + infosColors.logoToShow + '.png'" >
                 </div>
             </div>
-            <div class="icons">
-                <div class="column">
-                    <fa-icon [icon]="propertyIcon"></fa-icon>
-                    <h3>Remplissez</h3>
-                    <p>Renseignez vos adresses et notez les via différents critères.</p>
-                </div>
-                <div class="column">
-                    <fa-icon [icon]="locationIcon"></fa-icon>
-                    <h3>Analyse</h3>
-                    <p>Nous trouvons les stations de RER/Métro/Tramway plus proches.</p>
-                </div>
-                <div class="column">
-                    <fa-icon [icon]="filterIcon"></fa-icon>
-                    <h3>Filtrez</h3>
-                    <p>Recherchez votre adresse selon n'importe quelle information.</p>
+            <div class="cardsPrincipes">
+                <div *ngFor="let infos of infosAffichagesSectionPrincipes"
+                 class="glassCard cardPrincipes center">
+                 <round-button class="iconCardPrincipes center" [icon]="infos.icon" [styleInfos]="infos.iconInfos"></round-button> 
+                    <div class="glassCardBackground" 
+                    [ngStyle]="{'background': infos.backgroundColor}"></div>
+                    <div class="hoverBackgroundCard"></div>
+                    <h1 class="cardPrincipesTitle">{{infos.texts[1]}}</h1>
+                    <p class="cardPrincipesDetails">{{infos.texts[0]}}</p>
                 </div>
             </div>
         </div>
         <div class="line" id="benefits">
-            <div class="top">
-                <div class="icon">
-                    <fa-icon [ngStyle]="{'top.%' : positionBenefitsIcon.paddingIcon, 'color': styleLine.titleColor}" [icon]="benefitsIcon"></fa-icon>
-                    <div [ngStyle]="{'transform' : 'scale('+positionBenefitsIcon.scaleShadow+')', 'background' : styleLine.shadowGradient}" class="shadow"></div>
+            <div class="top inversePositionTop">
+                <div class="topIcon">
+                    <img *ngFor="let infosColors of selectionableColors" 
+                    [ngClass]="infosColors.color === backgroundColor.color ? '' : 'hideLogo'" 
+                    class="animatedIconReverseTopLine"
+                    [ngStyle]="{'top.%' : positionBenefitsIcon.paddingIcon}"
+                    [src]="'../../assets/logo/' + paletteName + '/small/' + infosColors.logoToShow + '.png'" >
                 </div>
-                <h1 class="title" [ngStyle]="{'opacity': positionBenefitsIcon.titleOpacity ? '1' : '0', 'color': styleLine.titleColor}">Avantages</h1>
+                <p id="thirdLink" class=" link" (click)="goToDiv('principes')"
+                [ngStyle]="{'opacity': opacityLinks[2] ? '1' : '0'}">C'est quoi concrètement déjà ? <fa-icon class="arrowDownIcon" [icon]="arrowUpIcon"></fa-icon></p> 
             </div>
-            <div class="cards">
-                <div class="card center" style="background: url('../../assets/common/find.jpg');">
-                    <div class="background"></div>
-                    <div class="hoverBackground" [ngStyle]="{'background': efficientColor}"></div>
-
-                    <h1 [ngStyle]="{'opacity': styleLine.textColor === 'white' ? '1' : '0'}">Efficacité</h1>
-                    <p class="details">
-                        Trouvez n'importe quelle adresse en une seule recherche.
-                    </p>
-                </div>
-                <div class="card center" style="background: url('../../assets/common/fast.jpg');">
-                    <div class="background"></div>
-                    <div class="hoverBackground" [ngStyle]="{'background': fastColor}"></div>
-
-                    <h1 [ngStyle]="{'opacity': styleLine.textColor === 'white' ? '1' : '0'}">Rapidité</h1>
-                    <p class="details">
-                        Créer un nouveau lieu prend 1 minute, ajouter un lieu à sa liste prend 30 secondes et rechercher le meilleur lieu en prend 15.
-                    </p>
-                </div>
-                <div class="card center" style="background: url('../../assets/common/discover.jpg');">
-                    <div class="background"></div>
-                    <div class="hoverBackground" [ngStyle]="{'background': discoveryColor}"></div>
-
-                    <h1 [ngStyle]="{'opacity': styleLine.textColor === 'white' ? '1' : '0'}">Découverte</h1>
-                    <p class="details">
-                        Découvrez de nouveaux lieux grâce à nos recommandation en fonction de vos goûts.
-                    </p>
-                </div>
-                <div class="card center" style="background: url('../../assets/common/diversity.jpg');">
-                    <div class="background"></div>
-                    <div class="hoverBackground" [ngStyle]="{'background': diversityColor}"></div>
-
-                    <h1 [ngStyle]="{'opacity': styleLine.textColor === 'white' ? '1' : '0'}">Diversité</h1>
-                    <p class="details">
-                        Dénichez un restaurant, un bar, un cinéma ou même un plombier selon votre besoin.
-                    </p>
-                </div>
-                <div class="card center" style="background: url('../../assets/common/proximity.jpg');">
-                    <div class="background"></div>
-                    <div class="hoverBackground" [ngStyle]="{'background': proximityColor}"></div>
-
-                    <h1 [ngStyle]="{'opacity': styleLine.textColor === 'white' ? '1' : '0'}">Proximité</h1>
-                    <p class="details">
-                        Mettez la main sur votre futur repère près de votre station de métro.
-                    </p>
-                </div>
-                <div class="card center" style="background: url('../../assets/common/share.jpg');">
-                    <div class="background"></div>
-                    <div class="hoverBackground" [ngStyle]="{'background': shareColor}"></div>
-                    <h1 [ngStyle]="{'opacity': styleLine.textColor === 'white' ? '1' : '0'}">Partage</h1>
-                    <p class="details">
-                        Partagez vos bonnes adresses à vos amis et profitez de ce qu'ils ont a vous offrir.
-                    </p>
+            <div class="cardsAvantages">
+                <div *ngFor="let infos of infosAffichagesSectionAvantage" [id]="infos.id" class="cardAvantages center">
+                    <div class="backgroundCardAvantages"></div>
+                    <div class="hoverBackgroundCardAvantages" [ngStyle]="{'background': complementaryColor}"></div>
+                    <h1 class="cardAvantagesTitle">{{infos.value[1]}}</h1>
+                    <p class="cardAvantagesDetails">{{infos.value[0]}}</p>
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="bottomBar">
-        <div class="background"></div>
-        <round-button data-text="Connexion" [icon]="signUpIcon" [styleInfos]="bottomBarIconsInfos" routerLink="/register"></round-button> 
-        <round-button data-text="Inscription" [icon]="signInIcon" [styleInfos]="bottomBarIconsInfos" routerLink="/login"></round-button> 
+        <div class="backgroundBottomBar"></div>
+        <round-button class="buttonBottomBar" data-text="Connexion" [icon]="signUpIcon" [styleInfos]="bottomBarIconsInfos" routerLink="/register"></round-button> 
+        <round-button class="buttonBottomBar" data-text="Inscription" [icon]="signInIcon" [styleInfos]="bottomBarIconsInfos" routerLink="/login"></round-button> 
     </div>
 </div>

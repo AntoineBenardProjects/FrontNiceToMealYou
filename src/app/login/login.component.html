@@ -1,34 +1,51 @@
-<div class="background">
-    <div class="title center">
-        <h1 class="first">Connexion</h1>
-        <h1 class="second">Connexion</h1>
-        <h1 class="third">Connexion</h1>
-        <h1 class="first">Connexion</h1>
+<div class="background" [ngStyle]="{'background': backgroundColor.color}">
+    <div class="glassCard cardsBackground" 
+    style="transition: all .8s;"
+    [ngStyle]="{'top.%': infos.top, 'width.%': infos.width, 'height.%': infos.height, 'left.%': infos.left, 'border-color': textColor}" 
+    *ngFor="let infos of infosCardsBackground">
+        <div class="glassCardBackground"
+        [ngStyle]="{'background': infos.color}"></div>
     </div>
-    <div class="img center">
-        <h3>Pas encore inscrit ?</h3>
-        <round-button [styleInfos]='signupButtonColor' text="S'inscrire" (click)="navigateToRegister()"></round-button>
+
+    <div id="desktopsButton">
+        <round-button id="demo" [styleInfos]='desktopButtonColorInfos' text="Démo" (click)="demoConnexion()"></round-button>    
+        <round-button id="register" [styleInfos]='desktopButtonColorInfos' text="S'inscrire" (click)="navigateToOtherPage()"></round-button>
     </div>
+    <img *ngFor="let infosColors of selectionableColors" class="movingBoussole"
+    [ngClass]="[infosColors.color === backgroundColor.color ? '' : 'hideLogo']" 
+    id="bigLogo" 
+    [src]="'../../assets/logo/' + paletteName + '/main/' + infosColors.logoToShow + '.png'">
+
     <div class="login">
         
         <form class="form" (ngSubmit)="connexion()">
-            <div class="infos center">
+            <div class="infos center"
+                [ngClass]="isLoginPage ? 'loginForm' : 'registerForm'"
+                [ngStyle]="{'border': '1px solid '+ textColor+''}">
+                <div class="picture center"
+                    [ngClass]="isLoginPage ? 'hidePicture' : 'showPicture'"
+                    [ngStyle]="{'background' : (userInfos.img != null && userInfos.img.length > 0) ? 'url('+userInfos.img+')' : 'var(--white)',
+                    'color' : complementaryColor, 'border-color': complementaryColor}">
+                    <fa-icon id="noPicture" [icon]="userIcon" *ngIf="(userInfos.img == null || userInfos.img.length === 0)"></fa-icon>
+                    <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event)"></upload-button>
+                </div>
                 <app-input [styleInfo]="inputInfos" text="Login" (input)="setValue($event,'Login')"></app-input>
                 <app-input [styleInfo]="inputInfos" type="password" text="Mot de passe" (input)="setValue($event,'Password')"></app-input>
+                <round-button id="connexion" type="submit" [styleInfos]='desktopButtonColorInfos'
+                    [text]="isLoginPage ? 'Se connecter' : 'S\u0027inscrire'"></round-button>
+                <div class="backgroundInfos" [ngStyle]="{'background': complementaryColor}"></div>
             </div>
-            <div id="desktopButton">
-                <round-button id="connexion" type="submit" [styleInfos]='connexionButtonColor' text="Se connecter"></round-button>
-                <round-button id="connexion" [styleInfos]='demoButtonColor' text="Démo" (click)="demoConnexion()"></round-button>    
-            </div>
+            
 
             <div id="phoneButton" class="center">
-                <round-button type="submit" [styleInfos]='connexionButtonColor' text="Se connecter"></round-button>
-                <round-button [styleInfos]='connexionButtonColor' text="S'inscrire" (click)="navigateToRegister()"></round-button>
-                <round-button id="connexion" [styleInfos]='demoButtonColor' text="Démo"></round-button>    
+                <round-button type="submit" [styleInfos]='desktopButtonColorInfos' text="Se connecter"></round-button>
+                <round-button [styleInfos]='desktopButtonColorInfos' text="S'inscrire" (click)="navigateToOtherPage()"></round-button>
+                <round-button id="connexion" [styleInfos]='desktopButtonColorInfos' text="Démo"></round-button>    
             </div>
-        </form>    
+        </form>   
     </div>
 </div>
+<change-background-buttons (onBackgroundChange)="changeBackgroundColor($event)"></change-background-buttons>
 
 <message [@error]="showMessage" [message]="message" [valid]="valid"></message>
 

@@ -116,7 +116,12 @@ export class InputComponent {
       if(this.styleInfo.hoverBackgroundColor != null)  this.hoverBackgroundColor = this.styleInfo.hoverBackgroundColor;
       if(this.styleInfo.hoverTextColor != null)  this.hoverTextColor = this.styleInfo.hoverTextColor;
       if(this.styleInfo.hoverBorderColor != null)  this.hoverBorderColor = this.styleInfo.hoverBorderColor;
-      this.styleInfo.bottomOnly ? this.borderClass = "bottomBorder" : this.borderClass = "fullBorder";
+      if(this.styleInfo.bottomOnly){
+        this.borderClass = "bottomBorder";
+      } else{
+        this.borderClass = "fullBorder";
+        this.width === "100%" ? this.width = 'calc(100% + 2px)' : '';
+      }
       this.styleInfo.noPadding ? this.paddingClass = "noPadding" : this.borderClass = "normal";
     }
     if(this.type === "grade"){

@@ -131,14 +131,7 @@ export class AdminComponent {
       icon: "",
       category: this.category
     }];
-    this.usersToAdd = [{
-      id: this.placesService.setId(),
-      login: "",
-      password: "",
-      role: "",
-      img: "",
-      couv: ""
-    }]
+    this.usersToAdd = [new User("","",this.placesService.setId())];
   }
   private getData():void{
     this.databaseService.getAllRegion().subscribe((res: string[]) => {
@@ -307,14 +300,7 @@ export class AdminComponent {
         });
       break;
       case 'Users':
-        this.usersToAdd.push({
-          id: this.placesService.setId(),
-          login: "",
-          password: "",
-          role: "",
-          img: "",
-          couv: ''
-        });
+        this.usersToAdd.push(new User("","",this.placesService.setId()));
       break;
     }
   }
@@ -719,25 +705,25 @@ export class AdminComponent {
       if(this.divToShow !== 'places' && divName === 'places'){
         this.animationChange = "places";
         newBackgroundColor = 'var(--white)';
-        newNavigateBackground = 'var(--secondColor)';
+        newNavigateBackground = 'var(--errorColor)';
         newNavigateColor = 'var(--white)';
       }
       if(this.divToShow !== 'types' && divName === 'types'){
         this.animationChange = "types";
         newBackgroundColor = 'var(--white)';
-        newNavigateBackground = 'var(--secondColor)';
+        newNavigateBackground = 'var(--errorColor)';
         newNavigateColor = 'var(--white)';
       }
       if(this.divToShow !== 'users' && divName === 'users'){
         this.animationChange = "users";
         newBackgroundColor = 'var(--white)';
-        newNavigateBackground = 'var(--secondColor)';
+        newNavigateBackground = 'var(--errorColor)';
         newNavigateColor = 'var(--white)';
       }
       if(this.divToShow !== 'database' && divName === 'database'){
         this.animationChange = "database";
         newBackgroundColor = 'var(--white)';
-        newNavigateBackground = 'var(--thirdColor)';
+        newNavigateBackground = 'var(--successColor)';
         newNavigateColor = 'var(--white)';
       }
       setTimeout(() => {
@@ -1120,7 +1106,7 @@ export class AdminComponent {
   private loginUserIsValid(name: string): Subject<boolean>{
     let toReturn: boolean = false;
     let getData: Subject<boolean> = new Subject<boolean>();
-    this.databaseService.getValidName(name).subscribe((boolean: boolean) => {
+    this.databaseService.getValidLogin(name).subscribe((boolean: boolean) => {
       toReturn = boolean;
       getData.next(toReturn);
     });

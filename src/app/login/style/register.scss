@@ -1,0 +1,48 @@
+.picture{
+    position: relative;
+    border-radius: 50%;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    background-size: cover !important;
+    border: 2px solid;
+}
+#noPicture{
+    position: relative;
+    font-size: var(--fontSizeIconRegisterPage);
+}
+
+#remove{
+    width: 35px;
+    height: 35px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+upload-button{
+    position: absolute;
+    bottom: 35px;
+    right: 30px;
+}
+
+.hidePicture{
+    height: 0;
+    opacity: 0;
+    width: var(--sizePictureRegisterPage);
+    pointer-events: none;
+    margin-bottom: 0;
+    transition: opacity, height, margin-bottom;
+    transition-duration: .8s, .4s, .4s;
+    transition-timing-function: cubic-bezier(.17,.83,.48,.91),cubic-bezier(.17,.83,.48,.91),cubic-bezier(.17,.83,.48,.91);
+    transition-delay: 0s, 1s, 1s;
+}
+.showPicture{
+    margin-bottom: 5vh;
+    height: var(--sizePictureRegisterPage);
+    width: var(--sizePictureRegisterPage);
+    opacity: 1;
+    pointer-events: all;
+    transition: opacity, height, margin-bottom;
+    transition-duration: .8s, .4s, .4s;
+    transition-timing-function: cubic-bezier(.17,.83,.48,.91),cubic-bezier(.17,.83,.48,.91),cubic-bezier(.17,.83,.48,.91);
+    transition-delay: 1.4s, 1s, 1s;
+}

@@ -30,13 +30,13 @@ export const validSelectInfosAddComponent: SelectInfos = {
     textColor: 'var(--black)',
     optionTextColor: 'var(--white)',
     optionBackgroundColor: 'var(--black)',
-    hoverBackgroundColor: 'var(--thirdColor)',
+    hoverBackgroundColor: 'var(--successColor)',
     hoverTextColor: 'var(--white)',
-    borderColor: 'var(--thirdColor)',
+    borderColor: 'var(--successColor)',
     width: 10,
-    topHoverBackgroundColor: "var(--thirdColor)",
+    topHoverBackgroundColor: "var(--successColor)",
     topHoverColor: "var(--white)",
-    topHoverBorderColor: "var(--thirdColor)"
+    topHoverBorderColor: "var(--successColor)"
   }
   
 export const invalidSelectInfosAddComponent: SelectInfos = {
@@ -44,13 +44,13 @@ export const invalidSelectInfosAddComponent: SelectInfos = {
     textColor: 'var(--black)',
     optionTextColor: 'var(--white)',
     optionBackgroundColor: 'var(--black)',
-    hoverBackgroundColor: 'var(--secondColor)',
+    hoverBackgroundColor: 'var(--errorColor)',
     hoverTextColor: 'var(--white)',
-    borderColor: 'var(--secondColor)',
+    borderColor: 'var(--errorColor)',
     width: 10,
-    topHoverBackgroundColor: "var(--secondColor)",
+    topHoverBackgroundColor: "var(--errorColor)",
     topHoverColor: "var(--white)",
-    topHoverBorderColor: "var(--secondColor)"
+    topHoverBorderColor: "var(--errorColor)"
 }
 
 export const selectInfosFilterComponent: SelectInfos = {
@@ -113,26 +113,26 @@ export const validSelectInfosUserComponent: SelectInfos = {
   textColor: 'var(--black)',
   optionTextColor: 'var(--white)',
   optionBackgroundColor: 'var(--black)',
-  hoverBackgroundColor: 'var(--thirdColor)',
+  hoverBackgroundColor: 'var(--successColor)',
   hoverTextColor: 'var(--white)',
-  borderColor: 'var(--thirdColor)',
+  borderColor: 'var(--successColor)',
   width: 10,
-  topHoverBackgroundColor: "var(--thirdColor)",
+  topHoverBackgroundColor: "var(--successColor)",
   topHoverColor: "var(--white)",
-  topHoverBorderColor: "var(--thirdColor)"
+  topHoverBorderColor: "var(--successColor)"
 }
 export const invalidSelectInfosUserComponent: SelectInfos = {
   backgroundColor: 'var(--white)',
   textColor: 'var(--black)',
   optionTextColor: 'var(--white)',
   optionBackgroundColor: 'var(--black)',
-  hoverBackgroundColor: 'var(--secondColor)',
+  hoverBackgroundColor: 'var(--errorColor)',
   hoverTextColor: 'var(--white)',
-  borderColor: 'var(--secondColor)',
+  borderColor: 'var(--errorColor)',
   width: 10,
-  topHoverBackgroundColor: "var(--secondColor)",
+  topHoverBackgroundColor: "var(--errorColor)",
   topHoverColor: "var(--white)",
-  topHoverBorderColor: "var(--secondColor)"
+  topHoverBorderColor: "var(--errorColor)"
 }
 
 export const selectInfosAdminComponent: SelectInfos = {

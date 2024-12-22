@@ -72,10 +72,10 @@ export class LigneCardComponent {
   protected getButtonInfos(nbOpen: number): ButtonInfos{
     const toReturn: ButtonInfos = {
       color: "white",
-      colorActive: nbOpen > 0 ? "var(--thirdColor)" : "var(--secondColor)",
-      borderColor: nbOpen > 0 ? "var(--thirdColor)" : "var(--secondColor)",
-      borderColorActive: nbOpen > 0 ? "var(--thirdColor)" : "var(--secondColor)",
-      backgroundColor: nbOpen > 0 ? "var(--thirdColor)" : "var(--secondColor)",
+      colorActive: nbOpen > 0 ? "var(--successColor)" : "var(--errorColor)",
+      borderColor: nbOpen > 0 ? "var(--successColor)" : "var(--errorColor)",
+      borderColorActive: nbOpen > 0 ? "var(--successColor)" : "var(--errorColor)",
+      backgroundColor: nbOpen > 0 ? "var(--successColor)" : "var(--errorColor)",
       backgroundColorActive: 'var(--mainColor)',
       fontSize: "22px",
       heightIcon: "50px",

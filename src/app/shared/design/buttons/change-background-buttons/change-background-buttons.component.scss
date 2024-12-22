@@ -1,0 +1,27 @@
+.changeColorContainer{
+    position: fixed;
+    z-index: 1000;
+    bottom: 5vh;
+    right: 2vw;
+    display: flex;
+    gap: 10px;
+}
+.changeColorBackground{
+    display: flex;
+    border-radius: 5px;
+    width: 60px;
+    height: 30px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    &:hover{
+        .hoverDivChangeColorBackground{
+            width: 60px;
+        }
+    }
+}
+.hoverDivChangeColorBackground{
+    height: 30px;
+    width: 0;
+    border-radius: 4px;
+    transition: .4s cubic-bezier(.27,.88,.52,.95);
+}

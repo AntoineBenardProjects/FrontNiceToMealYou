@@ -53,7 +53,7 @@
     display: flex;
     position: relative;
     min-height: 100vh;
-    background: var(--secondColor);
+    background: var(--errorColor);
     width: 100vw;
     justify-content: space-between;
     align-items: flex-end;
@@ -125,7 +125,7 @@
                 span:nth-of-type(odd){
                     font-size: 13px;
                     line-height: 13px;
-                    color: var(--secondColor);    
+                    color: var(--errorColor);    
                 }
             }
             p{
@@ -179,7 +179,7 @@
                         left: 0;
                         top: 0;
                         height: 8px;
-                        background: var(--thirdColor);
+                        background: var(--successColor);
                         transition: width 1s cubic-bezier(.17,.83,.48,.91);
                         border-radius: 5px;
                     }

@@ -22,15 +22,15 @@
         <div class="horairesContainer">
             <ng-container *ngFor="let hor of horairesOfPlace; index as i;">
                 <div class="line" *ngIf="hor.horaires.ouverture !== ''">
-                    <div class="values" [ngStyle]="{'color': hasDay(hor.days) ? isOpen ? 'var(--thirdColor)' : 'var(--white)' : 'var(--white)'}">
+                    <div class="values" [ngStyle]="{'color': hasDay(hor.days) ? isOpen ? 'var(--successColor)' : 'var(--white)' : 'var(--white)'}">
                         <p>{{hor.horaires.ouverture}} - {{hor.horaires.fermeture_midi}}</p>
                         <p *ngIf="hor.horaires.ouverture_soir !== ''">{{hor.horaires.ouverture_soir}} - {{hor.horaires.fermeture}}</p>
                     </div>
                     <div class="days center" *ngIf="hor.days.length !== 7">
-                        <p *ngFor="let day of hor.days;" [ngStyle]="{'color': today === day ? isOpen ? 'var(--thirdColor)' : 'var(--white)' : 'var(--white)'}">{{day}}</p>
+                        <p *ngFor="let day of hor.days;" [ngStyle]="{'color': today === day ? isOpen ? 'var(--successColor)' : 'var(--white)' : 'var(--white)'}">{{day}}</p>
                     </div>
                     <div class="days center" *ngIf="hor.days.length === 7">
-                        <p [ngStyle]="{'color': isOpen ? 'var(--thirdColor)' : 'var(--secondColor)'}">Tous les jours</p>
+                        <p [ngStyle]="{'color': isOpen ? 'var(--successColor)' : 'var(--errorColor)'}">Tous les jours</p>
                     </div>
                     
                 </div>

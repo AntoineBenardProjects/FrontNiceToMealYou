@@ -28,18 +28,18 @@
         <div class="checkboxs">
           <div class="line">
             <checkbox [value]="comment.tested" (checked)="setValue($event,'tested')" [styleInfos]="checkboxInfos"></checkbox>
-            <p style="color: var(--thirdColor);" *ngIf="comment.tested && placeInfos.category !== ''">{{placeInfos.category}} testé</p>
-            <p style="color: var(--thirdColor);" *ngIf="comment.tested && placeInfos.category === ''">Lieu testé</p>
-            <p style="color: var(--secondColor);" *ngIf="!comment.tested && placeInfos.category !== ''">{{placeInfos.category}} non testé</p>
-            <p style="color: var(--secondColor);" *ngIf="!comment.tested && placeInfos.category === ''">Lieu non testé</p>
+            <p style="color: var(--successColor);" *ngIf="comment.tested && placeInfos.category !== ''">{{placeInfos.category}} testé</p>
+            <p style="color: var(--successColor);" *ngIf="comment.tested && placeInfos.category === ''">Lieu testé</p>
+            <p style="color: var(--errorColor);" *ngIf="!comment.tested && placeInfos.category !== ''">{{placeInfos.category}} non testé</p>
+            <p style="color: var(--errorColor);" *ngIf="!comment.tested && placeInfos.category === ''">Lieu non testé</p>
           </div>
   
           <div class="line">
             <checkbox [value]="placeInfos.visible" (checked)="setValue($event,'visible')" [styleInfos]="checkboxInfos"></checkbox>
-            <p style="color: var(--thirdColor);" *ngIf="placeInfos.visible && placeInfos.category !== ''">{{placeInfos.category}} visible pour les autres utilisateurs</p>
-            <p style="color: var(--thirdColor);" *ngIf="placeInfos.visible && placeInfos.category === ''">Lieu visible pour les autres utilisateurs</p>
-            <p style="color: var(--secondColor);" *ngIf="!placeInfos.visible && placeInfos.category !== ''">{{placeInfos.category}} invisible pour les autres utilisateurs</p>
-            <p style="color: var(--secondColor);" *ngIf="!placeInfos.visible && placeInfos.category === ''">Lieu invisible pour les autres utilisateurs</p>
+            <p style="color: var(--successColor);" *ngIf="placeInfos.visible && placeInfos.category !== ''">{{placeInfos.category}} visible pour les autres utilisateurs</p>
+            <p style="color: var(--successColor);" *ngIf="placeInfos.visible && placeInfos.category === ''">Lieu visible pour les autres utilisateurs</p>
+            <p style="color: var(--errorColor);" *ngIf="!placeInfos.visible && placeInfos.category !== ''">{{placeInfos.category}} invisible pour les autres utilisateurs</p>
+            <p style="color: var(--errorColor);" *ngIf="!placeInfos.visible && placeInfos.category === ''">Lieu invisible pour les autres utilisateurs</p>
           </div>
           
         </div>
@@ -214,8 +214,8 @@
     </div>
     <round-button *ngIf="device !== 'mobile'" id="submit" text="Enregistrer" (click)="add()" [styleInfos]="canSubmit() ? validButton : invalidButton"></round-button>         
     <fa-icon id="submitMobile" [icon]="checkIcon" *ngIf="device === 'mobile'" (click)="add()" 
-    [ngStyle]="{'background' : canSubmit() ? 'var(--thirdColor)' : 'var(--secondColor)'}"></fa-icon>
-    <div class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '10vh' : '0','background' : !error ? 'var(--thirdColor)' : 'var(--secondColor)'}">
+    [ngStyle]="{'background' : canSubmit() ? 'var(--successColor)' : 'var(--errorColor)'}"></fa-icon>
+    <div class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '10vh' : '0','background' : !error ? 'var(--successColor)' : 'var(--errorColor)'}">
       <p>{{errorMessage}}</p>
     </div>
   </div>

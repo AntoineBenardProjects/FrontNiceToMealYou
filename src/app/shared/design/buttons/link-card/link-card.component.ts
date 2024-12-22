@@ -22,14 +22,14 @@ export class LinkCardComponent {
       this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
       this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
       this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+      this.elementRef.nativeElement.style.setProperty('--errorColor', Palette.errorColor);
+      this.elementRef.nativeElement.style.setProperty('--successColor', Palette.successColor);
     });
   }
 
   @HostBinding('style.--textColor') textColorCssVariable = 'var(--black)';
-  @HostBinding('style.--selectedBorderColor') selectedBorderColorCssVariable = 'var(--secondColor)';
-  @HostBinding('style.--borderColor') borderColorCssVariable = 'var(--secondColor)';
+  @HostBinding('style.--selectedBorderColor') selectedBorderColorCssVariable = 'var(--errorColor)';
+  @HostBinding('style.--borderColor') borderColorCssVariable = 'var(--errorColor)';
   @HostBinding('style.--colorActive') colorActive = 'var(--mainColor)';
   @HostBinding('style.--textColorActive') textColorActive = 'var(--mainColor)';
   @HostBinding('style.--backgroundImage') backgroundImage = 'var(--black)';

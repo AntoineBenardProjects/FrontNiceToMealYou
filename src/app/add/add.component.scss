@@ -24,7 +24,7 @@
             font-size: 16px;
             height: 20px;
             margin-left: 3vw !important;
-            color: var(--secondColor);
+            color: var(--errorColor);
             transition: 2s cubic-bezier(.27,.88,.52,.95);
             &:hover{
                 &::before{
@@ -37,7 +37,7 @@
                 bottom: -5px;
                 height: 2px;
                 width: 0;
-                background: var(--secondColor);
+                background: var(--errorColor);
                 transition: all 400ms;
             }
         }

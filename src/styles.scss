@@ -3,12 +3,12 @@
 @import './app/app.component.scss';
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css'; 
 @import './fonts.scss';
-
+@import './variables.scss';
 // * {
 //     box-shadow: 0 0 0 3px red inset;
 // }
 /* You can add global styles to this file, and also import other style files */
-html, body {max-width: 100vw; margin: 0; font-family: 'Nunito', sans-serif !important; background-color: #FCFFFC; overflow-x: hidden;}
+html, body {max-width: 100vw; margin: 0; background-color: #FCFFFC; overflow-x: hidden;}
 ::-webkit-scrollbar{
     display: none;
 }
@@ -17,20 +17,20 @@ body{
 }
 
 h1{
-    font-family: 'Poppins', serif;
+    font-weight: bold !important;
 }
-
-p,span,input,h4,h2,h3,td,th,button,textarea{
-    font-family: 'Nunito', sans-serif;
+h2,h1{
+    font-family: 'Title' !important;
+    margin: 0 !important;
+}
+p,span,input,h4,h3,td,th,button,textarea{
+    font-family: 'Text' !important;
     margin: 0 !important;
 }
 loading{
     position: fixed;
     top: 0;
     z-index: 10000;
-}
-round-button{
-    width: 15vw;
 }
 
 .center{
@@ -67,16 +67,30 @@ mat-icon,.fa{
     height: 89vh;
 }
 
-
-tspan{
-    font-family: 'Josefin Sans';
-}
-
 .cdk-overlay-pane{
     display: flex;
     align-items: center;
 }
-
+.glassCard{
+    position: relative;
+    flex-direction: column;
+    border-radius: 5px;
+    z-index: 1;
+    border: 1px solid;
+    transition: 0.8s !important;
+}
+.glassCardBackground{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    filter: blur(5px);
+    z-index: -1;
+    opacity: 0.05;  
+    transition: .8s;  
+}
+.cardsBackground{
+    position: absolute;
+}
 mat-sidenav-content{
     main{
         padding: 0 !important;

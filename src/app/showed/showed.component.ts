@@ -5,15 +5,15 @@ import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 import { PlacesService } from '../services/places.service';
 import { Router } from '@angular/router';
 import { DatabaseService } from '../services/database.service';
-import { Horaires } from '../model/horaires';
-import { Pictures } from '../model/pictures';
-import { CircleNoteParams } from '../model/circle-notes-params';
 import { Subject, Subscription } from 'rxjs';
 import { desktopParams, mobileParams } from '../shared/circleNoteParams';
 import { ColorPalette } from 'src/assets/style-infos/palettes';
 import { ThemeService } from '../services/theme.service';
 import { SelectData, SelectInfos } from '../shared/model/designs';
-import { Place } from '../model/places';
+import { CircleNoteParams } from '../shared/model/params/circle-notes-params';
+import { Horaires } from '../shared/model/table/horaires';
+import { Pictures } from '../shared/model/table/pictures';
+import { Place } from '../shared/model/table/places';
 
 
 
@@ -88,9 +88,7 @@ export class ShowedComponent implements OnInit, OnDestroy {
 
   constructor(
     private storageService: StorageService, 
-    private dataService: DatabaseService,
     private route: ActivatedRoute,
-    private placeService: PlacesService,
     private router: Router,
     private elementRef: ElementRef,
     private themeService: ThemeService
@@ -99,8 +97,8 @@ export class ShowedComponent implements OnInit, OnDestroy {
       this.elementRef.nativeElement.style.setProperty('--mainColor', Palette.mainColor);
       this.elementRef.nativeElement.style.setProperty('--white', Palette.white);
       this.elementRef.nativeElement.style.setProperty('--black', Palette.black);
-      this.elementRef.nativeElement.style.setProperty('--secondColor', Palette.secondColor);
-      this.elementRef.nativeElement.style.setProperty('--thirdColor', Palette.thirdColor);
+      this.elementRef.nativeElement.style.setProperty('--errorColor', Palette.errorColor);
+      this.elementRef.nativeElement.style.setProperty('--successColor', Palette.successColor);
     });
   }
   private themeSubscriber: Subscription = new Subscription();

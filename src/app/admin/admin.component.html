@@ -1,0 +1,1062 @@
+<div class="body">
+    <div class="navigate">
+        <img [src]="logoImageSrc" routerLink="/home">
+
+        <div class="nav">
+            <p (click)="navigate('places')">Lieux</p>
+            <p (click)="navigate('lignes')">Lignes</p>
+            <p (click)="navigate('stations')">Stations</p>
+            <p (click)="navigate('types')">Types</p>  
+            <p (click)="navigate('users')">Utilisateurs</p>
+            <p (click)="navigate('database')">BDD</p>
+        </div>
+    </div>
+    <div class="places" *ngIf="divToShow === 'places'">
+        <div class="subtitles">
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>  
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1> 
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1> 
+            <h1 class="subtitle">Lieux</h1>
+            <h1 class="subtitle">Lieux</h1> 
+        </div>
+        <upload-button id="import" [styleInfos]="uploadButton" type="file" (json)="getPlaces($event)"></upload-button>
+        <div class="lignes suppress" [ngStyle]="{'height': placesFiltered.length > 0 ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos" (input)="search('allPlaces','name',$event)"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Postal</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let place of placesFiltered" (dblclick)="delete('Places',place.id)">
+                    <div class="container">
+                        <p>{{place.id}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{place.name}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{place.postal}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="toSuppress" [ngStyle]="{'height' : placesToDelete.length > 0 ? '600px' : '0','padding' : placesToDelete.length > 0 ? '30px' : '0'}">
+                <h3>À supprimer</h3>
+                <div class="element" *ngFor="let place of placesToDelete">
+                    <p>{{place.name}}</p>
+                    <p>{{place.postal}}</p>
+                    <round-button [icon]="crossIcon" [styleInfos]="iconsInfos" (click)="cancelDelete('Places',place.id)"></round-button>     
+                </div>
+            </div>
+            <round-button id="add" text="Supprimer les lieux" (click)="save('Places','Delete')" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+    </div>
+    <div class="transport" *ngIf="divToShow === 'lignes'">
+        <div class="subtitles">
+            <h1 class="subtitle">Lignes</h1>
+            <h1 class="subtitle">Lignes</h1>
+            <h1 class="subtitle">Lignes</h1>  
+            <h1 class="subtitle">Lignes</h1>
+            <h1 class="subtitle">Lignes</h1>
+            <h1 class="subtitle">Lignes</h1> 
+            <h1 class="subtitle">Lignes</h1>
+            <h1 class="subtitle">Lignes</h1>
+            <h1 class="subtitle">Lignes</h1> 
+            <h1 class="subtitle">Lignes</h1>
+            <h1 class="subtitle">Lignes</h1> 
+        </div>
+        <upload-button id="import" [styleInfos]="uploadButton" type="file" (json)="getJson($event,'lignesToAdd')"></upload-button>
+        <div class="selects">
+            <round-select [infos]="selectInfosRegion" [data]="regionsSelect" [selectAll]="false" [multiselect]="false" text="Région" (selectionChange)="setPreferenceGeo($event,'reg')"></round-select>
+            <round-select [ngStyle]="{'height' : transportsSelect.length >= 1 ? 'fit-content' : '0','width' : transportsSelect.length >= 1 ? '15vw' : '0','padding-left' : transportsSelect.length >= 1 ? '7vw' : '0','opacity' : transportsSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="transportsSelect" [selectAll]="false" [multiselect]="false" text="Transport" (selectionChange)="setPreferenceGeo($event,'trans')"></round-select>  
+        </div>
+        
+        <round-select id="actions" [infos]="selectInfosRegion" [data]="actionSelectLignes" [selectAll]="false" [multiselect]="false" text="Action lignes" (selectionChange)="setAction($event,'actionLignes')"></round-select>
+        
+        <div class="lignes add" [ngStyle]="{'height': actionLignes === 'Ajouter' ? '1000px' : '0'}">
+            <div class="icons">
+                <round-button [icon]="plusIcon" [styleInfos]="greenIconsInfos" (click)="add('Lignes')"></round-button> 
+                <round-button [icon]="minusIcon" [styleInfos]="redIconsInfos" (click)="remove('Lignes')"></round-button>     
+            </div>
+
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Transport</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <h3>Picture</h3>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Région</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Color</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let ligne of lignesToAdd">
+                    <div class="container">
+                        <app-input [value]="ligne.name" [styleInfo]="tableInputInfos" (input)="setValue('name','lignesToAdd',ligne.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <p>{{ligne.transport}}</p>
+                    </div>
+                    <div class="container">
+                        <div class="img" [ngStyle]="{'background':'url('+ligne.picture+')'}">
+                            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event,ligne.id,'lignesToAdd')"></upload-button>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <p>{{ligne.reg}}</p>
+                    </div>
+                    <div class="container" id="color">
+                        <div class="color" [ngStyle]="{'background' : ligne.color}"></div>
+                        <app-input [value]="ligne.color" [styleInfo]="tableInputInfos" (input)="setValue('color','lignesToAdd',ligne.id,$event)"></app-input>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Lignes','Add')" text="Ajouter les lignes" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+        <div class="lignes" [ngStyle]="{'height': (lignesToShow.length > 0 && actionLignes === 'Modifier') ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Transport</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <h3>Picture</h3>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Région</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Color</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let ligne of lignesToShow" (dblclick)="getStations(ligne.id)">
+                    <div class="container">
+                        <p>{{ligne.id}}</p>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="ligne.name" [styleInfo]="tableInputInfos" (input)="setValue('name','lignes',ligne.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="ligne.transport" [styleInfo]="tableInputInfos"></app-input>
+                    </div>
+                    <div class="container">
+                        <div class="img" [ngStyle]="{'background':'url('+ligne.picture+')'}">
+                            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event,ligne.id,'lignes')"></upload-button>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="ligne.reg" [styleInfo]="tableInputInfos" (input)="setValue('reg','lignes',ligne.id,$event)"></app-input>
+                    </div>
+                    <div class="container" id="color">
+                        <div class="color" [ngStyle]="{'background' : ligne.color}"></div>
+                        <app-input [value]="ligne.color" [styleInfo]="tableInputInfos" (input)="setValue('color','lignes',ligne.id,$event)"></app-input>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Lignes','Update')" text="Modifier les lignes" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+        <div class="lignes suppress" [ngStyle]="{'height': (selectedTransport.length > 0 && actionLignes === 'Supprimer') ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Transport</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Région</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let ligne of lignesToShow" (dblclick)="delete('Lignes',ligne.id)">
+                    <div class="container">
+                        <p>{{ligne.id}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{ligne.name}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{ligne.transport}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{ligne.reg}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="toSuppress" [ngStyle]="{'height' : lignesToDelete.length > 0 ? '600px' : '0','padding' : lignesToDelete.length > 0 ? '30px' : '0'}">
+                <h3>À supprimer</h3>
+                <div class="element" *ngFor="let ligne of lignesToDelete">
+                    <p>{{ligne.name}}</p>
+                    <p>{{ligne.reg}}</p>
+                    <round-button [icon]="crossIcon" [styleInfos]="iconsInfos" (click)="cancelDelete('Lignes',ligne.id)"></round-button>     
+                </div>
+            </div>
+            <round-button id="add" text="Supprimer les lignes" (click)="save('Lignes','Delete')" [styleInfos]="classicButtonColorInfos"></round-button>         
+
+        </div>
+        <div class="stations" [ngStyle]="{'height': stationsToShow.length > 0 ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Lignes</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Latitude</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Longitude</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let station of stationsToShow;index as i">
+                    <div class="container">
+                        <p>{{station.id}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{station.name}}</p>
+                    </div>
+                    <div class="container">
+                        <div class="lignes">
+                            <round-button [text]="ligne.name" [styleInfos]="ligne.buttonInfos" *ngFor="let ligne of station.lignes;index as j"></round-button> 
+                        </div>
+                    </div>
+                    <div class="container">
+                        <p>{{station.lat}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{station.lng}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="transport" *ngIf="divToShow === 'stations'">
+        <div class="subtitles">
+            <h1 class="subtitle">Stations</h1>
+            <h1 class="subtitle">Stations</h1>
+            <h1 class="subtitle">Stations</h1>  
+            <h1 class="subtitle">Stations</h1>
+            <h1 class="subtitle">Stations</h1>
+            <h1 class="subtitle">Stations</h1> 
+            <h1 class="subtitle">Stations</h1>
+            <h1 class="subtitle">Stations</h1>
+            <h1 class="subtitle">Stations</h1> 
+        </div>
+        <upload-button id="import" [styleInfos]="uploadButton" type="file" (json)="getJson($event,'addStations')"></upload-button>
+        <div class="selects">
+            <round-select [infos]="selectInfosRegion" [data]="regionsSelect" [selectAll]="false" [multiselect]="false" text="Région" (selectionChange)="setPreferenceGeo($event,'reg')"></round-select>
+            <round-select [ngStyle]="{'height' : transportsSelect.length >= 1 ? 'fit-content' : '0','width' : transportsSelect.length >= 1 ? '15vw' : '0','padding-left' : transportsSelect.length >= 1 ? '7vw' : '0','opacity' : transportsSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="transportsSelect" [selectAll]="false" [multiselect]="false" text="Transport" (selectionChange)="setPreferenceGeo($event,'trans')"></round-select>  
+            <round-select [ngStyle]="{'height' : lignesSelect.length >= 1 ? 'fit-content' : '0','width' : lignesSelect.length >= 1 ? '15vw' : '0','padding-left' : lignesSelect.length >= 1 ? '7vw' : '0','opacity' : lignesSelect.length >= 1 ? '1' : '0'}" [infos]="selectInfosRegion" [data]="lignesSelect" [selectAll]="false" [multiselect]="false" text="Ligne" (selectionChange)="setPreferenceGeo($event,'lig')"></round-select>  
+        </div>
+
+        <round-select id="actions" [infos]="selectInfosRegion" [data]="actionSelectStations" [selectAll]="false" [multiselect]="false" text="Action stations" (selectionChange)="setAction($event,'actionStations')"></round-select>
+        <div class="stations add" [ngStyle]="{'height': (selectedRegion.length > 0 && actionStations === 'Ajouter') ? '1000px' : '0'}">
+            <div class="icons">
+                <round-button [icon]="plusIcon" [styleInfos]="greenIconsInfos" (click)="add('Stations')"></round-button> 
+                <round-button [icon]="minusIcon" [styleInfos]="redIconsInfos" (click)="remove('Stations')"></round-button>     
+            </div>
+
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Latitude</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Longitude</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Lignes</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Région</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let station of stationsToAdd;index as i">
+                    <div class="container">
+                        <app-input [value]="station.name" [styleInfo]="tableInputInfos" (input)="setValue('name','addStations',station.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="station.lat" [styleInfo]="tableInputInfos" (input)="setValue('lat','addStations',station.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="station.lng" [styleInfo]="tableInputInfos" (input)="setValue('lng','addStations',station.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <div class="lignes">
+                            <round-button [text]="ligne.name" [styleInfos]="ligne.buttonInfos" *ngFor="let ligne of station.lignes; index as j" (click)="addLigne(i,j)"></round-button> 
+                        </div>
+                    </div>
+                    <div class="container">
+                        <p>{{station.reg}}</p>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Stations','Add')" text="Ajouter les stations" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+        <div class="stations" [ngStyle]="{'height': (stationsToShow.length > 0 && actionStations === 'Modifier') ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Lignes</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Latitude</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Longitude</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let station of stationsToShow;index as i">
+                    <div class="container">
+                        <p>{{station.id}}</p>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="station.name" [styleInfo]="tableInputInfos" (input)="setValue('name','stationsToShow',station.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <div class="lignes">
+                            <round-button [text]="ligne.name" [styleInfos]="ligne.buttonInfos" *ngFor="let ligne of station.lignes;index as j" (click)="addLigne(i,j)"></round-button> 
+                        </div>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="station.lat" [styleInfo]="tableInputInfos" (input)="setValue('lat','stationsToShow',station.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="station.lng" [styleInfo]="tableInputInfos" (input)="setValue('lng','stationsToShow',station.id,$event)"></app-input>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Stations','Update')" text="Modifier les stations" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+        <div class="stations suppress" [ngStyle]="{'height': (stationsToShow.length > 0 && actionStations === 'Supprimer') ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Région</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let station of stationsToShow" (dblclick)="delete('Stations',station.id)">
+                    <div class="container">
+                        <p>{{station.id}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{station.name}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{selectedRegion}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="toSuppress" [ngStyle]="{'height' : stationsToDelete.length > 0 ? '600px' : '0','padding' : stationsToDelete.length > 0 ? '30px' : '0'}">
+                <h3>À supprimer</h3>
+                <div class="element" *ngFor="let station of stationsToDelete">
+                    <p>{{station.name}}</p>
+                    <round-button [icon]="crossIcon" [styleInfos]="iconsInfos" (click)="cancelDelete('Stations',station.id)"></round-button>     
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Stations','Delete')" text="Supprimer les stations" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+    </div>
+    <div class="type" *ngIf="divToShow === 'types'">
+        <div class="subtitles">
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1>  
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1> 
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1> 
+            <h1 class="subtitle">Type</h1> 
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1>
+            <h1 class="subtitle">Type</h1> 
+        </div>
+        <upload-button id="import" [styleInfos]="uploadButton" type="file" (json)="getJson($event,'typesToAdd')"></upload-button>
+        <div class="selects">
+            <round-select [infos]="selectInfosRegion" [data]="categoriesSelect" [selectAll]="false" [multiselect]="false" text="Catégorie" (selectionChange)="setPreferenceCategory($event)"></round-select>
+        </div>
+        
+        <round-select id="actions" [infos]="selectInfosRegion" [data]="actionSelectTypes" [selectAll]="false" [multiselect]="false" text="Action types" (selectionChange)="setAction($event,'actionTypes')"></round-select>
+        
+        <div class="lignes add" [ngStyle]="{'height': actionTypes === 'Ajouter' ? '1000px' : '0'}">
+            <div class="icons">
+                <round-button [icon]="plusIcon" [styleInfos]="greenIconsInfos" (click)="add('Types')"></round-button> 
+                <round-button [icon]="minusIcon" [styleInfos]="redIconsInfos" (click)="remove('Types')"></round-button>     
+            </div>
+
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Icon</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <h3>Picture</h3>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Category</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Color</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let type of typesToAdd">
+                    <div class="container">
+                        <app-input [value]="type.name" [styleInfo]="tableInputInfos" (input)="setValue('name','typesToAdd',type.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="type.icon" [styleInfo]="tableInputInfos" (input)="setValue('icon','typesToAdd',type.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <div class="img" [ngStyle]="{'background':'url('+type.picture+')'}">
+                            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event,type.id,'typesToAdd')"></upload-button>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <p>{{category}}</p>
+                    </div>
+                    <div class="container" id="color">
+                        <div class="color" [ngStyle]="{'background' : type.color}"></div>
+                        <app-input [value]="type.color" [styleInfo]="tableInputInfos" (input)="setValue('color','typesToAdd',type.id,$event)"></app-input>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Types','Add')" text="Ajouter les types" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+        <div class="lignes" [ngStyle]="{'height': (category.length > 0 && actionTypes === 'Modifier') ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Icon</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <h3>Picture</h3>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Category</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Color</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let type of typesToShow">
+                    <div class="container">
+                        <p>{{type.id}}</p>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="type.name" [styleInfo]="tableInputInfos" (input)="setValue('name','types',type.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="type.icon" [styleInfo]="tableInputInfos" (input)="setValue('icon','types',type.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <div class="img" [ngStyle]="{'background':'url('+type.picture+')'}">
+                            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event,type.id,'types')"></upload-button>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <p>{{type.category}}</p>
+                    </div>
+                    <div class="container" id="color">
+                        <div class="color" [ngStyle]="{'background' : type.color}" (input)="setValue('color','types',type.id,$event)"></div>
+                        <app-input [value]="type.color" [styleInfo]="tableInputInfos"></app-input>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Types','Update')" text="Modifier les types" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+        <div class="lignes suppress" [ngStyle]="{'height': (category.length > 0 && actionTypes === 'Supprimer') ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Name</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Catégorie</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let type of typesToShow" (dblclick)="delete('Types',type.id)">
+                    <div class="container">
+                        <p>{{type.id}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{type.name}}</p>
+                    </div>
+                    <div class="container">
+                        <p>{{type.category}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="toSuppress" [ngStyle]="{'height' : deleteTypes.length > 0 ? '600px' : '0','padding' : deleteTypes.length > 0 ? '30px' : '0'}">
+                <h3>À supprimer</h3>
+                <div class="element" *ngFor="let type of deleteTypes">
+                    <p>{{type.name}}</p>
+                    <p>{{type.category}}</p>
+                    <round-button [icon]="crossIcon" [styleInfos]="iconsInfos" (click)="cancelDelete('Types',type.id)"></round-button>     
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Types','Delete')" text="Supprimer les types" [styleInfos]="classicButtonColorInfos"></round-button>         
+
+        </div>
+    </div>
+
+    <div class="user" *ngIf="divToShow === 'users'">
+        <div class="subtitles">
+            <h1 class="subtitle">Utilisateur</h1>
+            <h1 class="subtitle">Utilisateur</h1>
+            <h1 class="subtitle">Utilisateur</h1>  
+            <h1 class="subtitle">Utilisateur</h1>
+            <h1 class="subtitle">Utilisateur</h1>
+            <h1 class="subtitle">Utilisateur</h1> 
+            <h1 class="subtitle">Utilisateur</h1>
+            <h1 class="subtitle">Utilisateur</h1>
+        </div>
+        <upload-button id="import" [styleInfos]="uploadButton" type="file" (json)="getJson($event,'usersToAdd')"></upload-button>
+        <round-select id="actions" [infos]="selectInfosRegion" [data]="actionSelectUsers" [selectAll]="false" [multiselect]="false" text="Action users" (selectionChange)="setAction($event,'actionUsers')"></round-select>
+        
+        <div class="lignes add" [ngStyle]="{'height': actionUsers === 'Ajouter' ? '1000px' : '0'}">
+            <div class="icons">
+                <round-button [icon]="plusIcon" [styleInfos]="greenIconsInfos" (click)="add('Users')"></round-button> 
+                <round-button [icon]="minusIcon" [styleInfos]="redIconsInfos" (click)="remove('Users')"></round-button>     
+            </div>
+
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Login</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Password</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Image</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Rôle</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let user of usersToAdd">
+                    <div class="container">
+                        <app-input [value]="user.login" [styleInfo]="tableInputInfos" (input)="setValue('login','usersToAdd',user.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="user.password" type="password" [styleInfo]="tableInputInfos" (input)="setValue('password','usersToAdd',user.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <div class="img" [ngStyle]="{'background':'url('+user.img+')'}">
+                            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event,user.id,'usersToAdd')"></upload-button>
+                        </div>
+                    </div>
+                    <div class="container" id="color">
+                        <app-input [value]="user.role" [styleInfo]="tableInputInfos" (input)="setValue('role','usersToAdd',user.id,$event)"></app-input>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Users','Add')" text="Ajouter les utilisateurs" [styleInfos]="classicButtonColorInfos"></round-button>         
+        </div>
+        <div class="lignes" [ngStyle]="{'height': actionUsers === 'Modifier' ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>ID</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Login</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Image</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Rôle</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let user of usersToShow">
+                    <div class="container">
+                        <p>{{user.id}}</p>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="user.login" [styleInfo]="tableInputInfos" (input)="setValue('login','users',user.id,$event)"></app-input>
+                    </div>
+                    <div class="container">
+                        <div class="img" [ngStyle]="{'background':'url('+user.img+')'}">
+                            <upload-button [styleInfos]="uploadButton" type="picture" (file)="getFile($event,user.id,'users')"></upload-button>
+                        </div>
+                    </div>
+                    <div class="container">
+                        <app-input [value]="user.role" [styleInfo]="tableInputInfos" (input)="setValue('role','users',user.id,$event)"></app-input>
+                    </div>
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Users','Update')" text="Modifier les utilisateurs" [styleInfos]="classicButtonColorInfos"></round-button>         
+
+        </div>
+        <div class="lignes suppressUser" [ngStyle]="{'height': actionUsers === 'Supprimer' ? '1000px' : '0'}">
+            <div class="title">
+                <div class="container">
+                    <div class="titleAndSort">
+                        <h3>Login</h3>
+                        <div class="sort">
+                            <fa-icon [icon]="upIcon"></fa-icon>
+                            <fa-icon [icon]="downIcon"></fa-icon>
+                        </div>
+                    </div>
+                    <app-input text="Rechercher" [styleInfo]="searchInputInfos"></app-input>
+                </div>
+            </div>
+            <div class="allInfos">
+                <div class="infos" *ngFor="let user of usersToShow" (dblclick)="delete('Users',user.id)">
+                    <div class="container">
+                        <p>{{user.login}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="toSuppress" [ngStyle]="{'height' : deleteUsers.length > 0 ? '600px' : '0','padding' : deleteUsers.length > 0 ? '30px' : '0'}">
+                <h3>À supprimer</h3>
+                <div class="element" *ngFor="let user of deleteUsers">
+                    <p>{{user.login}}</p>
+                    <round-button [icon]="crossIcon" [styleInfos]="iconsInfos" (click)="cancelDelete('Users',user.id)"></round-button>     
+                </div>
+            </div>
+            <round-button id="add" (click)="save('Users','Delete')" text="Supprimer les utilisateurs" [styleInfos]="classicButtonColorInfos"></round-button>         
+
+        </div>
+    </div>
+    <div class="database" *ngIf="divToShow === 'database'">
+        <div class="buttons">
+            <round-button text="Remplir les places de la démo" [styleInfos]="classicButtonColorInfos" (click)="setDemoPlaces()"></round-button> 
+            <round-button text="Recalculer les stations proche des lieux" [styleInfos]="classicButtonColorInfos" (click)="setStationsNearPlace()"></round-button> 
+            <round-button text="Retirer les faux ids de type_of_place" [styleInfos]="classicButtonColorInfos" (click)="cleanTypeOfPlace()"></round-button> 
+        </div>
+    </div>
+    <div style="background: var(--black);" [ngStyle]="{'height.%' : animationChange === 'lignes' ? '100' : '0', 'top' : animationChange === '' ? 'auto' : '0', 'bottom' : animationChange === 'lignes' ? 'auto' : '0', 'width.%' : animationChange === 'lignes' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'lignes' ? '0' : 'auto'}" class="transition"></div>
+    <div style="background: var(--white);" [ngStyle]="{'height.%' : animationChange === 'stations' ? '100' : '0', 'top' : animationChange === '' ? 'auto' : '0', 'bottom' : animationChange === 'stations' ? 'auto' : '0', 'width.%' : animationChange === 'stations' ? '100' : '0', 'left' : animationChange === '' ? '0' : 'auto', 'right' : animationChange === 'stations' ? '0' : 'auto'}" class="transition"></div>
+    <div style="background: var(--errorColor);" [ngStyle]="{'height.%' : animationChange === 'types' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'types' ? '0' : 'auto','width.%' : animationChange === 'types' ? '100' : '0', 'left' : animationChange === '' ? '0' : 'auto', 'right' : animationChange === 'types' ? '0' : 'auto'}" class="transition"></div>
+    <div style="background: var(--mainColor);" [ngStyle]="{'height.%' : animationChange === 'users' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'users' ? '0' : 'auto','width.%' : animationChange === 'users' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'users' ? '0' : 'auto'}" class="transition"></div>
+    <div style="background: var(--successColor);" [ngStyle]="{'height.%' : animationChange === 'database' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'database' ? '0' : 'auto','width.%' : animationChange === 'database' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'database' ? '0' : 'auto'}" class="transition"></div>
+    <div style="background: var(--successColor);" [ngStyle]="{'height.%' : animationChange === 'places' ? '100' : '0', 'top' : animationChange === '' ? '0' : 'auto', 'bottom' : animationChange === 'places' ? '0' : 'auto','width.%' : animationChange === 'places' ? '100' : '0', 'right' : animationChange === '' ? '0' : 'auto', 'left' : animationChange === 'places' ? '0' : 'auto'}" class="transition"></div>
+
+    <div class="error" [ngStyle]="{'height' : errorMessage.length > 0 ? '10vh' : '0','background' : error ? 'var(--errorColor)' : 'var(--successColor)'}">
+        <p>{{errorMessage}}</p>
+    </div>
+</div>
